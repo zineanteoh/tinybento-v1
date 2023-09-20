@@ -1,5 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // READ: https://nextjs.org/docs/app/building-your-application/routing/route-groups
 // this layout will be shared by all pages in the "(demo)" Route Group
@@ -8,14 +7,12 @@ const DemoLayout = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const router = useRouter();
-
   return (
     <div>
-      <button type="button" onClick={() => router.back()}>
-        Back
-      </button>
-      <>{children}</>
+      <div style={{ position: "absolute" }}>
+        <Link href="/">Back</Link>
+      </div>
+      {children}
     </div>
   );
 };

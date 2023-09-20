@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import styles from "./page.module.css";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 import Draggable from "@components/demo-1/Draggable";
@@ -22,10 +23,12 @@ const Demo1 = () => {
   );
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <Droppable>{isDropped ? draggableMarker : "Drop Here"}</Droppable>
-      {!isDropped ? draggableMarker : null}
-    </DndContext>
+    <div className={styles.canvas}>
+      {/* <DndContext onDragEnd={handleDragEnd}>
+        <Droppable>{isDropped ? draggableMarker : "Drop Here"}</Droppable>
+        {!isDropped ? draggableMarker : null}
+      </DndContext> */}
+    </div>
   );
 };
 

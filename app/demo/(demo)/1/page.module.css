@@ -1,0 +1,5 @@
+.canvas {
+  flex-grow: 1;
+  background-color: teal;
+  height: 100vh;
+}
