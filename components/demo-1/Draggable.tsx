@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./Draggable.module.css";
 import { useDraggable } from "@dnd-kit/core";
 
 const Draggable = (props: { children: React.ReactNode }) => {
@@ -7,20 +8,16 @@ const Draggable = (props: { children: React.ReactNode }) => {
   });
   const style = transform
     ? {
-        width: 100,
-        height: 100,
-        backgroundColor: "pink",
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
       }
-    : {
-        width: 100,
-        height: 100,
-        backgroundColor: "pink",
-      };
+    : undefined;
 
   return (
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+    <div className={styles.draggable} ref={setNodeRef} style={style}>
       {props.children}
+      <div className={styles.dragHandle} {...listeners} {...attributes}>
+        Drag Me
+      </div>
     </div>
   );
 };

@@ -1,0 +1,17 @@
+.draggable {
+  position: relative;
+  width: 100%;
+}
+
+.dragHandle {
+  position: absolute;
+  width: 100px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  background-color: lightblue;
+}
+
+.dragHandle:hover {
+  cursor: move;
+}

@@ -6,8 +6,8 @@ const Droppable = (props: { children: React.ReactNode }) => {
     id: "droppable-1",
   });
   const style = {
-    width: 200,
-    height: 200,
+    width: 700,
+    height: 700,
     backgroundColor: "rgba(0, 0, 0, 0.1)",
     color: isOver ? "green" : undefined,
   };

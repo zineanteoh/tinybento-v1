@@ -4,6 +4,7 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 
 import Draggable from "@components/demo-1/Draggable";
 import Droppable from "@components/demo-1/Droppable";
+import CustomResizable from "@/components/demo-1/Resizable";
 
 const Demo1 = () => {
   const [isDropped, setIsDropped] = useState(false);
@@ -14,7 +15,11 @@ const Demo1 = () => {
     }
   };
 
-  const draggableMarker = <Draggable>Drag Me</Draggable>;
+  const draggableMarker = (
+    <Draggable>
+      <CustomResizable />
+    </Draggable>
+  );
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
