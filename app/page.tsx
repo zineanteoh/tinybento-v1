@@ -1,26 +1,14 @@
-"use client";
-import React, { useState } from "react";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
-
-import Draggable from "../components/Draggable";
-import Droppable from "../components/Droppable";
+import React from "react";
+import Link from "next/link";
+import styles from "./page.module.css";
 
 const Home = () => {
-  const [isDropped, setIsDropped] = useState(false);
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (event.over && event.over.id === "droppable-1") {
-      setIsDropped(true);
-    }
-  };
-
-  const draggableMarker = <Draggable>Drag Me</Draggable>;
-
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <Droppable>{isDropped ? draggableMarker : "Drop Here"}</Droppable>
-      {!isDropped ? draggableMarker : null}
-    </DndContext>
+    <div className={styles.container}>
+      <Link href="/demo-1">Demo 1</Link>
+      <Link href="/demo-2">Demo 2</Link>
+      {/* TODO: add more demos here */}
+    </div>
   );
 };
 
