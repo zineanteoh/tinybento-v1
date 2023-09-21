@@ -7,6 +7,9 @@ const page = () => {
         backgroundColor: "lightblue",
         width: "200px",
         height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       Left Sidebar

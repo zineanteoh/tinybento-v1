@@ -1,7 +1,7 @@
 import React from "react";
 import { useDroppable } from "@dnd-kit/core";
 
-const Droppable = (props: { children: React.ReactNode }) => {
+const DroppableBento = (props: { children: React.ReactNode }) => {
   const { isOver, setNodeRef } = useDroppable({
     id: "droppable-1",
   });
@@ -10,13 +10,16 @@ const Droppable = (props: { children: React.ReactNode }) => {
     height: 700,
     backgroundColor: "rgba(0, 0, 0, 0.1)",
     color: isOver ? "green" : undefined,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   return (
     <div ref={setNodeRef} style={style}>
-      {props.children}
+      {isOver ? "Release to Add" : props.children}
     </div>
   );
 };
 
-export default Droppable;
+export default DroppableBento;
