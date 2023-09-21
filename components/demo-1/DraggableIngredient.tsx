@@ -4,7 +4,6 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
 const DraggableIngredient = (props: { children: React.ReactNode }) => {
-  console.log(props.children?.toString());
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.children?.toString() || "draggable",
   });
