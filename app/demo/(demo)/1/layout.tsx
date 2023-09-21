@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useId } from "react";
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
-import DraggableIngredient from "@/components/demo-1/DraggableIngredient";
+import { useStore } from "@/store/store";
 
 // READ: https://nextjs.org/docs/app/building-your-application/routing/route-groups
 // this layout will be shared by all pages in the "(demo)" Route Group
@@ -10,17 +10,15 @@ const DemoLayout = (props: {
   sidebarLeft: React.ReactNode;
   sidebarRight: React.ReactNode;
 }) => {
-  const [isDropped, setIsDropped] = useState(false);
+  const id = useId();
+  const { setIsDropped, addDroppedIngredient } = useStore();
 
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over && event.over.id === "droppable-1") {
       setIsDropped(true);
+      addDroppedIngredient(event.active.id.toString());
     }
   };
-
-  const draggableMarker = (
-    <DraggableIngredient>{props.children}</DraggableIngredient>
-  );
 
   return (
     <div
@@ -29,6 +27,7 @@ const DemoLayout = (props: {
       }}
     >
       <DndContext
+        id={id}
         onDragEnd={handleDragEnd}
         autoScroll={false}
         collisionDetection={pointerWithin}
