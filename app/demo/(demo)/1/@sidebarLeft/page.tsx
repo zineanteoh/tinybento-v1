@@ -21,9 +21,16 @@ const SidebarLeft = () => {
       <div>dragging: {dragging}</div>
       <div>
         dropped:
-        {dropped.map((ingredient, i) => (
-          <div key={i}>{ingredient}</div>
-        ))}
+        {dropped.map((ingredient, i) => {
+          const { x, y } = ingredient.coordinate;
+
+          return (
+            <div key={i}>
+              {/* ({x}, {y}) {ingredient.id} */}
+              {JSON.stringify(ingredient)}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

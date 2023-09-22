@@ -6,7 +6,7 @@ const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
   const { x, y } = props.coordinate;
 
   const { isOver, setNodeRef } = useDroppable({
-    id: `${x}-${y}`,
+    id: `${x},${y}`,
   });
   const style = {
     border: "1px solid black",

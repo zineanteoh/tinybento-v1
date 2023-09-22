@@ -21,9 +21,15 @@ const DIMENSION: Dimension = {
   height: 4,
 };
 
+// TODO:
+const CONTAINER_WIDTH = 700;
+const CONTAINER_HEIGHT = 700;
+
 const Bento = () => {
-  const bentoSquares = Array.from({ length: DIMENSION.width }).map((_, y) =>
-    Array.from({ length: DIMENSION.height }).map((_, x) => (
+  const { dropped } = useStore();
+
+  const bentoSquares = Array.from({ length: DIMENSION.height }).map((_, y) =>
+    Array.from({ length: DIMENSION.width }).map((_, x) => (
       <DroppableBentoSquare
         key={x}
         coordinate={{
@@ -34,11 +40,31 @@ const Bento = () => {
     ))
   );
 
+  const droppedIngredients = dropped.map((ingredient, i) => {
+    return (
+      <div
+        key={i}
+        style={{
+          position: "absolute",
+          width: CONTAINER_WIDTH / DIMENSION.width,
+          height: CONTAINER_HEIGHT / DIMENSION.height,
+          boxSizing: "border-box",
+          top: (ingredient.coordinate.y * CONTAINER_WIDTH) / DIMENSION.width,
+          left: (ingredient.coordinate.x * CONTAINER_HEIGHT) / DIMENSION.height,
+          backgroundColor: "rgba(91, 255, 3, 0.235)",
+        }}
+      >
+        {ingredient.id}
+      </div>
+    );
+  });
+
   return (
     <div
       style={{
-        width: 700,
-        height: 700,
+        position: "relative",
+        width: CONTAINER_WIDTH,
+        height: CONTAINER_HEIGHT,
         display: "grid",
         gridTemplateColumns: `repeat(${DIMENSION.width}, 1fr)`,
         gridTemplateRows: `repeat(${DIMENSION.height}, 1fr)`,
@@ -48,6 +74,7 @@ const Bento = () => {
       {bentoSquares}
 
       {/* The dropped ingredients */}
+      {droppedIngredients}
     </div>
   );
 };
