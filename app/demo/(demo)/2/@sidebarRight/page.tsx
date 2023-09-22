@@ -1,5 +1,5 @@
 "use client";
-import DraggableIngredient from "@/components/demo-1/DraggableIngredient";
+import DraggableIngredient from "@/components/demo-2/DraggableIngredient";
 import React from "react";
 
 const page = () => {

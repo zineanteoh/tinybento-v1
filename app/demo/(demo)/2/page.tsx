@@ -2,7 +2,7 @@
 import React from "react";
 import styles from "./page.module.css";
 
-import DroppableBento from "@/components/demo-1/DroppableBento";
+import DroppableBento from "@/components/demo-2/DroppableBento";
 import { useStore } from "@/store/store";
 
 const Demo2 = () => {
