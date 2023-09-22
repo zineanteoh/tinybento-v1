@@ -3,9 +3,9 @@ import styles from "./Draggable.module.css";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
-const DraggableIngredient = (props: { children: React.ReactNode }) => {
+const DraggableIngredient = (props: { content: string }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.children?.toString() || "draggable",
+    id: props.content,
   });
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -19,7 +19,7 @@ const DraggableIngredient = (props: { children: React.ReactNode }) => {
       {...listeners}
       {...attributes}
     >
-      {props.children}
+      {props.content}
     </div>
   );
 };

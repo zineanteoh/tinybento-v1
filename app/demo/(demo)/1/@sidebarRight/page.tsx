@@ -16,12 +16,12 @@ const page = () => {
         gap: 10,
       }}
     >
-      <DraggableIngredient>1x1</DraggableIngredient>
-      <DraggableIngredient>1x2</DraggableIngredient>
-      <DraggableIngredient>2x1</DraggableIngredient>
-      <DraggableIngredient>2x2</DraggableIngredient>
-      <DraggableIngredient>1x3</DraggableIngredient>
-      <DraggableIngredient>3x1</DraggableIngredient>
+      <DraggableIngredient content="1x1" />
+      <DraggableIngredient content="1x2" />
+      <DraggableIngredient content="2x1" />
+      <DraggableIngredient content="2x2" />
+      <DraggableIngredient content="1x3" />
+      <DraggableIngredient content="3x1" />
     </div>
   );
 };
