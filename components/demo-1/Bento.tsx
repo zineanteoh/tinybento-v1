@@ -49,8 +49,8 @@ const Bento = () => {
           width: CONTAINER_WIDTH / DIMENSION.width,
           height: CONTAINER_HEIGHT / DIMENSION.height,
           boxSizing: "border-box",
-          top: (ingredient.coordinate.y * CONTAINER_WIDTH) / DIMENSION.width,
-          left: (ingredient.coordinate.x * CONTAINER_HEIGHT) / DIMENSION.height,
+          left: (ingredient.coordinate.x * CONTAINER_WIDTH) / DIMENSION.width,
+          top: (ingredient.coordinate.y * CONTAINER_HEIGHT) / DIMENSION.height,
           backgroundColor: "rgba(91, 255, 3, 0.235)",
         }}
       >

@@ -14,8 +14,9 @@ const SidebarLeft = () => {
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "left",
+        paddingLeft: "10px",
+        paddingTop: "25px",
       }}
     >
       <div>dragging: {dragging}</div>
