@@ -6,12 +6,12 @@ import DroppableBento from "@/components/demo-2/DroppableBento";
 import { useStore } from "@/store/store";
 
 const Demo2 = () => {
-  const { isDropped, droppedIngredients } = useStore();
+  const { isDropped, dropped } = useStore();
 
   return (
     <div className={styles.canvas}>
       <DroppableBento>
-        {isDropped ? `DROPPED: ${droppedIngredients}` : "EMPTY"}
+        {isDropped ? `DROPPED: ${dropped}` : "EMPTY"}
       </DroppableBento>
     </div>
   );

@@ -11,12 +11,19 @@ const DemoLayout = (props: {
   sidebarRight: React.ReactNode;
 }) => {
   const id = useId();
-  const { setIsDropped, addDroppedIngredient } = useStore();
+  const { addDropped, setDragging } = useStore();
 
+  const handleDragStart = (event: DragEndEvent) => {
+    setDragging(event.active.id.toString());
+  };
+
+  // where the magic happens
   const handleDragEnd = (event: DragEndEvent) => {
-    if (event.over && event.over.id === "droppable-1") {
-      setIsDropped(true);
-      addDroppedIngredient(event.active.id.toString());
+    setDragging(null);
+
+    if (event.over && event.over.id !== null) {
+      // use the APIs provided by store to update bento state
+      addDropped(event.active.id.toString());
     }
   };
 
@@ -28,6 +35,7 @@ const DemoLayout = (props: {
     >
       <DndContext
         id={id}
+        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         autoScroll={false}
         collisionDetection={pointerWithin}

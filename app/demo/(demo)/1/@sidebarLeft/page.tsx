@@ -4,7 +4,7 @@ import React from "react";
 
 // Displays all internal states of the bento
 const SidebarLeft = () => {
-  const { isDropped, droppedIngredients } = useStore();
+  const { dropped, dragging } = useStore();
 
   return (
     <div
@@ -18,8 +18,13 @@ const SidebarLeft = () => {
         alignItems: "left",
       }}
     >
-      <div>isDropped: {isDropped ? "true" : "false"}</div>
-      <div>droppedIngredients: {droppedIngredients}</div>
+      <div>dragging: {dragging}</div>
+      <div>
+        dropped:
+        {dropped.map((ingredient, i) => (
+          <div key={i}>{ingredient}</div>
+        ))}
+      </div>
     </div>
   );
 };
