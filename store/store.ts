@@ -1,20 +1,10 @@
 import { create } from "zustand";
+import { Demo1Slice, createDemo1Slice } from "./demo1-store";
+import { Demo2Slice, createDemo2Slice } from "./demo2-store";
 
-type Store = {
-  isDropped: boolean;
-  setIsDropped: (isDropped: boolean) => void;
-
-  droppedIngredients: string[];
-  addDroppedIngredient: (droppedIngredient: string) => void;
-};
-
-export const useStore = create<Store>()((set) => ({
-  isDropped: false,
-  setIsDropped: (isDropped) => set({ isDropped }),
-
-  droppedIngredients: [],
-  addDroppedIngredient: (droppedIngredient) =>
-    set((state) => ({
-      droppedIngredients: [...state.droppedIngredients, droppedIngredient],
-    })),
+// the implementation of our store
+// https://github.com/pmndrs/zustand/blob/main/docs/guides/slices-pattern.md#updating-multiple-stores
+export const useStore = create<Demo1Slice & Demo2Slice>()((...a) => ({
+  ...createDemo1Slice(...a),
+  ...createDemo2Slice(...a),
 }));
