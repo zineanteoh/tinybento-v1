@@ -1,6 +1,11 @@
+"use client";
+import { useStore } from "@/store/store";
 import React from "react";
 
-const page = () => {
+// Displays all internal states of the bento
+const SidebarLeft = () => {
+  const { isDropped, droppedIngredients } = useStore();
+
   return (
     <div
       style={{
@@ -8,13 +13,15 @@ const page = () => {
         width: "200px",
         height: "100vh",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "left",
       }}
     >
-      Left Sidebar
+      <div>isDropped: {isDropped ? "true" : "false"}</div>
+      <div>droppedIngredients: {droppedIngredients}</div>
     </div>
   );
 };
 
-export default page;
+export default SidebarLeft;

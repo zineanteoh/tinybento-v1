@@ -2,7 +2,7 @@
 import DraggableIngredient from "@/components/demo-1/DraggableIngredient";
 import React from "react";
 
-const page = () => {
+const SidebarRight = () => {
   return (
     <div
       style={{
@@ -26,4 +26,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default SidebarRight;
