@@ -2,7 +2,7 @@
   position: absolute;
 }
 
-.viewable {
+.dropped {
   background-color: rgba(91, 255, 3);
   border: 1px solid black;
 }

@@ -1,3 +1,19 @@
-.resizable {
-  background-color: pink;
+.border {
+  position: absolute;
+}
+
+.top:hover {
+  cursor: n-resize;
+}
+
+.right:hover {
+  cursor: e-resize;
+}
+
+.bottom:hover {
+  cursor: s-resize;
+}
+
+.left:hover {
+  cursor: w-resize;
 }
