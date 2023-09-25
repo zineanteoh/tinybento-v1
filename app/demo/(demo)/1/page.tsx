@@ -2,7 +2,7 @@
 import React from "react";
 import styles from "./page.module.css";
 
-import Bento from "@/components/demo-1/Bento";
+import Bento from "@/components/Bento";
 
 const Demo1 = () => {
   return (

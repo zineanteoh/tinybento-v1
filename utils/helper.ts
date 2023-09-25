@@ -1,4 +1,5 @@
-import { Coordinates } from "@/components/demo-1/Bento";
+import { Coordinates } from "@/components/Bento";
+import { DroppedVariant } from "@/components/Ingredient";
 import { Ingredient } from "@/store/demo1-store";
 
 /**
@@ -18,5 +19,5 @@ export const convertStringToCoordinate = (str: string): Coordinates => {
  */
 export const convertStringToIngredient = (str: string): Ingredient => {
   const [height, width] = str.split("x").map((item) => parseInt(item));
-  return { width, height };
+  return { width, height, variant: DroppedVariant.VIEWABLE };
 };

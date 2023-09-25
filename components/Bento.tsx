@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useStore } from "@/store/store";
 import DroppableBentoSquare from "./DroppableBentoSquare";
+import DroppedIngredient, { DroppedVariant } from "./Ingredient";
+import {
+  BentoIngredientType,
+  DroppedIngredientType,
+} from "@/store/demo1-store";
 
 export interface Dimension {
   width: number;
@@ -13,8 +18,8 @@ export interface Coordinates {
 }
 
 // TODO:
-const CONTAINER_WIDTH = 700;
-const CONTAINER_HEIGHT = 700;
+export const CONTAINER_WIDTH = 700;
+export const CONTAINER_HEIGHT = 700;
 
 const Bento = () => {
   const { dimension, dropped } = useStore();
@@ -31,31 +36,18 @@ const Bento = () => {
     ))
   );
 
-  const droppedIngredients = dropped.map((ingredient, i) => {
-    return (
-      <div
-        key={i}
-        style={{
-          position: "absolute",
-          width: (CONTAINER_WIDTH / dimension.width) * ingredient.width - 20,
-          height:
-            (CONTAINER_HEIGHT / dimension.height) * ingredient.height - 20,
-          boxSizing: "border-box",
-          left:
-            (ingredient.coordinate.x * CONTAINER_WIDTH) / dimension.width + 10,
-          top:
-            (ingredient.coordinate.y * CONTAINER_HEIGHT) / dimension.height +
-            10,
-          backgroundColor: "rgba(91, 255, 3)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {ingredient.height}x{ingredient.width}
-      </div>
-    );
-  });
+  const droppedIngredients = dropped.map(
+    (ingredient: BentoIngredientType, index: number) => {
+      return (
+        <DroppedIngredient
+          key={index}
+          ingredient={ingredient}
+          dimension={dimension}
+          variant={ingredient.variant}
+        />
+      );
+    }
+  );
 
   return (
     <div
