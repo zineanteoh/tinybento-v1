@@ -4,7 +4,7 @@ import React from "react";
 
 // Displays all internal states of the bento
 const SidebarLeft = () => {
-  const { dropped, dragging } = useStore();
+  const { dropped, dropped2D, dragging } = useStore();
 
   return (
     <div
@@ -19,7 +19,9 @@ const SidebarLeft = () => {
         paddingTop: "25px",
       }}
     >
-      <div>dragging: {dragging}</div>
+      <div>
+        dragging: {dragging ? `${dragging.width}x${dragging.height}` : ""}
+      </div>
       <div>
         dropped:
         {dropped.map((ingredient, i) => {
@@ -32,6 +34,14 @@ const SidebarLeft = () => {
             </div>
           );
         })}
+      </div>
+      <div>
+        dropped2D:
+        {JSON.stringify(
+          dropped2D.map((row) =>
+            row.map((col) => (col ? `${col.height}x${col.width}` : null))
+          )
+        )}
       </div>
     </div>
   );

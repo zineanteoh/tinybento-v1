@@ -11,7 +11,7 @@ const DemoLayout = (props: {
   sidebarRight: React.ReactNode;
 }) => {
   const id = useId();
-  const { setIsDropped, addDropped } = useStore();
+  const { setIsDropped, handleDropped: addDropped } = useStore();
 
   const handleDragEnd = (event: DragEndEvent) => {
     if (event.over && event.over.id === "droppable-1") {

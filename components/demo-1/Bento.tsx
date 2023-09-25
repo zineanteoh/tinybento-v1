@@ -7,29 +7,20 @@ export interface Dimension {
   height: number;
 }
 
-export interface Ingredient {
-  id: string;
-}
-
 export interface Coordinates {
   x: number;
   y: number;
 }
-
-const DIMENSION: Dimension = {
-  width: 4,
-  height: 4,
-};
 
 // TODO:
 const CONTAINER_WIDTH = 700;
 const CONTAINER_HEIGHT = 700;
 
 const Bento = () => {
-  const { dropped } = useStore();
+  const { dimension, dropped } = useStore();
 
-  const bentoSquares = Array.from({ length: DIMENSION.height }).map((_, y) =>
-    Array.from({ length: DIMENSION.width }).map((_, x) => (
+  const bentoSquares = Array.from({ length: dimension.height }).map((_, y) =>
+    Array.from({ length: dimension.width }).map((_, x) => (
       <DroppableBentoSquare
         key={x}
         coordinate={{
@@ -46,15 +37,18 @@ const Bento = () => {
         key={i}
         style={{
           position: "absolute",
-          width: CONTAINER_WIDTH / DIMENSION.width,
-          height: CONTAINER_HEIGHT / DIMENSION.height,
+          width: (CONTAINER_WIDTH / dimension.width) * ingredient.width,
+          height: (CONTAINER_HEIGHT / dimension.height) * ingredient.height,
           boxSizing: "border-box",
-          left: (ingredient.coordinate.x * CONTAINER_WIDTH) / DIMENSION.width,
-          top: (ingredient.coordinate.y * CONTAINER_HEIGHT) / DIMENSION.height,
-          backgroundColor: "rgba(91, 255, 3, 0.235)",
+          left: (ingredient.coordinate.x * CONTAINER_WIDTH) / dimension.width,
+          top: (ingredient.coordinate.y * CONTAINER_HEIGHT) / dimension.height,
+          backgroundColor: "rgba(91, 255, 3)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {ingredient.id}
+        {ingredient.height}x{ingredient.width}
       </div>
     );
   });
@@ -66,8 +60,8 @@ const Bento = () => {
         width: CONTAINER_WIDTH,
         height: CONTAINER_HEIGHT,
         display: "grid",
-        gridTemplateColumns: `repeat(${DIMENSION.width}, 1fr)`,
-        gridTemplateRows: `repeat(${DIMENSION.height}, 1fr)`,
+        gridTemplateColumns: `repeat(${dimension.width}, 1fr)`,
+        gridTemplateRows: `repeat(${dimension.height}, 1fr)`,
       }}
     >
       {/* The width x height bento squares */}
