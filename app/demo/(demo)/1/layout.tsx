@@ -30,12 +30,13 @@ const DemoLayout = (props: {
   // where the magic happens
   const handleDragEnd = (event: DragEndEvent) => {
     console.log("END DRAGGING");
+    clearPreview();
+
     if (event.over && event.over.id !== null) {
       const droppedCoordinate: Coordinates = convertStringToCoordinate(
         event.over.id as string
       );
       // use the APIs provided by store to update bento state
-      clearPreview();
       addDroppedIngredient(droppedCoordinate);
     }
 
