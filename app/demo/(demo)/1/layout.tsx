@@ -8,7 +8,7 @@ import {
   convertStringToIngredient,
 } from "@/utils/helper";
 import { Ingredient } from "@/store/demo1-store";
-import { DroppedVariant } from "@/components/Ingredient";
+import { IngredientVariant } from "@/components/Ingredient";
 
 // READ: https://nextjs.org/docs/app/building-your-application/routing/route-groups
 // this layout will be shared by all pages in the "(demo)" Route Group
@@ -18,7 +18,7 @@ const DemoLayout = (props: {
   sidebarRight: React.ReactNode;
 }) => {
   const id = useId();
-  const { addIngredient, removeIngredient, setDragging } = useStore();
+  const { addDroppedIngredient, clearPreview, setDragging } = useStore();
 
   const handleDragStart = (event: DragEndEvent) => {
     const ingredient: Ingredient = convertStringToIngredient(
@@ -35,8 +35,8 @@ const DemoLayout = (props: {
         event.over.id as string
       );
       // use the APIs provided by store to update bento state
-      removeIngredient(droppedCoordinate);
-      addIngredient(droppedCoordinate, DroppedVariant.VIEWABLE);
+      clearPreview();
+      addDroppedIngredient(droppedCoordinate);
     }
 
     setDragging(null);

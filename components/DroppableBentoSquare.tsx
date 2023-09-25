@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { Coordinates } from "./Bento";
 import { useStore } from "@/store/store";
-import { DroppedVariant } from "./Ingredient";
+import { IngredientVariant } from "./Ingredient";
 
 const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
-  const { addIngredient, removeIngredient, clearPreview } = useStore();
+  const { addPreviewIngredient, clearPreview } = useStore();
   const { x, y } = props.coordinate;
 
   const { isOver, setNodeRef } = useDroppable({
@@ -27,9 +27,9 @@ const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
     const coordinate = { x, y } as Coordinates;
     if (isOver) {
       clearPreview();
-      addIngredient(coordinate, DroppedVariant.PREVIEW);
+      addPreviewIngredient(coordinate);
     }
-  }, [isOver, x, y, clearPreview, addIngredient, removeIngredient]);
+  }, [isOver, x, y, clearPreview, addPreviewIngredient]);
 
   return (
     <div ref={setNodeRef} style={style}>

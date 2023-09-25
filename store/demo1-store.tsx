@@ -1,11 +1,11 @@
 import { Coordinates, Dimension } from "@/components/Bento";
-import { DroppedVariant } from "@/components/Ingredient";
+import { IngredientVariant } from "@/components/Ingredient";
 import { StateCreator } from "zustand";
 
 export interface Ingredient {
   width: number;
   height: number;
-  variant: DroppedVariant;
+  variant: IngredientVariant;
 }
 
 /**
@@ -15,7 +15,7 @@ export interface Ingredient {
  */
 export interface DroppedIngredientType extends Ingredient {
   coordinate: Coordinates;
-  variant: DroppedVariant.VIEWABLE;
+  variant: IngredientVariant.DROPPED;
 }
 
 /**
@@ -25,7 +25,7 @@ export interface DroppedIngredientType extends Ingredient {
  */
 export interface PreviewIngredientType extends Ingredient {
   coordinate: Coordinates;
-  variant: DroppedVariant.PREVIEW;
+  variant: IngredientVariant.PREVIEW;
 }
 
 /**
@@ -44,12 +44,14 @@ export type Demo1Slice = {
   dragging: Ingredient | null;
   setDragging: (draggingIngredient: Ingredient | null) => void;
 
-  // keep track of the dropped ingredients (two ways)
-  dropped: BentoIngredientType[];
-  dropped2D: BentoIngredient2D;
+  // keep track of the ingredients (both dropped and preview)
+  bentoIngredients: BentoIngredientType[];
+  bentoIngredients2D: BentoIngredient2D;
+  addPreviewIngredient: (droppedCoordinate: Coordinates) => void;
+  addDroppedIngredient: (droppedCoordinate: Coordinates) => void;
   addIngredient: (
     droppedCoordinate: Coordinates,
-    droppedVariant: DroppedVariant
+    droppedVariant: IngredientVariant
   ) => void;
   removeIngredient: (coordinateToRemove: Coordinates) => void;
   clearPreview: () => void;
@@ -68,17 +70,32 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
   dragging: null,
   setDragging: (dragging) => set(() => ({ dragging })),
 
-  dropped: [],
-  dropped2D: genererate2DArrayOfNulls(DIMENSION),
+  bentoIngredients: [],
+  bentoIngredients2D: genererate2DArrayOfNulls(DIMENSION),
+  addPreviewIngredient: (droppedCoordinate) => {
+    const { addIngredient } = get();
+    addIngredient(droppedCoordinate, IngredientVariant.PREVIEW);
+  },
+  addDroppedIngredient: (droppedCoordinate) => {
+    const { addIngredient } = get();
+    addIngredient(droppedCoordinate, IngredientVariant.DROPPED);
+  },
   addIngredient: (droppedCoordinate, droppedVariant) => {
-    console.log("ADDING INGREDIENT");
+    console.log("ADDING INGREDIENT", droppedVariant);
 
-    const { dimension, dragging, dropped, dropped2D } = get();
+    const { dimension, dragging, bentoIngredients, bentoIngredients2D } = get();
 
     // if no dragging, return
     if (!dragging) return;
 
-    if (!canDropIngredient(dimension, dropped2D, dragging, droppedCoordinate))
+    if (
+      !canDropIngredient(
+        dimension,
+        bentoIngredients2D,
+        dragging,
+        droppedCoordinate
+      )
+    )
       return;
 
     // construct the ingredient to add (which can be viewable or preview)
@@ -90,28 +107,29 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
     };
 
     set(() => {
-      // update dropped and dropped2D
-      const newDropped2D = dropped2D;
+      // update bentoIngredients and bentoIngredients2D
+      const newBentoIngredients2D = bentoIngredients2D;
       for (let i = 0; i < dragging.height; i++) {
         for (let j = 0; j < dragging.width; j++) {
-          newDropped2D[droppedCoordinate.y + i][droppedCoordinate.x + j] =
-            bentoIngredientToAdd;
+          newBentoIngredients2D[droppedCoordinate.y + i][
+            droppedCoordinate.x + j
+          ] = bentoIngredientToAdd;
         }
       }
 
       return {
-        dropped: [...dropped, bentoIngredientToAdd],
-        dropped2D: newDropped2D,
+        bentoIngredients: [...bentoIngredients, bentoIngredientToAdd],
+        bentoIngredients2D: newBentoIngredients2D,
       };
     });
   },
   removeIngredient: (coordinateToRemove) => {
-    console.log("REMOVING INGREDIENT");
-    const { dropped, dropped2D } = get();
+    console.log("REMOVING INGREDIENT AT", coordinateToRemove, "...");
+    const { bentoIngredients, bentoIngredients2D } = get();
 
     // find the ingredient to remove
-    const newDropped2D = dropped2D;
-    const ingredientToRemove = dropped.find(
+    const newBentoIngredients2D = bentoIngredients2D;
+    const ingredientToRemove = bentoIngredients.find(
       (ingredient) =>
         ingredient.coordinate.x === coordinateToRemove.x &&
         ingredient.coordinate.y === coordinateToRemove.y
@@ -120,46 +138,49 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
     // if no ingredient to remove, return
     if (!ingredientToRemove) return;
 
-    // iterate through the ingredient's squares and remove them from dropped2D
+    // iterate through the ingredient's squares and remove them from bentoIngredients2D
     for (let i = 0; i < ingredientToRemove.height; i++) {
       for (let j = 0; j < ingredientToRemove.width; j++) {
-        newDropped2D[coordinateToRemove.y + i][coordinateToRemove.x + j] = null;
+        newBentoIngredients2D[coordinateToRemove.y + i][
+          coordinateToRemove.x + j
+        ] = null;
       }
     }
 
     set(() => ({
-      dropped: dropped.filter(
+      bentoIngredients: bentoIngredients.filter(
         (ingredient) => ingredient !== ingredientToRemove
       ),
-      dropped2D: newDropped2D,
+      bentoIngredients2D: newBentoIngredients2D,
     }));
   },
   clearPreview: () => {
-    const { dropped, dropped2D } = get();
+    const { bentoIngredients, bentoIngredients2D } = get();
 
     // find all preview ingredients to clear
-    const toClear = dropped.filter(
-      (ingredient) => ingredient.variant === DroppedVariant.PREVIEW
+    const toClear = bentoIngredients.filter(
+      (ingredient) => ingredient.variant === IngredientVariant.PREVIEW
     );
 
     // nothing to clear
     if (toClear.length === 0) return;
 
     toClear.forEach((ingredient) => {
-      // iterate through the ingredient's squares and remove them from dropped2D
+      // iterate through the ingredient's squares and remove them from bentoIngredients2D
       for (let i = 0; i < ingredient.height; i++) {
         for (let j = 0; j < ingredient.width; j++) {
-          dropped2D[ingredient.coordinate.y + i][ingredient.coordinate.x + j] =
-            null;
+          bentoIngredients2D[ingredient.coordinate.y + i][
+            ingredient.coordinate.x + j
+          ] = null;
         }
       }
     });
 
     set(() => ({
-      dropped: dropped.filter(
-        (ingredient) => ingredient.variant !== DroppedVariant.PREVIEW
+      bentoIngredients: bentoIngredients.filter(
+        (ingredient) => ingredient.variant !== IngredientVariant.PREVIEW
       ),
-      dropped2D,
+      bentoIngredients2D: bentoIngredients2D,
     }));
   },
 });
@@ -175,31 +196,30 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
  * 2. Check if ingredient's squares are within the bento
  * 3. Check if ingredient's squares are not overlapping with other ingredients
  * @param dimension         dimension of the bento
- * @param dropped2D         2D array of bento ingredients (dropped and preview)
+ * @param bentoIngredients  2D array of bento ingredients (dropped and preview)
  * @param dragging          dragging ingredient
  * @param droppedCoordinate coordinate of the dropped ingredient
  * @returns                 true if the ingredient can be dropped at the coordinate
  */
 const canDropIngredient = (
   dimension: Dimension,
-  dropped2D: BentoIngredient2D,
+  bentoIngredients2D: BentoIngredient2D,
   dragging: Ingredient,
   droppedCoordinate: Coordinates
 ): boolean => {
   const { x, y } = droppedCoordinate;
 
   // 1. check if the coordinate is already occupied
-  if (dropped2D[y][x] !== null) return false;
+  if (bentoIngredients2D[y][x] !== null) return false;
 
   // 2. check if ingredient's squares are within the bento's coordinate
-  console.log(x, dragging.width, dragging.height, dimension.width);
   if (y + dragging.height > dimension.height) return false;
   if (x + dragging.width > dimension.width) return false;
 
   // 3. check if ingredient's squares are not overlapping with other ingredients
   for (let i = 0; i < dragging.width; i++) {
     for (let j = 0; j < dragging.height; j++) {
-      if (dropped2D[y + j][x + i] !== null) return false;
+      if (bentoIngredients2D[y + j][x + i] !== null) return false;
     }
   }
 

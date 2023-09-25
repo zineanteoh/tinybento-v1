@@ -3,26 +3,22 @@ import { CONTAINER_HEIGHT, CONTAINER_WIDTH, Dimension } from "./Bento";
 import { BentoIngredientType } from "@/store/demo1-store";
 import styles from "./Ingredient.module.css";
 
-export enum DroppedVariant {
-  VIEWABLE = "viewable",
+export enum IngredientVariant {
+  DROPPED = "dropped",
   PREVIEW = "preview",
 }
 
-interface DroppedIngredientProps {
+interface IngredientProps {
   dimension: Dimension;
   ingredient: BentoIngredientType;
-  variant: DroppedVariant;
+  variant: IngredientVariant;
 }
 
-const DroppedIngredient = ({
-  dimension,
-  ingredient,
-  variant,
-}: DroppedIngredientProps) => {
+const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
   return (
     <div
       className={`${styles.ingredient} ${
-        variant === DroppedVariant.VIEWABLE ? styles.viewable : styles.preview
+        variant === IngredientVariant.DROPPED ? styles.viewable : styles.preview
       }`}
       style={{
         width: (ingredient.width / dimension.width) * CONTAINER_WIDTH - 20,
@@ -38,4 +34,4 @@ const DroppedIngredient = ({
   );
 };
 
-export default DroppedIngredient;
+export default Ingredient;
