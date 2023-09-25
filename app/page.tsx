@@ -6,7 +6,6 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <Link href="/demo/1">Demo 1</Link>
-      <Link href="/demo/2">Demo 2</Link>
       {/* TODO: add more demos here */}
     </div>
   );

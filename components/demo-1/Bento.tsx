@@ -37,11 +37,15 @@ const Bento = () => {
         key={i}
         style={{
           position: "absolute",
-          width: (CONTAINER_WIDTH / dimension.width) * ingredient.width,
-          height: (CONTAINER_HEIGHT / dimension.height) * ingredient.height,
+          width: (CONTAINER_WIDTH / dimension.width) * ingredient.width - 20,
+          height:
+            (CONTAINER_HEIGHT / dimension.height) * ingredient.height - 20,
           boxSizing: "border-box",
-          left: (ingredient.coordinate.x * CONTAINER_WIDTH) / dimension.width,
-          top: (ingredient.coordinate.y * CONTAINER_HEIGHT) / dimension.height,
+          left:
+            (ingredient.coordinate.x * CONTAINER_WIDTH) / dimension.width + 10,
+          top:
+            (ingredient.coordinate.y * CONTAINER_HEIGHT) / dimension.height +
+            10,
           backgroundColor: "rgba(91, 255, 3)",
           display: "flex",
           alignItems: "center",
