@@ -1,6 +1,6 @@
 import React from "react";
 import { CONTAINER_HEIGHT, CONTAINER_WIDTH, Dimension } from "./Bento";
-import { BentoIngredientType } from "@/store/demo1-store";
+import { BentoIngredientType } from "@/store/bentoDataSlice";
 import styles from "./Ingredient.module.css";
 import Resizable from "./Resizable";
 
@@ -31,13 +31,7 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
   };
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        width: CONTAINER_WIDTH,
-        height: CONTAINER_HEIGHT,
-      }}
-    >
+    <>
       {/* Render Dropped */}
       {variant === IngredientVariant.DROPPED && (
         <Resizable
@@ -65,7 +59,7 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
           Preview: {ingredient.height}x{ingredient.width}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

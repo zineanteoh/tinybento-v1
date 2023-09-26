@@ -7,8 +7,7 @@ import {
   convertStringToCoordinate,
   convertStringToIngredient,
 } from "@/utils/helper";
-import { Ingredient } from "@/store/demo1-store";
-import { IngredientVariant } from "@/components/Ingredient";
+import { Ingredient } from "@/store/bentoDataSlice";
 
 // READ: https://nextjs.org/docs/app/building-your-application/routing/route-groups
 // this layout will be shared by all pages in the "(demo)" Route Group
