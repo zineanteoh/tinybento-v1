@@ -1,55 +1,16 @@
 import { Coordinates, Dimension } from "@/components/Bento";
 import { IngredientVariant } from "@/components/Ingredient";
 import { StateCreator } from "zustand";
+import {
+  BentoDataSlice,
+  BentoIngredient2D,
+  BentoIngredientType,
+  Ingredient,
+} from "./bentoDataSlice";
+import { DragSlice } from "./dragSlice";
 
-export interface Ingredient {
-  width: number;
-  height: number;
-  variant: IngredientVariant;
-}
-
-/**
- * @property {number} width
- * @property {number} height
- * @property {number} coordinate
- */
-export interface DroppedIngredientType extends Ingredient {
-  coordinate: Coordinates;
-  variant: IngredientVariant.DROPPED;
-}
-
-/**
- * @property {number} width
- * @property {number} height
- * @property {number} coordinate
- */
-export interface PreviewIngredientType extends Ingredient {
-  coordinate: Coordinates;
-  variant: IngredientVariant.PREVIEW;
-}
-
-/**
- * Joint type of DroppedIngredientType and PreviewIngredientType
- */
-export type BentoIngredientType = DroppedIngredientType | PreviewIngredientType;
-
-type BentoIngredient2D = (BentoIngredientType | null)[][];
-
-export type Demo1Slice = {
-  // keep track of the dimension of the bento
-  dimension: Dimension;
-  setDimension: (dimension: Dimension) => void;
-
-  // keep track of the dragging ingredient
-  dragging: Ingredient | null;
-  setDragging: (draggingIngredient: Ingredient | null) => void;
-
-  // keep track of the ingredients (both dropped and preview)
-  bentoIngredients: BentoIngredientType[];
-  bentoIngredients2D: BentoIngredient2D;
-
-  // adding (preivew/dropped) ingredient
-  addPreviewIngredient: (droppedCoordinate: Coordinates) => void;
+export type BentoActionSlice = {
+  // adding dropped ingredient
   addDroppedIngredient: (droppedCoordinate: Coordinates) => void;
 
   // adding ingredient while specifying the variant
@@ -61,31 +22,17 @@ export type Demo1Slice = {
   // removing ingredient from the bento
   removeIngredient: (coordinateToRemove: Coordinates) => void;
 
-  // clear (preview/dropped) ingredients
-  clearAllPreviewIngredients: () => void;
+  // clear dropped ingredients
   clearAllDroppedIngredients: () => void;
   clearVariantIngredients: (variantToClear: IngredientVariant) => void;
 };
 
-// TODO: hardcode for now
-const DIMENSION: Dimension = {
-  width: 4,
-  height: 4,
-};
-
-export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
-  dimension: DIMENSION,
-  setDimension: (dimension) => set(() => ({ dimension })),
-
-  dragging: null,
-  setDragging: (dragging) => set(() => ({ dragging })),
-
-  bentoIngredients: [],
-  bentoIngredients2D: genererate2DArrayOfNulls(DIMENSION),
-  addPreviewIngredient: (droppedCoordinate) => {
-    const { addIngredient } = get();
-    addIngredient(droppedCoordinate, IngredientVariant.PREVIEW);
-  },
+export const createBentoActionSlice: StateCreator<
+  BentoActionSlice & BentoDataSlice & DragSlice,
+  [],
+  [],
+  BentoActionSlice
+> = (set, get) => ({
   addDroppedIngredient: (droppedCoordinate) => {
     const { addIngredient } = get();
     addIngredient(droppedCoordinate, IngredientVariant.DROPPED);
@@ -165,10 +112,6 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
       bentoIngredients2D: newBentoIngredients2D,
     }));
   },
-  clearAllPreviewIngredients: () => {
-    const { clearVariantIngredients } = get();
-    clearVariantIngredients(IngredientVariant.PREVIEW);
-  },
   clearAllDroppedIngredients: () => {
     const { clearVariantIngredients } = get();
     clearVariantIngredients(IngredientVariant.DROPPED);
@@ -245,11 +188,4 @@ const canDropIngredient = (
 
   // if all checks passed, return true
   return true;
-};
-
-const genererate2DArrayOfNulls = (dimension: Dimension): null[][] => {
-  const { width, height } = dimension;
-  return Array.from({ length: height }).map(() =>
-    Array.from({ length: width }).map(() => null)
-  );
 };
