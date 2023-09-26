@@ -5,7 +5,7 @@ import { useStore } from "@/store/store";
 import { IngredientVariant } from "./Ingredient";
 
 const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
-  const { addPreviewIngredient, clearPreview } = useStore();
+  const { addPreviewIngredient, clearAllPreviewIngredients } = useStore();
   const { x, y } = props.coordinate;
 
   const { isOver, setNodeRef } = useDroppable({
@@ -26,10 +26,10 @@ const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
   useEffect(() => {
     const coordinate = { x, y } as Coordinates;
     if (isOver) {
-      clearPreview();
+      clearAllPreviewIngredients();
       addPreviewIngredient(coordinate);
     }
-  }, [isOver, x, y, clearPreview, addPreviewIngredient]);
+  }, [isOver, x, y, clearAllPreviewIngredients, addPreviewIngredient]);
 
   return (
     <div ref={setNodeRef} style={style}>

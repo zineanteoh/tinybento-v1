@@ -47,14 +47,24 @@ export type Demo1Slice = {
   // keep track of the ingredients (both dropped and preview)
   bentoIngredients: BentoIngredientType[];
   bentoIngredients2D: BentoIngredient2D;
+
+  // adding (preivew/dropped) ingredient
   addPreviewIngredient: (droppedCoordinate: Coordinates) => void;
   addDroppedIngredient: (droppedCoordinate: Coordinates) => void;
+
+  // adding ingredient while specifying the variant
   addIngredient: (
     droppedCoordinate: Coordinates,
     droppedVariant: IngredientVariant
   ) => void;
+
+  // removing ingredient from the bento
   removeIngredient: (coordinateToRemove: Coordinates) => void;
-  clearPreview: () => void;
+
+  // clear (preview/dropped) ingredients
+  clearAllPreviewIngredients: () => void;
+  clearAllDroppedIngredients: () => void;
+  clearVariantIngredients: (variantToClear: IngredientVariant) => void;
 };
 
 // TODO: hardcode for now
@@ -147,6 +157,7 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
       }
     }
 
+    // remove the ingredient from bentoIngredients
     set(() => ({
       bentoIngredients: bentoIngredients.filter(
         (ingredient) => ingredient !== ingredientToRemove
@@ -154,12 +165,20 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
       bentoIngredients2D: newBentoIngredients2D,
     }));
   },
-  clearPreview: () => {
+  clearAllPreviewIngredients: () => {
+    const { clearVariantIngredients } = get();
+    clearVariantIngredients(IngredientVariant.PREVIEW);
+  },
+  clearAllDroppedIngredients: () => {
+    const { clearVariantIngredients } = get();
+    clearVariantIngredients(IngredientVariant.DROPPED);
+  },
+  clearVariantIngredients(variantToClear) {
     const { bentoIngredients, bentoIngredients2D } = get();
 
-    // find all preview ingredients to clear
+    // find all ingredients of variant to clear
     const toClear = bentoIngredients.filter(
-      (ingredient) => ingredient.variant === IngredientVariant.PREVIEW
+      (ingredient) => ingredient.variant === variantToClear
     );
 
     // nothing to clear
@@ -176,9 +195,10 @@ export const createDemo1Slice: StateCreator<Demo1Slice> = (set, get) => ({
       }
     });
 
+    // remove all ingredients of variant to clear
     set(() => ({
       bentoIngredients: bentoIngredients.filter(
-        (ingredient) => ingredient.variant !== IngredientVariant.PREVIEW
+        (ingredient) => ingredient.variant !== variantToClear
       ),
       bentoIngredients2D: bentoIngredients2D,
     }));

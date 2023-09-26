@@ -18,7 +18,8 @@ const DemoLayout = (props: {
   sidebarRight: React.ReactNode;
 }) => {
   const id = useId();
-  const { addDroppedIngredient, clearPreview, setDragging } = useStore();
+  const { addDroppedIngredient, clearAllPreviewIngredients, setDragging } =
+    useStore();
 
   const handleDragStart = (event: DragEndEvent) => {
     const ingredient: Ingredient = convertStringToIngredient(
@@ -30,7 +31,7 @@ const DemoLayout = (props: {
   // where the magic happens
   const handleDragEnd = (event: DragEndEvent) => {
     console.log("END DRAGGING");
-    clearPreview();
+    clearAllPreviewIngredients();
 
     if (event.over && event.over.id !== null) {
       const droppedCoordinate: Coordinates = convertStringToCoordinate(
