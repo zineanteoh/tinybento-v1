@@ -16,7 +16,7 @@ interface IngredientProps {
 }
 
 // TODO: hardcode padding here for now
-const PADDING = 10;
+const PADDING = 20;
 
 const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
   const widthPerSquare = CONTAINER_WIDTH / dimension.width;
@@ -49,8 +49,8 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
           childHeight={ingredient.height * heightPerSquare - 2 * PADDING}
           snapXGap={widthPerSquare}
           snapYGap={heightPerSquare}
-          startTop={ingredient.coordinate.y * heightPerSquare + 2} // TODO: add 2 to account for top/down border
-          startLeft={ingredient.coordinate.x * widthPerSquare + 2} // TODO: add 2 to account for left/right border
+          startTop={ingredient.coordinate.y * heightPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for top/down border
+          startLeft={ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for left/right border
         >
           {ingredient.height}x{ingredient.width}
         </Resizable>

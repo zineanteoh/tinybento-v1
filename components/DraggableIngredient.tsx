@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Draggable.module.css";
+import styles from "./DraggableIngredient.module.css";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
@@ -13,7 +13,7 @@ const DraggableIngredient = (props: { content: string }) => {
 
   return (
     <div
-      className={styles.draggable}
+      className={`${styles.draggable} no-select`}
       ref={setNodeRef}
       style={style}
       {...listeners}

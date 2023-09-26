@@ -48,6 +48,7 @@ const Bento = () => {
 
   return (
     <div
+      className="no-select"
       style={{
         position: "relative",
         width: CONTAINER_WIDTH,
