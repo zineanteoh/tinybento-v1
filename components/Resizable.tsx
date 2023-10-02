@@ -12,6 +12,10 @@ export interface ResizeEndCallbackProps {
   snapSize: number;
 }
 
+export interface ShouldResizeCallbackProps {
+  snapSize: number;
+}
+
 /**
  * A custom wrapper for creating a resizable component.
  *
@@ -34,6 +38,7 @@ const Resizable = ({
   startLeft = 0, // The starting left position of the resizable component
   onResizeStartCallback = () => {}, // The callback to call when resizing starts
   onResizeEndCallback = () => {}, // The callback to call when resizing ends
+  shouldResizeCallback = () => true, // The callback to call when resizing starts and pointer moves
 }: {
   children: React.ReactNode;
   childWidth?: number;
@@ -48,11 +53,12 @@ const Resizable = ({
   startLeft?: number;
   onResizeStartCallback?: (...arg: ResizeStartCallbackProps[]) => void;
   onResizeEndCallback?: (...arg: ResizeEndCallbackProps[]) => void;
+  shouldResizeCallback?: (...arg: ShouldResizeCallbackProps[]) => boolean;
 }) => {
   // keep track of the size of the resizable component
   const [size, setSize] = useState({
-    x: childWidth,
-    y: childHeight,
+    width: childWidth,
+    height: childHeight,
   });
   // keep track of the position (in px) of the component relative to the parent
   const [position, setPosition] = useState({
@@ -79,15 +85,33 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX;
+      const deltaX = e.clientX - startX; // the distance the pointer has moved
+      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
+      const snappedDeltaX = gapSize * snapXGap; // the distance the pointer has moved, snapped to the nearest gap
 
-      // snap to the nearest gap
-      const snappedDeltaX = Math.round(deltaX / snapXGap) * snapXGap;
-
-      if (startSize.x - snappedDeltaX >= 0) {
+      // resize to the smallest possible size if resizing to negative size
+      if (startSize.width - snappedDeltaX <= 0) {
         setSize({
-          x: startSize.x - snappedDeltaX,
-          y: startSize.y,
+          width: startSize.width,
+          height: startSize.height,
+        });
+        setPosition({
+          top: startPosition.top,
+          left: startPosition.left,
+        });
+        return;
+      }
+
+      // ensure that resizing is allowed by callback
+      const resizeIsAllowed: boolean = shouldResizeCallback({
+        snapSize: Math.abs(Math.round(deltaX / snapXGap)),
+      });
+
+      if (resizeIsAllowed) {
+        // ---- Conditions Satisfied ----
+        setSize({
+          width: startSize.width - snappedDeltaX,
+          height: startSize.height,
         });
         setPosition({
           top: startPosition.top,
@@ -126,15 +150,33 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY;
+      const deltaY = e.clientY - startY; // the distance the pointer has moved
+      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
+      const snappedDeltaY = gapSize * snapYGap; // the distance the pointer has moved, snapped to the nearest gap
 
-      // snap to the nearest gap
-      const snappedDeltaY = Math.round(deltaY / snapYGap) * snapYGap;
-
-      if (startSize.y - snappedDeltaY >= 0) {
+      // resize to the smallest possible size if resizing to negative size
+      if (startSize.height - snappedDeltaY <= 0) {
         setSize({
-          x: startSize.x,
-          y: startSize.y - snappedDeltaY,
+          width: startSize.width,
+          height: startSize.height,
+        });
+        setPosition({
+          top: startPosition.top,
+          left: startPosition.left,
+        });
+        return;
+      }
+
+      // ensure that resizing is allowed by callback
+      const resizeIsAllowed: boolean = shouldResizeCallback({
+        snapSize: Math.abs(Math.round(deltaY / snapYGap)),
+      });
+
+      if (resizeIsAllowed) {
+        // ---- Conditions Satisfied ----
+        setSize({
+          width: startSize.width,
+          height: startSize.height - snappedDeltaY,
         });
         setPosition({
           top: startPosition.top + snappedDeltaY,
@@ -174,15 +216,29 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX;
+      const deltaX = e.clientX - startX; // the distance the pointer has moved
+      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
+      const snappedDeltaX = gapSize * snapXGap; // the distance the pointer has moved, snapped to the nearest gap
 
-      // snap to the nearest gap
-      const snappedDeltaX = Math.round(deltaX / snapXGap) * snapXGap;
-
-      if (startSize.x + snappedDeltaX >= 0) {
+      // resize to the smallest possible size if resizing to negative size
+      if (startSize.width + snappedDeltaX <= 0) {
         setSize({
-          x: startSize.x + snappedDeltaX,
-          y: startSize.y,
+          width: startSize.width,
+          height: startSize.height,
+        });
+        return;
+      }
+
+      // ensure that resizing is allowed by callback
+      const resizeIsAllowed: boolean = shouldResizeCallback({
+        snapSize: Math.abs(Math.round(deltaX / snapXGap)),
+      });
+
+      if (resizeIsAllowed) {
+        // ---- Conditions Satisfied ----
+        setSize({
+          width: startSize.width + snappedDeltaX,
+          height: startSize.height,
         });
       }
     };
@@ -218,15 +274,29 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY;
+      const deltaY = e.clientY - startY; // the distance the pointer has moved
+      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
+      const snappedDeltaY = gapSize * snapYGap; // the distance the pointer has moved, snapped to the nearest gap
 
-      // snap to the nearest gap
-      const snappedDeltaY = Math.round(deltaY / snapYGap) * snapYGap;
-
-      if (startSize.y + snappedDeltaY >= 0) {
+      // resize to the smallest possible size if resizing to negative size
+      if (startSize.height + snappedDeltaY <= 0) {
         setSize({
-          x: startSize.x,
-          y: startSize.y + snappedDeltaY,
+          width: startSize.width,
+          height: startSize.height,
+        });
+        return;
+      }
+
+      // ensure that resizing is allowed by callback
+      const resizeIsAllowed: boolean = shouldResizeCallback({
+        snapSize: Math.abs(Math.round(deltaY / snapYGap)),
+      });
+
+      if (resizeIsAllowed) {
+        // ---- Conditions Satisfied ----
+        setSize({
+          width: startSize.width,
+          height: startSize.height + snappedDeltaY,
         });
       }
     };
@@ -251,8 +321,8 @@ const Resizable = ({
     <div
       style={{
         position: "absolute",
-        width: size.x + borderWidth * 2,
-        height: size.y + borderWidth * 2,
+        width: size.width + borderWidth * 2,
+        height: size.height + borderWidth * 2,
         top: position.top,
         left: position.left,
       }}
@@ -263,7 +333,7 @@ const Resizable = ({
         style={{
           backgroundColor: borderColor,
           width: borderWidth,
-          height: size.y + borderWidth * 2,
+          height: size.height + borderWidth * 2,
           top: 0,
           left: 0,
         }}
@@ -274,7 +344,7 @@ const Resizable = ({
         className={`${styles.border} ${styles.top}`}
         style={{
           backgroundColor: borderColor,
-          width: size.x + borderWidth * 2,
+          width: size.width + borderWidth * 2,
           height: borderWidth,
           top: 0,
           left: 0,
@@ -287,9 +357,9 @@ const Resizable = ({
         style={{
           backgroundColor: borderColor,
           width: borderWidth,
-          height: size.y + borderWidth * 2,
+          height: size.height + borderWidth * 2,
           top: 0,
-          left: size.x + borderWidth,
+          left: size.width + borderWidth,
         }}
         onPointerDown={handleRightBorderPointerDown}
       />
@@ -298,9 +368,9 @@ const Resizable = ({
         className={`${styles.border} ${styles.bottom}`}
         style={{
           backgroundColor: borderColor,
-          width: size.x + borderWidth * 2,
+          width: size.width + borderWidth * 2,
           height: borderWidth,
-          top: size.y + borderWidth,
+          top: size.height + borderWidth,
           left: 0,
         }}
         onPointerDown={handleBottomBorderPointerDown}
@@ -311,8 +381,8 @@ const Resizable = ({
         style={{
           ...childStyleToApply,
           position: "absolute",
-          width: size.x,
-          height: size.y,
+          width: size.width,
+          height: size.height,
           left: borderWidth,
           top: borderWidth,
         }}
