@@ -9,10 +9,42 @@ export interface ResizeStartCallbackProps {
 }
 
 export interface ResizeEndCallbackProps {
-  sizeOfResize: number;
+  squaresMoved: number;
 }
 
 export interface ShouldResizeCallbackProps extends ResizeEndCallbackProps {}
+
+export enum ResizeType {
+  EXPAND = "EXPAND",
+  SHRINK = "SHRINK",
+}
+
+enum DirectionMultiplier {
+  LEFT = -1,
+  TOP = -1,
+  RIGHT = 1,
+  BOTTOM = 1,
+}
+
+/**
+ * Compute whether resize action is expanding or shrinking
+ * @param directionOfResize   The direction of resize
+ * @param displacement        The displacement of the pointer relative to the start of resize
+ * @returns                   EXPAND or SHRINK
+ */
+const computeResizeType = (
+  directionOfResize: ResizeDirection,
+  displacement: number
+): ResizeType => {
+  switch (directionOfResize) {
+    case ResizeDirection.LEFT:
+    case ResizeDirection.TOP:
+      return displacement > 0 ? ResizeType.SHRINK : ResizeType.EXPAND;
+    case ResizeDirection.RIGHT:
+    case ResizeDirection.BOTTOM:
+      return displacement > 0 ? ResizeType.EXPAND : ResizeType.SHRINK;
+  }
+};
 
 /**
  * A custom wrapper for creating a resizable component.
@@ -28,8 +60,8 @@ const Resizable = ({
   childHeight = 100, // The height of the children component
   coordinate = { x: 0, y: 0 }, // The coordinate of the children component
   childStyleToApply, // The style to apply to the children component
-  snapXGap = 50, // The gap to snap to when resizing horizontally
-  snapYGap = 50, // The gap to snap to when resizing vertically
+  squareWidth = 50, // The width of a single square
+  squareHeight = 50, // The height of a single square
   borderWidth = 8, // The width of the border
   borderColor = "pink", // The color of the border
   startTop = 0, // The starting top position of the resizable component
@@ -43,8 +75,8 @@ const Resizable = ({
   childHeight?: number;
   coordinate?: { x: number; y: number };
   childStyleToApply?: React.CSSProperties;
-  snapXGap?: number;
-  snapYGap?: number;
+  squareWidth?: number;
+  squareHeight?: number;
   borderWidth?: number;
   borderColor?: string;
   startTop?: number;
@@ -86,12 +118,21 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX; // the distance the pointer has moved
-      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
-      const snappedDeltaX = gapSize * snapXGap; // the distance the pointer has moved, snapped to the nearest gap
+      // define a lot of variables
+      const dX = e.clientX - startX;
+      const resizeType = computeResizeType(ResizeDirection.LEFT, dX);
+      const squaresMoved =
+        Math.round(dX / squareWidth) * DirectionMultiplier.LEFT; // can be postive or negative
+      const relativeDistanceMoved = squaresMoved * squareWidth;
+      const newWidth = startSize.width + relativeDistanceMoved;
+      const newLeft = startPosition.left - relativeDistanceMoved;
 
-      // resize to the smallest possible size if resizing to negative size
-      if (startSize.width - snappedDeltaX <= 0 || snappedDeltaX === 0) {
+      // prevent unnecessary calls to shouldResizeCallback
+      if (previousSizeOfResize === squaresMoved) return;
+
+      // There are only three conditions:
+      if (squaresMoved === 0) {
+        // 1. neither expand nor shrink. should revert to original size and position
         setSize({
           width: startSize.width,
           height: startSize.height,
@@ -100,38 +141,43 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
-        previousSizeOfResize = 0;
-        return;
-      }
-
-      const sizeOfResize = Math.abs(gapSize);
-
-      // don't resize if sizeOfResize is the same as previousSizeOfResize
-      if (previousSizeOfResize === sizeOfResize) return;
-
-      // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ sizeOfResize })) {
-        // ---- Conditions Satisfied ----
+      } else if (resizeType === ResizeType.EXPAND) {
+        // 2. expand. only resize if resizeCallback allows it
+        if (shouldResizeCallback({ squaresMoved })) {
+          setSize({
+            width: newWidth,
+            height: startSize.height,
+          });
+          setPosition({
+            top: startPosition.top,
+            left: newLeft,
+          });
+        }
+      } else if (resizeType === ResizeType.SHRINK) {
+        // 3. shrink to the smallest possible size
         setSize({
-          width: startSize.width - snappedDeltaX,
+          width: Math.max(newWidth, Math.ceil(135 / squareWidth) * 135),
           height: startSize.height,
         });
         setPosition({
           top: startPosition.top,
-          left: startPosition.left + snappedDeltaX,
+          left: Math.min(newLeft, startPosition.left + startSize.width - 135),
         });
+      } else {
+        // throw error
+        console.error("Should not reach here!");
       }
 
       // update previousSizeOfResize
-      previousSizeOfResize = sizeOfResize;
+      previousSizeOfResize = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
       const deltaX = e.clientX - startX; // the distance the pointer has moved
-      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
+      const gapSize = Math.round(deltaX / squareWidth); // the number of gaps the pointer has moved
 
-      onResizeEndCallback({ sizeOfResize: -gapSize });
+      onResizeEndCallback({ squaresMoved: -gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -160,12 +206,21 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY; // the distance the pointer has moved
-      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
-      const snappedDeltaY = gapSize * snapYGap; // the distance the pointer has moved, snapped to the nearest gap
+      // define a lot of variables
+      const dY = e.clientY - startY;
+      const resizeType = computeResizeType(ResizeDirection.TOP, dY);
+      const squaresMoved =
+        Math.round(dY / squareHeight) * DirectionMultiplier.TOP;
+      const relativeDistanceMoved = squaresMoved * squareHeight;
+      const newHeight = startSize.height + relativeDistanceMoved;
+      const newTop = startPosition.top - relativeDistanceMoved;
 
-      // resize to the smallest possible size if resizing to negative size
-      if (startSize.height - snappedDeltaY <= 0 || snappedDeltaY === 0) {
+      // prevent unnecessary calls to shouldResizeCallback
+      if (previousSizeOfResize === squaresMoved) return;
+
+      // There are only three conditions:
+      if (squaresMoved === 0) {
+        // 1. neither expand nor shrink. should revert to original size and position
         setSize({
           width: startSize.width,
           height: startSize.height,
@@ -174,38 +229,43 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
-        previousSizeOfResize = 0;
-        return;
-      }
-
-      const sizeOfResize = Math.abs(gapSize);
-
-      // don't resize if sizeOfResize is the same as previousSizeOfResize
-      if (previousSizeOfResize === sizeOfResize) return;
-
-      // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ sizeOfResize })) {
-        // ---- Conditions Satisfied ----
+      } else if (resizeType === ResizeType.EXPAND) {
+        // 2. expand. only resize if resizeCallback allows it
+        if (shouldResizeCallback({ squaresMoved })) {
+          setSize({
+            width: startSize.width,
+            height: newHeight,
+          });
+          setPosition({
+            top: newTop,
+            left: startPosition.left,
+          });
+        }
+      } else if (resizeType === ResizeType.SHRINK) {
+        // 3. shrink to the smallest possible size
         setSize({
           width: startSize.width,
-          height: startSize.height - snappedDeltaY,
+          height: Math.max(newHeight, Math.ceil(135 / squareHeight) * 135),
         });
         setPosition({
-          top: startPosition.top + snappedDeltaY,
+          top: Math.min(newTop, startPosition.top + startSize.height - 135),
           left: startPosition.left,
         });
+      } else {
+        // throw error
+        console.error("Should not reach here!");
       }
 
       // update previousSizeOfResize
-      previousSizeOfResize = sizeOfResize;
+      previousSizeOfResize = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
       const deltaY = e.clientY - startY; // the distance the pointer has moved
-      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
+      const gapSize = Math.round(deltaY / squareHeight); // the number of gaps the pointer has moved
 
-      onResizeEndCallback({ sizeOfResize: -gapSize });
+      onResizeEndCallback({ squaresMoved: -gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -230,49 +290,60 @@ const Resizable = ({
     const startSize = size;
     const startX = e.clientX;
 
-    // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
-    let previousSizeOfResize = 0;
+    // keep track of the previous squaresMoved to prevent unnecessary calls to shouldResizeCallback
+    let previousSquaresMoved = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX; // the distance the pointer has moved
-      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
-      const snappedDeltaX = gapSize * snapXGap; // the distance the pointer has moved, snapped to the nearest gap
+      // define a lot of variables
+      const dX = e.clientX - startX;
+      const resizeType = computeResizeType(ResizeDirection.RIGHT, dX);
+      const squaresMoved =
+        Math.round(dX / squareWidth) * DirectionMultiplier.RIGHT; // can be postive or negative
+      const relativeDistanceMoved = squaresMoved * squareWidth;
+      const newWidth = startSize.width + relativeDistanceMoved;
 
-      // resize to the smallest possible size if resizing to negative size
-      if (startSize.width + snappedDeltaX <= 0 || snappedDeltaX === 0) {
+      // prevent unnecessary calls to shouldResizeCallback
+      if (previousSquaresMoved === squaresMoved) return;
+
+      // There are only three conditions:
+      if (squaresMoved === 0) {
+        // 1. neither expand nor shrink. should revert to original size and position
         setSize({
           width: startSize.width,
           height: startSize.height,
         });
-        previousSizeOfResize = 0;
-        return;
-      }
-
-      const sizeOfResize = Math.abs(gapSize);
-
-      // don't resize if sizeOfResize is the same as previousSizeOfResize
-      if (previousSizeOfResize === sizeOfResize) return;
-
-      // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ sizeOfResize })) {
-        // ---- Conditions Satisfied ----
+      } else if (resizeType === ResizeType.EXPAND) {
+        // 2. expand. only resize if resizeCallback allows it
+        if (shouldResizeCallback({ squaresMoved })) {
+          setSize({
+            width: newWidth,
+            height: startSize.height,
+          });
+        }
+      } else if (resizeType === ResizeType.SHRINK) {
+        // 3. shrink to the smallest possible size
         setSize({
-          width: startSize.width + snappedDeltaX,
+          // TODO: where is 135 coming from? should take from props somehow
+          // currently, 135 = width of a 1x1 ingredient
+          width: Math.max(newWidth, Math.ceil(135 / squareWidth) * 135),
           height: startSize.height,
         });
+      } else {
+        // throw error
+        console.error("Should not reach here!");
       }
 
-      // update previousSizeOfResize
-      previousSizeOfResize = sizeOfResize;
+      // update previousSquaresMoved
+      previousSquaresMoved = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
       const deltaX = e.clientX - startX; // the distance the pointer has moved
-      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
+      const gapSize = Math.round(deltaX / squareWidth); // the number of gaps the pointer has moved
 
-      onResizeEndCallback({ sizeOfResize: gapSize });
+      onResizeEndCallback({ squaresMoved: gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -302,44 +373,53 @@ const Resizable = ({
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY; // the distance the pointer has moved
-      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
-      const snappedDeltaY = gapSize * snapYGap; // the distance the pointer has moved, snapped to the nearest gap
+      // define a lot of variables
+      const dY = e.clientY - startY;
+      const resizeType = computeResizeType(ResizeDirection.BOTTOM, dY);
+      const squaresMoved =
+        Math.round(dY / squareHeight) * DirectionMultiplier.BOTTOM;
+      const relativeDistanceMoved = squaresMoved * squareHeight;
+      const newHeight = startSize.height + relativeDistanceMoved;
 
-      // resize to the smallest possible size if resizing to negative size
-      if (startSize.height + snappedDeltaY <= 0 || snappedDeltaY === 0) {
+      // prevent unnecessary calls to shouldResizeCallback
+      if (previousSizeOfResize === squaresMoved) return;
+
+      // There are only three conditions:
+      if (squaresMoved === 0) {
+        // 1. neither expand nor shrink. should revert to original size and position
         setSize({
           width: startSize.width,
           height: startSize.height,
         });
-        previousSizeOfResize = 0;
-        return;
-      }
-
-      const sizeOfResize = Math.abs(gapSize);
-
-      // don't resize if sizeOfResize is the same as previousSizeOfResize
-      if (previousSizeOfResize === sizeOfResize) return;
-
-      // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ sizeOfResize })) {
-        // ---- Conditions Satisfied ----
+      } else if (resizeType === ResizeType.EXPAND) {
+        // 2. expand. only resize if resizeCallback allows it
+        if (shouldResizeCallback({ squaresMoved })) {
+          setSize({
+            width: startSize.width,
+            height: newHeight,
+          });
+        }
+      } else if (resizeType === ResizeType.SHRINK) {
+        // 3. shrink to the smallest possible size
         setSize({
           width: startSize.width,
-          height: startSize.height + snappedDeltaY,
+          height: Math.max(newHeight, Math.ceil(135 / squareHeight) * 135),
         });
+      } else {
+        // throw error
+        console.error("Should not reach here!");
       }
 
       // update previousSizeOfResize
-      previousSizeOfResize = sizeOfResize;
+      previousSizeOfResize = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
       const deltaY = e.clientY - startY; // the distance the pointer has moved
-      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
+      const gapSize = Math.round(deltaY / squareHeight); // the number of gaps the pointer has moved
 
-      onResizeEndCallback({ sizeOfResize: gapSize });
+      onResizeEndCallback({ squaresMoved: gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -422,6 +502,12 @@ const Resizable = ({
         }}
       >
         {children}
+
+        {/* TODO: remove. for debug only */}
+        <div>W{size.width}</div>
+        <div>H{size.height}</div>
+        <div>L{position.left}</div>
+        <div>T{position.top}</div>
       </div>
     </div>
   );

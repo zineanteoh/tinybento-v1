@@ -60,9 +60,9 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
   };
 
   // modify stores when resizing ends
-  const handleResizeEnd = ({ snapSize }: ResizeEndCallbackProps) => {
+  const handleResizeEnd = ({ squaresMoved }: ResizeEndCallbackProps) => {
     // resize object
-    resizeObject({ snapSize });
+    resizeObject({ squaresMoved });
 
     // reset stores
     setIsResizing(false);
@@ -82,8 +82,8 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
           childWidth={ingredient.width * widthPerSquare - 2 * PADDING}
           childHeight={ingredient.height * heightPerSquare - 2 * PADDING}
           coordinate={ingredient.coordinate}
-          snapXGap={widthPerSquare}
-          snapYGap={heightPerSquare}
+          squareWidth={widthPerSquare}
+          squareHeight={heightPerSquare}
           startTop={ingredient.coordinate.y * heightPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for top/down border
           startLeft={ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for left/right border
           onResizeStartCallback={handleResizeStart}
