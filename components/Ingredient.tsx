@@ -1,8 +1,15 @@
 import React from "react";
-import { CONTAINER_HEIGHT, CONTAINER_WIDTH, Dimension } from "./Bento";
+import {
+  CONTAINER_HEIGHT,
+  CONTAINER_WIDTH,
+  Coordinates,
+  Dimension,
+} from "./Bento";
 import { BentoIngredientType } from "@/store/bentoDataSlice";
 import styles from "./Ingredient.module.css";
 import Resizable from "./Resizable";
+import { useStore } from "@/store/store";
+import { ResizeDirection } from "@/store/resizeSlice";
 
 export enum IngredientVariant {
   DROPPED = "dropped",
@@ -19,6 +26,9 @@ interface IngredientProps {
 const PADDING = 20;
 
 const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
+  const { setIsResizing, setCoodinateOfObject, setDirectionOfResize } =
+    useStore();
+
   const widthPerSquare = CONTAINER_WIDTH / dimension.width;
   const heightPerSquare = CONTAINER_HEIGHT / dimension.height;
 
@@ -28,6 +38,26 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
     height: ingredient.height * heightPerSquare - 2 * PADDING,
     top: ingredient.coordinate.y * heightPerSquare + PADDING,
     left: ingredient.coordinate.x * widthPerSquare + PADDING,
+  };
+
+  const handleResizeStart = ({
+    coordinateOfObject,
+    directionOfResize,
+  }: {
+    coordinateOfObject: Coordinates;
+    directionOfResize: ResizeDirection;
+  }) => {
+    setIsResizing(true);
+    setCoodinateOfObject(coordinateOfObject);
+    setDirectionOfResize(directionOfResize);
+  };
+
+  const handleResizeEnd = ({ snapSize }: { snapSize: number }) => {
+    setIsResizing(false);
+    setCoodinateOfObject(null);
+    setDirectionOfResize(null);
+    // TODO: what if snapsize is not allowed?
+    console.log("snap size: ", snapSize);
   };
 
   return (
@@ -41,10 +71,13 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
           }}
           childWidth={ingredient.width * widthPerSquare - 2 * PADDING}
           childHeight={ingredient.height * heightPerSquare - 2 * PADDING}
+          coordinate={ingredient.coordinate}
           snapXGap={widthPerSquare}
           snapYGap={heightPerSquare}
           startTop={ingredient.coordinate.y * heightPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for top/down border
           startLeft={ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for left/right border
+          onResizeStartCallback={handleResizeStart}
+          onResizeEndCallback={handleResizeEnd}
         >
           {ingredient.height}x{ingredient.width}
         </Resizable>

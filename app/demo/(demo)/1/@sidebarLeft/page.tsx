@@ -4,7 +4,15 @@ import React from "react";
 
 // Displays all internal states of the bento
 const SidebarLeft = () => {
-  const { bentoIngredients, bentoIngredients2D, dragging } = useStore();
+  const {
+    dimension,
+    bentoIngredients,
+    bentoIngredients2D,
+    dragging,
+    isResizing,
+    coordinateOfObject,
+    directionOfResize,
+  } = useStore();
 
   return (
     <div
@@ -20,6 +28,10 @@ const SidebarLeft = () => {
         gap: "10px",
       }}
     >
+      <div>
+        dimension: {dimension.width}x{dimension.height}
+      </div>
+
       <div>
         dragging: {dragging ? `${dragging.width}x${dragging.height}` : ""}
       </div>
@@ -70,6 +82,19 @@ const SidebarLeft = () => {
             })}
         </div>
       </div>
+
+      <div>isResizing: {isResizing ? "true" : "false"}</div>
+
+      <div>
+        coordinateOfObject:{" "}
+        {coordinateOfObject
+          ? `(${coordinateOfObject.x},${coordinateOfObject.y})`
+          : ""}
+      </div>
+
+      <div>directionOfResize: {directionOfResize}</div>
+
+      <div>stepSize: {}</div>
     </div>
   );
 };
