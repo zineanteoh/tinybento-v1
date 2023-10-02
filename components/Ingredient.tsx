@@ -10,6 +10,7 @@ import styles from "./Ingredient.module.css";
 import Resizable, {
   ResizeEndCallbackProps,
   ResizeStartCallbackProps,
+  ShouldResizeCallbackProps,
 } from "./Resizable";
 import { useStore } from "@/store/store";
 import { ResizeDirection } from "@/store/resizeSlice";
@@ -29,8 +30,13 @@ interface IngredientProps {
 const PADDING = 20;
 
 const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
-  const { setIsResizing, setCoodinateOfObject, setDirectionOfResize } =
-    useStore();
+  const {
+    setIsResizing,
+    setCoordinateOfObject,
+    setDirectionOfResize,
+    isResizePossible,
+    resizeObject,
+  } = useStore();
 
   const widthPerSquare = CONTAINER_WIDTH / dimension.width;
   const heightPerSquare = CONTAINER_HEIGHT / dimension.height;
@@ -43,21 +49,25 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
     left: ingredient.coordinate.x * widthPerSquare + PADDING,
   };
 
+  // modify stores when resizing starts
   const handleResizeStart = ({
     coordinateOfObject,
     directionOfResize,
   }: ResizeStartCallbackProps) => {
     setIsResizing(true);
-    setCoodinateOfObject(coordinateOfObject);
+    setCoordinateOfObject(coordinateOfObject);
     setDirectionOfResize(directionOfResize);
   };
 
+  // modify stores when resizing ends
   const handleResizeEnd = ({ snapSize }: ResizeEndCallbackProps) => {
+    // resize object
+    resizeObject({ snapSize });
+
+    // reset stores
     setIsResizing(false);
-    setCoodinateOfObject(null);
+    setCoordinateOfObject(null);
     setDirectionOfResize(null);
-    // TODO: what if snapsize is not allowed?
-    console.log("snap size: ", snapSize);
   };
 
   return (
@@ -78,6 +88,7 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
           startLeft={ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for left/right border
           onResizeStartCallback={handleResizeStart}
           onResizeEndCallback={handleResizeEnd}
+          shouldResizeCallback={isResizePossible}
         >
           {ingredient.height}x{ingredient.width}
         </Resizable>
