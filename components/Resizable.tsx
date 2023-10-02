@@ -83,6 +83,9 @@ const Resizable = ({
     const startPosition = position;
     const startX = e.clientX;
 
+    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
+    let previousSnapSize = 0;
+
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       const deltaX = e.clientX - startX; // the distance the pointer has moved
@@ -90,7 +93,7 @@ const Resizable = ({
       const snappedDeltaX = gapSize * snapXGap; // the distance the pointer has moved, snapped to the nearest gap
 
       // resize to the smallest possible size if resizing to negative size
-      if (startSize.width - snappedDeltaX <= 0) {
+      if (startSize.width - snappedDeltaX <= 0 || snappedDeltaX === 0) {
         setSize({
           width: startSize.width,
           height: startSize.height,
@@ -99,15 +102,17 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
+        previousSnapSize = 0;
         return;
       }
 
-      // ensure that resizing is allowed by callback
-      const resizeIsAllowed: boolean = shouldResizeCallback({
-        snapSize: Math.abs(Math.round(deltaX / snapXGap)),
-      });
+      const snapSize = Math.abs(gapSize);
 
-      if (resizeIsAllowed) {
+      // don't resize if snapSize is the same as previousSnapSize
+      if (previousSnapSize === snapSize) return;
+
+      // ensure that resizing is allowed by callback
+      if (shouldResizeCallback({ snapSize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width - snappedDeltaX,
@@ -118,6 +123,9 @@ const Resizable = ({
           left: startPosition.left + snappedDeltaX,
         });
       }
+
+      // update previousSnapSize
+      previousSnapSize = snapSize;
     };
 
     // create function to remove event listeners when pointer up
@@ -148,6 +156,9 @@ const Resizable = ({
     const startPosition = position;
     const startY = e.clientY;
 
+    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
+    let previousSnapSize = 0;
+
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       const deltaY = e.clientY - startY; // the distance the pointer has moved
@@ -155,7 +166,7 @@ const Resizable = ({
       const snappedDeltaY = gapSize * snapYGap; // the distance the pointer has moved, snapped to the nearest gap
 
       // resize to the smallest possible size if resizing to negative size
-      if (startSize.height - snappedDeltaY <= 0) {
+      if (startSize.height - snappedDeltaY <= 0 || snappedDeltaY === 0) {
         setSize({
           width: startSize.width,
           height: startSize.height,
@@ -164,15 +175,17 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
+        previousSnapSize = 0;
         return;
       }
 
-      // ensure that resizing is allowed by callback
-      const resizeIsAllowed: boolean = shouldResizeCallback({
-        snapSize: Math.abs(Math.round(deltaY / snapYGap)),
-      });
+      const snapSize = Math.abs(gapSize);
 
-      if (resizeIsAllowed) {
+      // don't resize if snapSize is the same as previousSnapSize
+      if (previousSnapSize === snapSize) return;
+
+      // ensure that resizing is allowed by callback
+      if (shouldResizeCallback({ snapSize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width,
@@ -183,6 +196,9 @@ const Resizable = ({
           left: startPosition.left,
         });
       }
+
+      // update previousSnapSize
+      previousSnapSize = snapSize;
     };
 
     // create function to remove event listeners when pointer up
@@ -214,6 +230,9 @@ const Resizable = ({
     const startSize = size;
     const startX = e.clientX;
 
+    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
+    let previousSnapSize = 0;
+
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       const deltaX = e.clientX - startX; // the distance the pointer has moved
@@ -221,26 +240,31 @@ const Resizable = ({
       const snappedDeltaX = gapSize * snapXGap; // the distance the pointer has moved, snapped to the nearest gap
 
       // resize to the smallest possible size if resizing to negative size
-      if (startSize.width + snappedDeltaX <= 0) {
+      if (startSize.width + snappedDeltaX <= 0 || snappedDeltaX === 0) {
         setSize({
           width: startSize.width,
           height: startSize.height,
         });
+        previousSnapSize = 0;
         return;
       }
 
-      // ensure that resizing is allowed by callback
-      const resizeIsAllowed: boolean = shouldResizeCallback({
-        snapSize: Math.abs(Math.round(deltaX / snapXGap)),
-      });
+      const snapSize = Math.abs(gapSize);
 
-      if (resizeIsAllowed) {
+      // don't resize if snapSize is the same as previousSnapSize
+      if (previousSnapSize === snapSize) return;
+
+      // ensure that resizing is allowed by callback
+      if (shouldResizeCallback({ snapSize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width + snappedDeltaX,
           height: startSize.height,
         });
       }
+
+      // update previousSnapSize
+      previousSnapSize = snapSize;
     };
 
     // create function to remove event listeners when pointer up
@@ -272,6 +296,9 @@ const Resizable = ({
     const startSize = size;
     const startY = e.clientY;
 
+    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
+    let previousSnapSize = 0;
+
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       const deltaY = e.clientY - startY; // the distance the pointer has moved
@@ -279,26 +306,31 @@ const Resizable = ({
       const snappedDeltaY = gapSize * snapYGap; // the distance the pointer has moved, snapped to the nearest gap
 
       // resize to the smallest possible size if resizing to negative size
-      if (startSize.height + snappedDeltaY <= 0) {
+      if (startSize.height + snappedDeltaY <= 0 || snappedDeltaY === 0) {
         setSize({
           width: startSize.width,
           height: startSize.height,
         });
+        previousSnapSize = 0;
         return;
       }
 
-      // ensure that resizing is allowed by callback
-      const resizeIsAllowed: boolean = shouldResizeCallback({
-        snapSize: Math.abs(Math.round(deltaY / snapYGap)),
-      });
+      const snapSize = Math.abs(gapSize);
 
-      if (resizeIsAllowed) {
+      // don't resize if snapSize is the same as previousSnapSize
+      if (previousSnapSize === snapSize) return;
+
+      // ensure that resizing is allowed by callback
+      if (shouldResizeCallback({ snapSize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width,
           height: startSize.height + snappedDeltaY,
         });
       }
+
+      // update previousSnapSize
+      previousSnapSize = snapSize;
     };
 
     // create function to remove event listeners when pointer up
