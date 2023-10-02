@@ -9,12 +9,10 @@ export interface ResizeStartCallbackProps {
 }
 
 export interface ResizeEndCallbackProps {
-  snapSize: number;
+  sizeOfResize: number;
 }
 
-export interface ShouldResizeCallbackProps {
-  snapSize: number;
-}
+export interface ShouldResizeCallbackProps extends ResizeEndCallbackProps {}
 
 /**
  * A custom wrapper for creating a resizable component.
@@ -83,8 +81,8 @@ const Resizable = ({
     const startPosition = position;
     const startX = e.clientX;
 
-    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
-    let previousSnapSize = 0;
+    // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
+    let previousSizeOfResize = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
@@ -102,17 +100,17 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
-        previousSnapSize = 0;
+        previousSizeOfResize = 0;
         return;
       }
 
-      const snapSize = Math.abs(gapSize);
+      const sizeOfResize = Math.abs(gapSize);
 
-      // don't resize if snapSize is the same as previousSnapSize
-      if (previousSnapSize === snapSize) return;
+      // don't resize if sizeOfResize is the same as previousSizeOfResize
+      if (previousSizeOfResize === sizeOfResize) return;
 
       // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ snapSize })) {
+      if (shouldResizeCallback({ sizeOfResize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width - snappedDeltaX,
@@ -124,15 +122,16 @@ const Resizable = ({
         });
       }
 
-      // update previousSnapSize
-      previousSnapSize = snapSize;
+      // update previousSizeOfResize
+      previousSizeOfResize = sizeOfResize;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      onResizeEndCallback({
-        snapSize: -Math.round((e.clientX - startX) / snapXGap),
-      });
+      const deltaX = e.clientX - startX; // the distance the pointer has moved
+      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
+
+      onResizeEndCallback({ sizeOfResize: -gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -156,8 +155,8 @@ const Resizable = ({
     const startPosition = position;
     const startY = e.clientY;
 
-    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
-    let previousSnapSize = 0;
+    // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
+    let previousSizeOfResize = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
@@ -175,17 +174,17 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
-        previousSnapSize = 0;
+        previousSizeOfResize = 0;
         return;
       }
 
-      const snapSize = Math.abs(gapSize);
+      const sizeOfResize = Math.abs(gapSize);
 
-      // don't resize if snapSize is the same as previousSnapSize
-      if (previousSnapSize === snapSize) return;
+      // don't resize if sizeOfResize is the same as previousSizeOfResize
+      if (previousSizeOfResize === sizeOfResize) return;
 
       // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ snapSize })) {
+      if (shouldResizeCallback({ sizeOfResize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width,
@@ -197,15 +196,16 @@ const Resizable = ({
         });
       }
 
-      // update previousSnapSize
-      previousSnapSize = snapSize;
+      // update previousSizeOfResize
+      previousSizeOfResize = sizeOfResize;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      onResizeEndCallback({
-        snapSize: -Math.round((e.clientY - startY) / snapYGap),
-      });
+      const deltaY = e.clientY - startY; // the distance the pointer has moved
+      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
+
+      onResizeEndCallback({ sizeOfResize: -gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -230,8 +230,8 @@ const Resizable = ({
     const startSize = size;
     const startX = e.clientX;
 
-    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
-    let previousSnapSize = 0;
+    // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
+    let previousSizeOfResize = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
@@ -245,17 +245,17 @@ const Resizable = ({
           width: startSize.width,
           height: startSize.height,
         });
-        previousSnapSize = 0;
+        previousSizeOfResize = 0;
         return;
       }
 
-      const snapSize = Math.abs(gapSize);
+      const sizeOfResize = Math.abs(gapSize);
 
-      // don't resize if snapSize is the same as previousSnapSize
-      if (previousSnapSize === snapSize) return;
+      // don't resize if sizeOfResize is the same as previousSizeOfResize
+      if (previousSizeOfResize === sizeOfResize) return;
 
       // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ snapSize })) {
+      if (shouldResizeCallback({ sizeOfResize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width + snappedDeltaX,
@@ -263,15 +263,16 @@ const Resizable = ({
         });
       }
 
-      // update previousSnapSize
-      previousSnapSize = snapSize;
+      // update previousSizeOfResize
+      previousSizeOfResize = sizeOfResize;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      onResizeEndCallback({
-        snapSize: Math.round((e.clientX - startX) / snapXGap),
-      });
+      const deltaX = e.clientX - startX; // the distance the pointer has moved
+      const gapSize = Math.round(deltaX / snapXGap); // the number of gaps the pointer has moved
+
+      onResizeEndCallback({ sizeOfResize: gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -296,8 +297,8 @@ const Resizable = ({
     const startSize = size;
     const startY = e.clientY;
 
-    // keep track of the previous snap size to prevent unnecessary calls to shouldResizeCallback
-    let previousSnapSize = 0;
+    // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
+    let previousSizeOfResize = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
@@ -311,17 +312,17 @@ const Resizable = ({
           width: startSize.width,
           height: startSize.height,
         });
-        previousSnapSize = 0;
+        previousSizeOfResize = 0;
         return;
       }
 
-      const snapSize = Math.abs(gapSize);
+      const sizeOfResize = Math.abs(gapSize);
 
-      // don't resize if snapSize is the same as previousSnapSize
-      if (previousSnapSize === snapSize) return;
+      // don't resize if sizeOfResize is the same as previousSizeOfResize
+      if (previousSizeOfResize === sizeOfResize) return;
 
       // ensure that resizing is allowed by callback
-      if (shouldResizeCallback({ snapSize })) {
+      if (shouldResizeCallback({ sizeOfResize })) {
         // ---- Conditions Satisfied ----
         setSize({
           width: startSize.width,
@@ -329,15 +330,16 @@ const Resizable = ({
         });
       }
 
-      // update previousSnapSize
-      previousSnapSize = snapSize;
+      // update previousSizeOfResize
+      previousSizeOfResize = sizeOfResize;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      onResizeEndCallback({
-        snapSize: Math.round((e.clientY - startY) / snapYGap),
-      });
+      const deltaY = e.clientY - startY; // the distance the pointer has moved
+      const gapSize = Math.round(deltaY / snapYGap); // the number of gaps the pointer has moved
+
+      onResizeEndCallback({ sizeOfResize: gapSize });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
