@@ -3,6 +3,15 @@ import React, { useState } from "react";
 import styles from "./Resizable.module.css";
 import { ResizeDirection } from "@/store/resizeSlice";
 
+export interface ResizeStartCallbackProps {
+  coordinateOfObject: { x: number; y: number };
+  directionOfResize: ResizeDirection;
+}
+
+export interface ResizeEndCallbackProps {
+  snapSize: number;
+}
+
 /**
  * A custom wrapper for creating a resizable component.
  *
@@ -37,18 +46,8 @@ const Resizable = ({
   borderColor?: string;
   startTop?: number;
   startLeft?: number;
-  onResizeStartCallback?: ({
-    coordinateOfObject, // Coordinate relative to the parent. i.e. (0, 0), (1, 0), etc.
-    directionOfResize, // The border that is being dragged
-  }: {
-    coordinateOfObject: { x: number; y: number };
-    directionOfResize: ResizeDirection;
-  }) => void;
-  onResizeEndCallback?: ({
-    snapSize, // The gap to snap to in the direction of resize
-  }: {
-    snapSize: number;
-  }) => void;
+  onResizeStartCallback?: (...arg: ResizeStartCallbackProps[]) => void;
+  onResizeEndCallback?: (...arg: ResizeEndCallbackProps[]) => void;
 }) => {
   // keep track of the size of the resizable component
   const [size, setSize] = useState({

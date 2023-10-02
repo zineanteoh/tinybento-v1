@@ -7,7 +7,10 @@ import {
 } from "./Bento";
 import { BentoIngredientType } from "@/store/bentoDataSlice";
 import styles from "./Ingredient.module.css";
-import Resizable from "./Resizable";
+import Resizable, {
+  ResizeEndCallbackProps,
+  ResizeStartCallbackProps,
+} from "./Resizable";
 import { useStore } from "@/store/store";
 import { ResizeDirection } from "@/store/resizeSlice";
 
@@ -43,16 +46,13 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
   const handleResizeStart = ({
     coordinateOfObject,
     directionOfResize,
-  }: {
-    coordinateOfObject: Coordinates;
-    directionOfResize: ResizeDirection;
-  }) => {
+  }: ResizeStartCallbackProps) => {
     setIsResizing(true);
     setCoodinateOfObject(coordinateOfObject);
     setDirectionOfResize(directionOfResize);
   };
 
-  const handleResizeEnd = ({ snapSize }: { snapSize: number }) => {
+  const handleResizeEnd = ({ snapSize }: ResizeEndCallbackProps) => {
     setIsResizing(false);
     setCoodinateOfObject(null);
     setDirectionOfResize(null);
