@@ -265,8 +265,9 @@ export const createResizeSlice: StateCreator<
             squaresMoved
           );
 
-          // don't resize if the height is 0 or less
-          if (finalHeight <= 0) squaresMovedClamped = 0;
+          // if finalHeight is negative, let squaresMovedClamped = 1 - height
+          // so finalHeight = height + squaresMovedClamped = 1
+          if (finalHeight <= 0) squaresMovedClamped = 1 - height;
 
           break;
         case ResizeDirection.LEFT:
@@ -278,8 +279,9 @@ export const createResizeSlice: StateCreator<
             squaresMoved
           );
 
-          // don't resize if the width is 0 or less
-          if (finalWidth <= 0) squaresMovedClamped = 0;
+          // if finalWidth is negative, let squaresMovedClamped = 1 - width
+          // so finalWidth = width + squaresMovedClamped = 1
+          if (finalWidth <= 0) squaresMovedClamped = 1 - width;
 
           break;
       }
@@ -318,9 +320,6 @@ const performResizing = (
   bentoIngredients: BentoIngredientType[],
   bentoIngredients2D: BentoIngredient2D
 ): [BentoIngredientType[], BentoIngredient2D] => {
-  // TODO:
-
-  // return [bentoIngredients, bentoIngredients2D];
   const { x, y } = objectBeingResized.coordinate;
   const { width, height } = objectBeingResized;
 
@@ -328,6 +327,7 @@ const performResizing = (
     `[PerformResizing] ${height}x${width} at (${x}, ${y}) is being resized ${directionOfResize} by ${squaresMoved} squares`
   );
 
+  // construct the new object
   const newObject: BentoIngredientType = {
     ...objectBeingResized,
     width: computeNewWidth(width, directionOfResize, squaresMoved),
@@ -346,23 +346,54 @@ const performResizing = (
   });
 
   const newBentoIngredients2D = bentoIngredients2D;
-  const newX = newObject.coordinate.x;
-  const newY = newObject.coordinate.y;
-  console.log("[PerformResizing] newObject: ", newObject);
+  const { x: newX, y: newY } = newObject.coordinate;
+  const { width: newWidth, height: newHeight } = newObject;
 
-  // for shrinking, remove the squares that are no longer part of the object
-  if (squaresMoved < 0) {
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width + squaresMoved; j++) {
-        newBentoIngredients2D[y + i][x + j] = null;
-      }
-    }
-  }
-
-  // iterate through the ingredient's squares and add them to bentoIngredients2D
+  // set the occupied cells to newObject
   for (let i = 0; i < newObject.height; i++) {
     for (let j = 0; j < newObject.width; j++) {
       newBentoIngredients2D[newY + i][newX + j] = newObject;
+    }
+  }
+
+  // if shrinking, we need to remove the unoccupied cells left from shrinking
+  if (squaresMoved < 0) {
+    switch (directionOfResize) {
+      case ResizeDirection.TOP:
+        const topMost = newY;
+        for (let i = 0; i < width; i++) {
+          for (let j = 0; j < Math.abs(squaresMoved); j++) {
+            newBentoIngredients2D[topMost - j - 1][newX + i] = null;
+          }
+        }
+        break;
+      case ResizeDirection.BOTTOM:
+        const bottomMost = newY + newHeight;
+        for (let i = 0; i < Math.abs(squaresMoved); i++) {
+          for (let j = 0; j < width; j++) {
+            newBentoIngredients2D[bottomMost + i][newX + j] = null;
+          }
+        }
+        break;
+      case ResizeDirection.LEFT:
+        const leftMost = newX;
+        for (let i = 0; i < height; i++) {
+          for (let j = 0; j < Math.abs(squaresMoved); j++) {
+            newBentoIngredients2D[newY + i][leftMost - j - 1] = null;
+            console.log(
+              `[PerformResizing] Removing (${leftMost - j - 1}, ${newY + i})`
+            );
+          }
+        }
+        break;
+      case ResizeDirection.RIGHT:
+        const rightMost = newX + newWidth;
+        for (let i = 0; i < height; i++) {
+          for (let j = 0; j < Math.abs(squaresMoved); j++) {
+            newBentoIngredients2D[newY + i][rightMost + j] = null;
+          }
+        }
+        break;
     }
   }
 
