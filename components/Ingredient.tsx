@@ -1,30 +1,12 @@
 import React from "react";
-import {
-  CONTAINER_HEIGHT,
-  CONTAINER_WIDTH,
-  Coordinates,
-  Dimension,
-} from "./Bento";
-import { BentoIngredientType } from "@/store/bentoDataSlice";
+import { CONTAINER_HEIGHT, CONTAINER_WIDTH } from "./Bento";
+import { IngredientVariant, IngredientProps } from "@/utils/interfaces";
 import styles from "./Ingredient.module.css";
 import Resizable, {
   ResizeEndCallbackProps,
   ResizeStartCallbackProps,
-  ShouldResizeCallbackProps,
 } from "./Resizable";
 import { useStore } from "@/store/store";
-import { ResizeDirection } from "@/store/resizeSlice";
-
-export enum IngredientVariant {
-  DROPPED = "dropped",
-  PREVIEW = "preview",
-}
-
-interface IngredientProps {
-  dimension: Dimension;
-  ingredient: BentoIngredientType;
-  variant: IngredientVariant;
-}
 
 // TODO: hardcode padding here for now
 const PADDING = 20;

@@ -2,17 +2,7 @@ import React from "react";
 import { useStore } from "@/store/store";
 import DroppableBentoSquare from "./DroppableBentoSquare";
 import Ingredient from "./Ingredient";
-import { BentoIngredientType } from "@/store/bentoDataSlice";
-
-export interface Dimension {
-  width: number;
-  height: number;
-}
-
-export interface Coordinates {
-  x: number;
-  y: number;
-}
+import { BentoIngredientType } from "@/utils/interfaces";
 
 // TODO:
 export const CONTAINER_WIDTH = 700;

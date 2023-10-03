@@ -1,12 +1,13 @@
-import { Coordinates, Dimension } from "@/components/Bento";
-import { IngredientVariant } from "@/components/Ingredient";
-import { StateCreator } from "zustand";
 import {
-  BentoDataSlice,
   BentoIngredient2D,
   BentoIngredientType,
+  Coordinates,
+  Dimension,
   Ingredient,
-} from "./bentoDataSlice";
+  IngredientVariant,
+} from "@/utils/interfaces";
+import { StateCreator } from "zustand";
+import { BentoDataSlice } from "./bentoDataSlice";
 import { DragSlice } from "./dragSlice";
 
 export type BentoActionSlice = {

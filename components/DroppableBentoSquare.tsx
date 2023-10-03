@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { useDroppable } from "@dnd-kit/core";
-import { Coordinates } from "./Bento";
+import { Coordinates } from "@/utils/interfaces";
 import { useStore } from "@/store/store";
-import { IngredientVariant } from "./Ingredient";
 
 const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
   const { addPreviewIngredient, clearAllPreviewIngredients } = useStore();

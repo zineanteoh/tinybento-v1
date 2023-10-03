@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import styles from "./Resizable.module.css";
 import { ResizeDirection } from "@/store/resizeSlice";
-import { Coordinates } from "./Bento";
+import { Coordinates } from "@/utils/interfaces";
 
 export interface ResizeStartCallbackProps {
   coordinateOfObject: { x: number; y: number };

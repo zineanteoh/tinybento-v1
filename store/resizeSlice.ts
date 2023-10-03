@@ -1,10 +1,10 @@
 import { StateCreator } from "zustand";
+import { BentoDataSlice } from "./bentoDataSlice";
 import {
-  BentoDataSlice,
   BentoIngredient2D,
   BentoIngredientType,
-} from "./bentoDataSlice";
-import { Coordinates } from "@/components/Bento";
+  Coordinates,
+} from "@/utils/interfaces";
 import {
   ResizeType,
   ShouldResizeCallbackProps,

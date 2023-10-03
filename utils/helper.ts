@@ -1,6 +1,4 @@
-import { Coordinates } from "@/components/Bento";
-import { IngredientVariant } from "@/components/Ingredient";
-import { Ingredient } from "@/store/bentoDataSlice";
+import { Coordinates, Ingredient, IngredientVariant } from "@/utils/interfaces";
 
 /**
  * Converts "x,y" string to Coordinates object

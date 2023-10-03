@@ -1,7 +1,6 @@
 import { StateCreator } from "zustand";
-import { BentoDataSlice, Ingredient } from "./bentoDataSlice";
-import { Coordinates } from "@/components/Bento";
-import { IngredientVariant } from "@/components/Ingredient";
+import { BentoDataSlice } from "./bentoDataSlice";
+import { Coordinates, Ingredient, IngredientVariant } from "@/utils/interfaces";
 import { BentoActionSlice } from "./bentoActionSlice";
 
 export interface DragSlice {

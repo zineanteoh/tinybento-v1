@@ -1,40 +1,10 @@
-import { Coordinates, Dimension } from "@/components/Bento";
-import { IngredientVariant } from "@/components/Ingredient";
+import {
+  BentoIngredient2D,
+  BentoIngredientType,
+  Dimension,
+} from "@/utils/interfaces";
 import { StateCreator } from "zustand";
 import { DragSlice } from "./dragSlice";
-
-export interface Ingredient {
-  width: number;
-  height: number;
-  variant: IngredientVariant;
-}
-
-/**
- * @property {number} width
- * @property {number} height
- * @property {number} coordinate
- */
-export interface DroppedIngredientType extends Ingredient {
-  coordinate: Coordinates;
-  variant: IngredientVariant.DROPPED;
-}
-
-/**
- * @property {number} width
- * @property {number} height
- * @property {number} coordinate
- */
-export interface PreviewIngredientType extends Ingredient {
-  coordinate: Coordinates;
-  variant: IngredientVariant.PREVIEW;
-}
-
-/**
- * Joint type of DroppedIngredientType and PreviewIngredientType
- */
-export type BentoIngredientType = DroppedIngredientType | PreviewIngredientType;
-
-export type BentoIngredient2D = (BentoIngredientType | null)[][];
 
 export type BentoDataSlice = {
   // keep track of the dimension of the bento
