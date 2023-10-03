@@ -35,6 +35,43 @@ export type BentoIngredientType = DroppedIngredientType | PreviewIngredientType;
 export type BentoIngredient2D = (BentoIngredientType | null)[][];
 
 // ============================================================================
+// Resizable Interfaces
+// ============================================================================
+
+interface ResizableChildProps {
+  childWidth: number;
+  childHeight: number;
+  childStyleToApply: React.CSSProperties;
+}
+
+interface ResizableSquareProps {
+  coordinate: Coordinates;
+  squareWidth: number;
+  squareHeight: number;
+  startTop: number;
+  startLeft: number;
+}
+
+interface ResizableBorderProps {
+  borderWidth: number;
+  borderColor: string;
+}
+
+interface ResizableCallbackProps {
+  onResizeStartCallback: (...arg: ResizeStartCallbackProps[]) => void;
+  onResizeEndCallback: (...arg: ResizeEndCallbackProps[]) => void;
+  shouldResizeCallback: (...arg: ShouldResizeCallbackProps[]) => boolean;
+}
+
+export interface ResizableProps {
+  children: React.ReactNode;
+  childProps: ResizableChildProps;
+  squareProps: ResizableSquareProps;
+  borderProps: ResizableBorderProps;
+  callbacks: ResizableCallbackProps;
+}
+
+// ============================================================================
 // Enums
 // ============================================================================
 export enum IngredientVariant {

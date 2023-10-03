@@ -59,20 +59,32 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
       {/* Render Dropped */}
       {variant === IngredientVariant.DROPPED && (
         <Resizable
-          childStyleToApply={{
-            ...computedStyles,
-            backgroundColor: "lightgreen",
+          childProps={{
+            childHeight: ingredient.height * heightPerSquare - 2 * PADDING,
+            childWidth: ingredient.width * widthPerSquare - 2 * PADDING,
+            childStyleToApply: {
+              ...computedStyles,
+              backgroundColor: "lightgreen",
+            },
           }}
-          childWidth={ingredient.width * widthPerSquare - 2 * PADDING}
-          childHeight={ingredient.height * heightPerSquare - 2 * PADDING}
-          coordinate={ingredient.coordinate}
-          squareWidth={widthPerSquare}
-          squareHeight={heightPerSquare}
-          startTop={ingredient.coordinate.y * heightPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for top/down border
-          startLeft={ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for left/right border
-          onResizeStartCallback={handleResizeStart}
-          onResizeEndCallback={handleResizeEnd}
-          shouldResizeCallback={isResizePossible}
+          squareProps={{
+            coordinate: ingredient.coordinate,
+            squareHeight: heightPerSquare,
+            squareWidth: widthPerSquare,
+            startTop:
+              ingredient.coordinate.y * heightPerSquare + 2 + PADDING / 2, // TODO: add 2 to account for top/down border
+            startLeft:
+              ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2, // TODO: add 2 to account for left/right border
+          }}
+          callbacks={{
+            onResizeEndCallback: handleResizeEnd,
+            onResizeStartCallback: handleResizeStart,
+            shouldResizeCallback: isResizePossible,
+          }}
+          borderProps={{
+            borderWidth: 8,
+            borderColor: "pink",
+          }}
         >
           {ingredient.height}x{ingredient.width}
         </Resizable>

@@ -4,6 +4,7 @@ import styles from "./Resizable.module.css";
 import {
   Coordinates,
   DirectionMultiplier,
+  ResizableProps,
   ResizeDirection,
   ResizeEndCallbackProps,
   ResizeStartCallbackProps,
@@ -22,35 +23,36 @@ import { computeResizeType } from "@/utils/helper";
  */
 const Resizable = ({
   children, // The children to render inside the resizable component
-  childWidth = 100, // The width of the children component
-  childHeight = 100, // The height of the children component
-  coordinate = { x: 0, y: 0 }, // The coordinate of the children component
-  childStyleToApply, // The style to apply to the children component
-  squareWidth = 50, // The width of a single square
-  squareHeight = 50, // The height of a single square
-  borderWidth = 8, // The width of the border
-  borderColor = "pink", // The color of the border
-  startTop = 0, // The starting top position of the resizable component
-  startLeft = 0, // The starting left position of the resizable component
-  onResizeStartCallback = () => {}, // The callback to call when resizing starts
-  onResizeEndCallback = () => {}, // The callback to call when resizing ends
-  shouldResizeCallback = () => true, // The callback to call when resizing starts and pointer moves
-}: {
-  children: React.ReactNode;
-  childWidth?: number;
-  childHeight?: number;
-  coordinate?: Coordinates;
-  childStyleToApply?: React.CSSProperties;
-  squareWidth?: number;
-  squareHeight?: number;
-  borderWidth?: number;
-  borderColor?: string;
-  startTop?: number;
-  startLeft?: number;
-  onResizeStartCallback?: (...arg: ResizeStartCallbackProps[]) => void;
-  onResizeEndCallback?: (...arg: ResizeEndCallbackProps[]) => void;
-  shouldResizeCallback?: (...arg: ShouldResizeCallbackProps[]) => boolean;
-}) => {
+  childProps = {
+    childHeight: 100, // The width of the children component
+    childWidth: 100, // The height of the children component
+    childStyleToApply: {}, // The style to apply to the children component
+  },
+  squareProps = {
+    coordinate: { x: 0, y: 0 }, // The coordinate of the children component
+    squareWidth: 50, // The width of a single square
+    squareHeight: 50, // The height of a single square
+    startTop: 0, // The starting top position of the resizable component
+    startLeft: 0, // The starting left position of the resizable component
+  },
+  borderProps = {
+    borderWidth: 8, // The width of the border
+    borderColor: "pink", // The color of the border
+  },
+  callbacks = {
+    onResizeStartCallback: () => {}, // The callback to call when resizing starts
+    onResizeEndCallback: () => {}, // The callback to call when resizing ends
+    shouldResizeCallback: () => true, // The callback to call when resizing starts and pointer moves
+  },
+}: ResizableProps) => {
+  // destructure props
+  const { childWidth, childHeight, childStyleToApply } = childProps;
+  const { coordinate, squareWidth, squareHeight, startTop, startLeft } =
+    squareProps;
+  const { borderWidth, borderColor } = borderProps;
+  const { onResizeStartCallback, onResizeEndCallback, shouldResizeCallback } =
+    callbacks;
+
   // keep track of the size of the resizable component
   const [size, setSize] = useState({
     width: childWidth,
