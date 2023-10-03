@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import styles from "./Resizable.module.css";
 import { ResizeDirection } from "@/store/resizeSlice";
+import { Coordinates } from "./Bento";
 
 export interface ResizeStartCallbackProps {
   coordinateOfObject: { x: number; y: number };
@@ -28,22 +29,11 @@ enum DirectionMultiplier {
 
 /**
  * Compute whether resize action is expanding or shrinking
- * @param directionOfResize   The direction of resize
- * @param displacement        The displacement of the pointer relative to the start of resize
+ * @param squaresMoved        The number of squares moved (positive is expanding, negative is shrinking)
  * @returns                   EXPAND or SHRINK
  */
-const computeResizeType = (
-  directionOfResize: ResizeDirection,
-  displacement: number
-): ResizeType => {
-  switch (directionOfResize) {
-    case ResizeDirection.LEFT:
-    case ResizeDirection.TOP:
-      return displacement > 0 ? ResizeType.SHRINK : ResizeType.EXPAND;
-    case ResizeDirection.RIGHT:
-    case ResizeDirection.BOTTOM:
-      return displacement > 0 ? ResizeType.EXPAND : ResizeType.SHRINK;
-  }
+export const computeResizeType = (squaresMoved: number): ResizeType => {
+  return squaresMoved > 0 ? ResizeType.EXPAND : ResizeType.SHRINK;
 };
 
 /**
@@ -73,7 +63,7 @@ const Resizable = ({
   children: React.ReactNode;
   childWidth?: number;
   childHeight?: number;
-  coordinate?: { x: number; y: number };
+  coordinate?: Coordinates;
   childStyleToApply?: React.CSSProperties;
   squareWidth?: number;
   squareHeight?: number;
@@ -114,21 +104,24 @@ const Resizable = ({
     const startX = e.clientX;
 
     // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
-    let previousSizeOfResize = 0;
+    let previousSquaresMoved = 0;
+
+    // keep track of the previous valid squaresMoved (for pointerup callback)
+    let previousValidSquaresMoved = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       // define a lot of variables
       const dX = e.clientX - startX;
-      const resizeType = computeResizeType(ResizeDirection.LEFT, dX);
       const squaresMoved =
         Math.round(dX / squareWidth) * DirectionMultiplier.LEFT; // can be postive or negative
+      const resizeType = computeResizeType(squaresMoved);
       const relativeDistanceMoved = squaresMoved * squareWidth;
       const newWidth = startSize.width + relativeDistanceMoved;
       const newLeft = startPosition.left - relativeDistanceMoved;
 
       // prevent unnecessary calls to shouldResizeCallback
-      if (previousSizeOfResize === squaresMoved) return;
+      if (previousSquaresMoved === squaresMoved) return;
 
       // There are only three conditions:
       if (squaresMoved === 0) {
@@ -141,6 +134,7 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
+        previousValidSquaresMoved = squaresMoved;
       } else if (resizeType === ResizeType.EXPAND) {
         // 2. expand. only resize if resizeCallback allows it
         if (shouldResizeCallback({ squaresMoved })) {
@@ -152,6 +146,7 @@ const Resizable = ({
             top: startPosition.top,
             left: newLeft,
           });
+          previousValidSquaresMoved = squaresMoved;
         }
       } else if (resizeType === ResizeType.SHRINK) {
         // 3. shrink to the smallest possible size
@@ -163,21 +158,24 @@ const Resizable = ({
           top: startPosition.top,
           left: Math.min(newLeft, startPosition.left + startSize.width - 135),
         });
+
+        // TODO: is this right?
+        previousValidSquaresMoved = Math.min(
+          squaresMoved,
+          Math.ceil(135 / squareWidth) * DirectionMultiplier.LEFT
+        );
       } else {
         // throw error
         console.error("Should not reach here!");
       }
 
-      // update previousSizeOfResize
-      previousSizeOfResize = squaresMoved;
+      // update previousSquaresMoved
+      previousSquaresMoved = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX; // the distance the pointer has moved
-      const gapSize = Math.round(deltaX / squareWidth); // the number of gaps the pointer has moved
-
-      onResizeEndCallback({ squaresMoved: -gapSize });
+      onResizeEndCallback({ squaresMoved: previousValidSquaresMoved });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -202,21 +200,24 @@ const Resizable = ({
     const startY = e.clientY;
 
     // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
-    let previousSizeOfResize = 0;
+    let previousSquaresMoved = 0;
+
+    // keep track of the previous valid squaresMoved (for pointerup callback)
+    let previousValidSquaresMoved = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       // define a lot of variables
       const dY = e.clientY - startY;
-      const resizeType = computeResizeType(ResizeDirection.TOP, dY);
       const squaresMoved =
         Math.round(dY / squareHeight) * DirectionMultiplier.TOP;
+      const resizeType = computeResizeType(squaresMoved);
       const relativeDistanceMoved = squaresMoved * squareHeight;
       const newHeight = startSize.height + relativeDistanceMoved;
       const newTop = startPosition.top - relativeDistanceMoved;
 
       // prevent unnecessary calls to shouldResizeCallback
-      if (previousSizeOfResize === squaresMoved) return;
+      if (previousSquaresMoved === squaresMoved) return;
 
       // There are only three conditions:
       if (squaresMoved === 0) {
@@ -229,6 +230,7 @@ const Resizable = ({
           top: startPosition.top,
           left: startPosition.left,
         });
+        previousValidSquaresMoved = squaresMoved;
       } else if (resizeType === ResizeType.EXPAND) {
         // 2. expand. only resize if resizeCallback allows it
         if (shouldResizeCallback({ squaresMoved })) {
@@ -240,6 +242,7 @@ const Resizable = ({
             top: newTop,
             left: startPosition.left,
           });
+          previousValidSquaresMoved = squaresMoved;
         }
       } else if (resizeType === ResizeType.SHRINK) {
         // 3. shrink to the smallest possible size
@@ -251,21 +254,24 @@ const Resizable = ({
           top: Math.min(newTop, startPosition.top + startSize.height - 135),
           left: startPosition.left,
         });
+
+        // TODO: is this right?
+        previousValidSquaresMoved = Math.min(
+          squaresMoved,
+          Math.ceil(135 / squareHeight) * DirectionMultiplier.TOP
+        );
       } else {
         // throw error
         console.error("Should not reach here!");
       }
 
-      // update previousSizeOfResize
-      previousSizeOfResize = squaresMoved;
+      // update previousSquaresMoved
+      previousSquaresMoved = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY; // the distance the pointer has moved
-      const gapSize = Math.round(deltaY / squareHeight); // the number of gaps the pointer has moved
-
-      onResizeEndCallback({ squaresMoved: -gapSize });
+      onResizeEndCallback({ squaresMoved: previousValidSquaresMoved });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -293,13 +299,16 @@ const Resizable = ({
     // keep track of the previous squaresMoved to prevent unnecessary calls to shouldResizeCallback
     let previousSquaresMoved = 0;
 
+    // keep track of the previous valid squaresMoved (for pointerup callback)
+    let previousValidSquaresMoved = 0;
+
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       // define a lot of variables
       const dX = e.clientX - startX;
-      const resizeType = computeResizeType(ResizeDirection.RIGHT, dX);
       const squaresMoved =
         Math.round(dX / squareWidth) * DirectionMultiplier.RIGHT; // can be postive or negative
+      const resizeType = computeResizeType(squaresMoved);
       const relativeDistanceMoved = squaresMoved * squareWidth;
       const newWidth = startSize.width + relativeDistanceMoved;
 
@@ -313,6 +322,7 @@ const Resizable = ({
           width: startSize.width,
           height: startSize.height,
         });
+        previousValidSquaresMoved = squaresMoved;
       } else if (resizeType === ResizeType.EXPAND) {
         // 2. expand. only resize if resizeCallback allows it
         if (shouldResizeCallback({ squaresMoved })) {
@@ -320,6 +330,7 @@ const Resizable = ({
             width: newWidth,
             height: startSize.height,
           });
+          previousValidSquaresMoved = squaresMoved;
         }
       } else if (resizeType === ResizeType.SHRINK) {
         // 3. shrink to the smallest possible size
@@ -329,6 +340,10 @@ const Resizable = ({
           width: Math.max(newWidth, Math.ceil(135 / squareWidth) * 135),
           height: startSize.height,
         });
+        previousValidSquaresMoved = Math.min(
+          squaresMoved,
+          Math.ceil(135 / squareWidth) * DirectionMultiplier.RIGHT
+        );
       } else {
         // throw error
         console.error("Should not reach here!");
@@ -340,10 +355,7 @@ const Resizable = ({
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX; // the distance the pointer has moved
-      const gapSize = Math.round(deltaX / squareWidth); // the number of gaps the pointer has moved
-
-      onResizeEndCallback({ squaresMoved: gapSize });
+      onResizeEndCallback({ squaresMoved: previousValidSquaresMoved });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);
@@ -369,20 +381,23 @@ const Resizable = ({
     const startY = e.clientY;
 
     // keep track of the previous size of resize to prevent unnecessary calls to shouldResizeCallback
-    let previousSizeOfResize = 0;
+    let previousSquaresMoved = 0;
+
+    // keep track of the previous valid squaresMoved (for pointerup callback)
+    let previousValidSquaresMoved = 0;
 
     // create function to be called when pointer move
     const onPointerMove = (e: MouseEvent) => {
       // define a lot of variables
       const dY = e.clientY - startY;
-      const resizeType = computeResizeType(ResizeDirection.BOTTOM, dY);
       const squaresMoved =
         Math.round(dY / squareHeight) * DirectionMultiplier.BOTTOM;
+      const resizeType = computeResizeType(squaresMoved);
       const relativeDistanceMoved = squaresMoved * squareHeight;
       const newHeight = startSize.height + relativeDistanceMoved;
 
       // prevent unnecessary calls to shouldResizeCallback
-      if (previousSizeOfResize === squaresMoved) return;
+      if (previousSquaresMoved === squaresMoved) return;
 
       // There are only three conditions:
       if (squaresMoved === 0) {
@@ -391,6 +406,7 @@ const Resizable = ({
           width: startSize.width,
           height: startSize.height,
         });
+        previousValidSquaresMoved = squaresMoved;
       } else if (resizeType === ResizeType.EXPAND) {
         // 2. expand. only resize if resizeCallback allows it
         if (shouldResizeCallback({ squaresMoved })) {
@@ -398,6 +414,7 @@ const Resizable = ({
             width: startSize.width,
             height: newHeight,
           });
+          previousValidSquaresMoved = squaresMoved;
         }
       } else if (resizeType === ResizeType.SHRINK) {
         // 3. shrink to the smallest possible size
@@ -405,21 +422,23 @@ const Resizable = ({
           width: startSize.width,
           height: Math.max(newHeight, Math.ceil(135 / squareHeight) * 135),
         });
+
+        previousValidSquaresMoved = Math.min(
+          squaresMoved,
+          Math.ceil(135 / squareHeight) * DirectionMultiplier.BOTTOM
+        );
       } else {
         // throw error
         console.error("Should not reach here!");
       }
 
-      // update previousSizeOfResize
-      previousSizeOfResize = squaresMoved;
+      // update previousSquaresMoved
+      previousSquaresMoved = squaresMoved;
     };
 
     // create function to remove event listeners when pointer up
     const onPointerUp = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY; // the distance the pointer has moved
-      const gapSize = Math.round(deltaY / squareHeight); // the number of gaps the pointer has moved
-
-      onResizeEndCallback({ squaresMoved: gapSize });
+      onResizeEndCallback({ squaresMoved: previousValidSquaresMoved });
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("contextmenu", onContextMenu);

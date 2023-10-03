@@ -1,7 +1,15 @@
 import { StateCreator } from "zustand";
-import { BentoDataSlice } from "./bentoDataSlice";
+import {
+  BentoDataSlice,
+  BentoIngredient2D,
+  BentoIngredientType,
+} from "./bentoDataSlice";
 import { Coordinates } from "@/components/Bento";
-import { ShouldResizeCallbackProps } from "@/components/Resizable";
+import {
+  ResizeType,
+  ShouldResizeCallbackProps,
+  computeResizeType,
+} from "@/components/Resizable";
 import { BentoActionSlice } from "./bentoActionSlice";
 
 export enum ResizeDirection {
@@ -24,7 +32,7 @@ export interface ResizeSlice {
   directionOfResize: ResizeDirection | null;
   setDirectionOfResize: (direction: ResizeDirection | null) => void;
 
-  // determines whether the resize is possible using coordinates, direction, and snapSize
+  // determines whether the resize is possible using coordinates, direction, and sizeOfResize
   isResizePossible: (props: ShouldResizeCallbackProps) => boolean;
 
   // resize the object (assumes isResizePossible is true)
@@ -52,41 +60,49 @@ export const createResizeSlice: StateCreator<
     set({ directionOfResize: direction });
   },
 
-  isResizePossible: ({ snapSize }: ShouldResizeCallbackProps) => {
-    // snapSize must be positive in the direction of resize
-    if (snapSize < 0) return false;
+  isResizePossible: ({ squaresMoved }: ShouldResizeCallbackProps) => {
+    console.log(`[isResizePossible] squaresMoved: ${squaresMoved}`);
+    // TODO: ??? squaresMoved must be positive in the direction of resize
+    if (squaresMoved < 0) return false;
 
-    const { coordinateOfObject, directionOfResize, bentoIngredients2D } = get();
+    const {
+      coordinateOfObject,
+      directionOfResize,
+      bentoIngredients2D: ingredients2d,
+    } = get();
 
-    // 1. check if coordinateOfObject, directionOfResize, or snapSize are not null
-    if (!coordinateOfObject || !directionOfResize || !snapSize) return false;
+    // 1. check if coordinateOfObject, directionOfResize, or sizeOfResize are not null
+    if (!coordinateOfObject || !directionOfResize || !squaresMoved)
+      return false;
 
     const { x, y } = coordinateOfObject;
-    const ingredientBeingResized = bentoIngredients2D[y][x]!;
+    const ingredientBeingResized = ingredients2d[y][x]!;
     const { width, height } = ingredientBeingResized;
-
-    console.log("isResizePossible being called!!", directionOfResize);
 
     // 2. for each direction, check if cell is within bounds + unoccupied
     switch (directionOfResize) {
       case ResizeDirection.TOP:
         // return if within bounds
-        if (y - snapSize < 0) {
-          console.log("FALSE - Not within bounds");
+        if (y - squaresMoved < 0) {
+          console.log("[IsResizePossible] FALSE - Not within bounds");
           return false;
         }
 
         // checks if all cells are unoccupied (depends on width of object)
         for (let currWidth = 0; currWidth < width; currWidth++) {
-          for (let currSnap = 1; currSnap <= snapSize; currSnap++) {
-            if (bentoIngredients2D[y - currSnap][x + currWidth] !== null) {
+          for (let currSnap = 1; currSnap <= squaresMoved; currSnap++) {
+            if (ingredients2d[y - currSnap][x + currWidth] !== null) {
               console.log(
-                `FALSE - Cell ${x + currWidth}, ${y - currSnap} is occupied`
+                `[IsResizePossible] FALSE - Cell ${x + currWidth}, ${
+                  y - currSnap
+                } is occupied`
               );
               return false;
             } else {
               console.log(
-                `Cell ${x + currWidth}, ${y - currSnap} is unoccupied`
+                `[IsResizePossible] Cell ${x + currWidth}, ${
+                  y - currSnap
+                } is unoccupied`
               );
             }
           }
@@ -95,22 +111,27 @@ export const createResizeSlice: StateCreator<
         return true;
       case ResizeDirection.BOTTOM:
         // return if within bounds
-        if (y + snapSize + height > bentoIngredients2D.length) {
-          console.log("FALSE - Not within bounds");
+        if (y + squaresMoved + height > ingredients2d.length) {
+          console.log("[IsResizePossible] FALSE - Not within bounds");
           return false;
         }
 
         // checks if all cells are unoccupied (depends on width of object)
+        const bottomMost = y + height - 1; // the bottommost cell of the object
         for (let currWidth = 0; currWidth < width; currWidth++) {
-          for (let currSnap = 1; currSnap <= snapSize; currSnap++) {
-            if (bentoIngredients2D[y + currSnap][x + currWidth] !== null) {
+          for (let currSnap = 1; currSnap <= squaresMoved; currSnap++) {
+            if (ingredients2d[bottomMost + currSnap][x + currWidth] !== null) {
               console.log(
-                `FALSE - Cell ${x + currWidth}, ${y + currSnap} is occupied`
+                `[IsResizePossible] FALSE - Cell ${x + currWidth}, ${
+                  bottomMost + currSnap
+                } is occupied`
               );
               return false;
             } else {
               console.log(
-                `Cell ${x + currWidth}, ${y + currSnap} is unoccupied`
+                `[IsResizePossible] Cell ${x + currWidth}, ${
+                  bottomMost + currSnap
+                } is unoccupied`
               );
             }
           }
@@ -119,22 +140,26 @@ export const createResizeSlice: StateCreator<
         return true;
       case ResizeDirection.LEFT:
         // return if within bounds
-        if (x - snapSize < 0) {
-          console.log("FALSE - Not within bounds");
+        if (x - squaresMoved < 0) {
+          console.log("[IsResizePossible] FALSE - Not within bounds");
           return false;
         }
 
         // checks if all cells are unoccupied (depends on height of object)
         for (let currHeight = 0; currHeight < height; currHeight++) {
-          for (let currSnap = 1; currSnap <= snapSize; currSnap++) {
-            if (bentoIngredients2D[y + currHeight][x - currSnap] !== null) {
+          for (let currSnap = 1; currSnap <= squaresMoved; currSnap++) {
+            if (ingredients2d[y + currHeight][x - currSnap] !== null) {
               console.log(
-                `FALSE - Cell ${x - currSnap}, ${y + currHeight} is occupied`
+                `[IsResizePossible] FALSE - Cell ${x - currSnap}, ${
+                  y + currHeight
+                } is occupied`
               );
               return false;
             } else {
               console.log(
-                `Cell ${x - currSnap}, ${y + currHeight} is unoccupied`
+                `[IsResizePossible] Cell ${x - currSnap}, ${
+                  y + currHeight
+                } is unoccupied`
               );
             }
           }
@@ -143,24 +168,27 @@ export const createResizeSlice: StateCreator<
         return true;
       case ResizeDirection.RIGHT:
         // return if within bounds
-        console.log("RIGHT");
-        console.log(x, snapSize, width, bentoIngredients2D[y].length);
-        if (x + snapSize + width > bentoIngredients2D[y].length) {
-          console.log("FALSE - Not within bounds");
+        if (x + width + squaresMoved > ingredients2d[y].length) {
+          console.log("[IsResizePossible] FALSE - Not within bounds");
           return false;
         }
 
         // checks if all cells are unoccupied (depends on height of object)
+        const rightMost = x + width - 1; // the rightmost cell of the object
         for (let currHeight = 0; currHeight < height; currHeight++) {
-          for (let currSnap = 1; currSnap <= snapSize; currSnap++) {
-            if (bentoIngredients2D[y + currHeight][x + currSnap] !== null) {
+          for (let square = 1; square <= squaresMoved; square++) {
+            if (ingredients2d[y + currHeight][rightMost + square] !== null) {
               console.log(
-                `FALSE - Cell ${x + currSnap}, ${y + currHeight} is occupied`
+                `[IsResizePossible] FALSE - Cell ${rightMost + square}, ${
+                  y + currHeight
+                } is occupied`
               );
               return false;
             } else {
               console.log(
-                `Cell ${x + currSnap}, ${y + currHeight} is unoccupied`
+                `[IsResizePossible] Cell ${rightMost + square}, ${
+                  y + currHeight
+                } is unoccupied`
               );
             }
           }
@@ -173,7 +201,265 @@ export const createResizeSlice: StateCreator<
     }
   },
 
-  resizeObject: ({ snapSize }: ShouldResizeCallbackProps) => {
+  resizeObject: ({
+    // can be positive or negative in the direction of resize
+    squaresMoved,
+  }: ShouldResizeCallbackProps) => {
+    // get the required fields from store
+    const {
+      directionOfResize,
+      coordinateOfObject,
+      bentoIngredients,
+      bentoIngredients2D,
+    } = get();
+
+    // parse input and get the required information
+    const result = parseResizeInput(
+      directionOfResize,
+      coordinateOfObject,
+      bentoIngredients2D,
+      squaresMoved
+    );
+
+    // return if input is invalid. can't resize
+    if (!result.isValid || !directionOfResize) return;
+
+    // destructure the result
+    const { x, y, width, height, objectBeingResized, resizeType } = result;
+
+    console.log(
+      `[ResizeObject] ${height}x${width} at (${x}, ${y}) is being resized ${directionOfResize} (${resizeType}) by ${squaresMoved} squares`
+    );
+
     // TODO:
+    // come up with another variable name for squaresMoved
+    let squaresMovedClamped = squaresMoved;
+
+    // There are only three conditions:
+    if (squaresMoved === 0) {
+      console.log("[ResizeObject] NO SQUARES MOVED");
+      return;
+    } else if (resizeType === ResizeType.EXPAND) {
+      // handle squaresMoved too large when expanding
+
+      switch (directionOfResize) {
+        case ResizeDirection.TOP:
+          break;
+        case ResizeDirection.BOTTOM:
+          break;
+        case ResizeDirection.LEFT:
+          break;
+        case ResizeDirection.RIGHT:
+          break;
+      }
+    } else if (resizeType === ResizeType.SHRINK) {
+      // handle squaresMoved too negative when shrinking
+
+      switch (directionOfResize) {
+        case ResizeDirection.TOP:
+        case ResizeDirection.BOTTOM:
+          // compute the final height
+          const finalHeight = computeNewHeight(
+            height,
+            directionOfResize,
+            squaresMoved
+          );
+
+          // don't resize if the height is 0 or less
+          if (finalHeight <= 0) squaresMovedClamped = 0;
+
+          break;
+        case ResizeDirection.LEFT:
+        case ResizeDirection.RIGHT:
+          // compute the final width
+          const finalWidth = computeNewWidth(
+            width,
+            directionOfResize,
+            squaresMoved
+          );
+
+          // don't resize if the width is 0 or less
+          if (finalWidth <= 0) squaresMovedClamped = 0;
+
+          break;
+      }
+    } else {
+      // throw error
+      throw new Error("Invalid resize type");
+    }
+
+    console.log("====================RESIZING====================");
+
+    // resize the object
+    const [newBentoIngredients, newBentoIngredients2D] = performResizing(
+      objectBeingResized,
+      directionOfResize,
+      squaresMovedClamped,
+      bentoIngredients,
+      bentoIngredients2D
+    );
+
+    // update bentoIngredients and bentoIngredients2D
+    set({
+      bentoIngredients: newBentoIngredients,
+      bentoIngredients2D: newBentoIngredients2D,
+    });
   },
 });
+
+// ----------------------------------------------------------------------
+// Helper Functions
+// ----------------------------------------------------------------------
+
+const performResizing = (
+  objectBeingResized: BentoIngredientType,
+  directionOfResize: ResizeDirection,
+  squaresMoved: number,
+  bentoIngredients: BentoIngredientType[],
+  bentoIngredients2D: BentoIngredient2D
+): [BentoIngredientType[], BentoIngredient2D] => {
+  // TODO:
+
+  // return [bentoIngredients, bentoIngredients2D];
+  const { x, y } = objectBeingResized.coordinate;
+  const { width, height } = objectBeingResized;
+
+  console.log(
+    `[PerformResizing] ${height}x${width} at (${x}, ${y}) is being resized ${directionOfResize} by ${squaresMoved} squares`
+  );
+
+  const newObject: BentoIngredientType = {
+    ...objectBeingResized,
+    width: computeNewWidth(width, directionOfResize, squaresMoved),
+    height: computeNewHeight(height, directionOfResize, squaresMoved),
+    coordinate: computeNewCoordinate(
+      objectBeingResized.coordinate,
+      directionOfResize,
+      squaresMoved
+    ),
+  };
+
+  // replace the object being resized with the new object
+  const newBentoIngredients = bentoIngredients.map((ingredient) => {
+    if (ingredient === objectBeingResized) return newObject;
+    else return ingredient;
+  });
+
+  const newBentoIngredients2D = bentoIngredients2D;
+  const newX = newObject.coordinate.x;
+  const newY = newObject.coordinate.y;
+  console.log("[PerformResizing] newObject: ", newObject);
+
+  // for shrinking, remove the squares that are no longer part of the object
+  if (squaresMoved < 0) {
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width + squaresMoved; j++) {
+        newBentoIngredients2D[y + i][x + j] = null;
+      }
+    }
+  }
+
+  // iterate through the ingredient's squares and add them to bentoIngredients2D
+  for (let i = 0; i < newObject.height; i++) {
+    for (let j = 0; j < newObject.width; j++) {
+      newBentoIngredients2D[newY + i][newX + j] = newObject;
+    }
+  }
+
+  return [newBentoIngredients, newBentoIngredients2D];
+};
+
+const computeNewCoordinate = (
+  coordinate: Coordinates,
+  directionOfResize: ResizeDirection,
+  sizeOfResize: number
+): Coordinates => {
+  const { x, y } = coordinate;
+
+  switch (directionOfResize) {
+    case ResizeDirection.TOP:
+      return { x, y: y - sizeOfResize };
+    case ResizeDirection.BOTTOM:
+      return { x, y };
+    case ResizeDirection.LEFT:
+      return { x: x - sizeOfResize, y };
+    case ResizeDirection.RIGHT:
+      return { x, y };
+  }
+};
+
+const computeNewHeight = (
+  height: number,
+  directionOfResize: ResizeDirection,
+  sizeOfResize: number
+): number => {
+  switch (directionOfResize) {
+    case ResizeDirection.TOP:
+    case ResizeDirection.BOTTOM:
+      return height + sizeOfResize;
+    case ResizeDirection.LEFT:
+    case ResizeDirection.RIGHT:
+      return height;
+  }
+};
+
+const computeNewWidth = (
+  width: number,
+  directionOfResize: ResizeDirection,
+  sizeOfResize: number
+): number => {
+  switch (directionOfResize) {
+    case ResizeDirection.TOP:
+    case ResizeDirection.BOTTOM:
+      return width;
+    case ResizeDirection.LEFT:
+    case ResizeDirection.RIGHT:
+      return width + sizeOfResize;
+  }
+};
+
+type ResizeObjectParsedInputType =
+  | {
+      isValid: false;
+    }
+  | {
+      isValid: true;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      objectBeingResized: BentoIngredientType;
+      resizeType: ResizeType;
+    };
+
+const parseResizeInput = (
+  directionOfResize: ResizeDirection | null,
+  coordinateOfObject: Coordinates | null,
+  bentoIngredients2D: BentoIngredient2D,
+  squaresMoved: number
+): ResizeObjectParsedInputType => {
+  // isValid is false if any of the required fields are null
+  if (!directionOfResize || !coordinateOfObject) return { isValid: false };
+
+  // compute the necessary fields
+  const { x, y } = coordinateOfObject;
+  const objectBeingResized = bentoIngredients2D[y][x];
+
+  // isValid is false if the object being resized is null
+  if (!objectBeingResized) return { isValid: false };
+
+  // compute the necessary fields
+  const { width, height } = objectBeingResized;
+  const resizeType = computeResizeType(squaresMoved);
+
+  // successfully parsed the input. return the necessary fields
+  return {
+    isValid: true,
+    x,
+    y,
+    width,
+    height,
+    objectBeingResized,
+    resizeType,
+  };
+};
