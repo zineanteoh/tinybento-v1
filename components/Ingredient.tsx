@@ -1,11 +1,13 @@
 import React from "react";
 import { CONTAINER_HEIGHT, CONTAINER_WIDTH } from "./Bento";
-import { IngredientVariant, IngredientProps } from "@/utils/interfaces";
-import styles from "./Ingredient.module.css";
-import Resizable, {
-  ResizeEndCallbackProps,
+import {
+  IngredientVariant,
+  IngredientProps,
   ResizeStartCallbackProps,
-} from "./Resizable";
+  ResizeEndCallbackProps,
+} from "@/utils/interfaces";
+import styles from "./Ingredient.module.css";
+import Resizable from "./Resizable";
 import { useStore } from "@/store/store";
 
 // TODO: hardcode padding here for now

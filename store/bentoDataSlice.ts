@@ -6,7 +6,7 @@ import {
 import { StateCreator } from "zustand";
 import { DragSlice } from "./dragSlice";
 
-export type BentoDataSlice = {
+export interface BentoDataSlice {
   // keep track of the dimension of the bento
   dimension: Dimension;
   setDimension: (dimension: Dimension) => void;
@@ -14,7 +14,7 @@ export type BentoDataSlice = {
   // keep track of the ingredients (both dropped and preview)
   bentoIngredients: BentoIngredientType[];
   bentoIngredients2D: BentoIngredient2D;
-};
+}
 
 // TODO: hardcode for now
 const DIMENSION: Dimension = {

@@ -1,23 +1,15 @@
 import { StateCreator } from "zustand";
 import { BentoDataSlice } from "./bentoDataSlice";
+import { BentoActionSlice } from "./bentoActionSlice";
 import {
   BentoIngredient2D,
   BentoIngredientType,
   Coordinates,
-} from "@/utils/interfaces";
-import {
+  ResizeDirection,
   ResizeType,
   ShouldResizeCallbackProps,
-  computeResizeType,
-} from "@/components/Resizable";
-import { BentoActionSlice } from "./bentoActionSlice";
-
-export enum ResizeDirection {
-  TOP = "TOP",
-  BOTTOM = "BOTTOM",
-  LEFT = "LEFT",
-  RIGHT = "RIGHT",
-}
+} from "@/utils/interfaces";
+import { computeResizeType } from "@/utils/helper";
 
 export interface ResizeSlice {
   // whether the user is resizing an object

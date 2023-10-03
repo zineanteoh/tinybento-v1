@@ -42,6 +42,25 @@ export enum IngredientVariant {
   PREVIEW = "preview",
 }
 
+export enum ResizeType {
+  EXPAND = "EXPAND",
+  SHRINK = "SHRINK",
+}
+
+export enum ResizeDirection {
+  TOP = "TOP",
+  BOTTOM = "BOTTOM",
+  LEFT = "LEFT",
+  RIGHT = "RIGHT",
+}
+
+export enum DirectionMultiplier {
+  LEFT = -1,
+  TOP = -1,
+  RIGHT = 1,
+  BOTTOM = 1,
+}
+
 // ============================================================================
 // Props Interfaces
 // ============================================================================
@@ -52,3 +71,14 @@ export interface IngredientProps {
   ingredient: BentoIngredientType;
   variant: IngredientVariant;
 }
+
+export interface ResizeStartCallbackProps {
+  coordinateOfObject: { x: number; y: number };
+  directionOfResize: ResizeDirection;
+}
+
+export interface ResizeEndCallbackProps {
+  squaresMoved: number;
+}
+
+export interface ShouldResizeCallbackProps extends ResizeEndCallbackProps {}

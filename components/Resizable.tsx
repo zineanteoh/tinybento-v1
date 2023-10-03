@@ -1,40 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import styles from "./Resizable.module.css";
-import { ResizeDirection } from "@/store/resizeSlice";
-import { Coordinates } from "@/utils/interfaces";
-
-export interface ResizeStartCallbackProps {
-  coordinateOfObject: { x: number; y: number };
-  directionOfResize: ResizeDirection;
-}
-
-export interface ResizeEndCallbackProps {
-  squaresMoved: number;
-}
-
-export interface ShouldResizeCallbackProps extends ResizeEndCallbackProps {}
-
-export enum ResizeType {
-  EXPAND = "EXPAND",
-  SHRINK = "SHRINK",
-}
-
-enum DirectionMultiplier {
-  LEFT = -1,
-  TOP = -1,
-  RIGHT = 1,
-  BOTTOM = 1,
-}
-
-/**
- * Compute whether resize action is expanding or shrinking
- * @param squaresMoved        The number of squares moved (positive is expanding, negative is shrinking)
- * @returns                   EXPAND or SHRINK
- */
-export const computeResizeType = (squaresMoved: number): ResizeType => {
-  return squaresMoved > 0 ? ResizeType.EXPAND : ResizeType.SHRINK;
-};
+import {
+  Coordinates,
+  DirectionMultiplier,
+  ResizeDirection,
+  ResizeEndCallbackProps,
+  ResizeStartCallbackProps,
+  ResizeType,
+  ShouldResizeCallbackProps,
+} from "@/utils/interfaces";
+import { computeResizeType } from "@/utils/helper";
 
 /**
  * A custom wrapper for creating a resizable component.

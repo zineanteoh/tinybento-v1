@@ -10,7 +10,7 @@ import { StateCreator } from "zustand";
 import { BentoDataSlice } from "./bentoDataSlice";
 import { DragSlice } from "./dragSlice";
 
-export type BentoActionSlice = {
+export interface BentoActionSlice {
   // adding dropped ingredient
   addDroppedIngredient: (droppedCoordinate: Coordinates) => void;
 
@@ -26,7 +26,7 @@ export type BentoActionSlice = {
   // clear dropped ingredients
   clearAllDroppedIngredients: () => void;
   clearVariantIngredients: (variantToClear: IngredientVariant) => void;
-};
+}
 
 export const createBentoActionSlice: StateCreator<
   BentoActionSlice & BentoDataSlice & DragSlice,

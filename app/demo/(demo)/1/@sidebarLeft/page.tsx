@@ -93,8 +93,6 @@ const SidebarLeft = () => {
       </div>
 
       <div>directionOfResize: {directionOfResize}</div>
-
-      <div>stepSize: {}</div>
     </div>
   );
 };
