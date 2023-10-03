@@ -29,7 +29,6 @@ const DemoLayout = (props: {
 
   // where the magic happens
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log("END DRAGGING");
     clearAllPreviewIngredients();
 
     if (event.over && event.over.id !== null) {

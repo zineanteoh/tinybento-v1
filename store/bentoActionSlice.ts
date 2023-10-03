@@ -38,8 +38,6 @@ export const createBentoActionSlice: StateCreator<
     addIngredient(droppedCoordinate, IngredientVariant.DROPPED);
   },
   addIngredient: (droppedCoordinate, droppedVariant) => {
-    console.log("ADDING INGREDIENT", droppedVariant);
-
     const { dimension, dragging, bentoIngredients, bentoIngredients2D } = get();
 
     // if no dragging, return
@@ -81,7 +79,6 @@ export const createBentoActionSlice: StateCreator<
     });
   },
   removeIngredient: (coordinateToRemove) => {
-    console.log("REMOVING INGREDIENT AT", coordinateToRemove, "...");
     const { bentoIngredients, bentoIngredients2D } = get();
 
     // find the ingredient to remove
