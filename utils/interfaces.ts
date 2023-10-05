@@ -11,6 +11,11 @@ export interface Coordinates {
   y: number;
 }
 
+export interface CSSPosition {
+  top: number;
+  left: number;
+}
+
 // ============================================================================
 // Bento Ingredients Interfaces
 // ============================================================================
