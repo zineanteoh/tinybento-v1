@@ -44,7 +44,7 @@ const Resizable = ({
 
   // optional stylings
   padding = 20, // padding of the resizable component
-  borderWidth = 8, // width of the border TODO: make resizable not depend on border width
+  borderWidth = 8, // width of the border
   borderColor = "pink", // color of the border
 
   // callbacks
@@ -59,8 +59,8 @@ const Resizable = ({
   });
   // keep track of the position (in px) of the component relative to the parent
   const [position, setPosition] = useState({
-    top: coordinate.y * squareHeight + padding / 2 + 2, // add 2 to account for top/down border
-    left: coordinate.x * squareWidth + padding / 2 + 2, // add 2 to account for left/right border
+    top: coordinate.y * squareHeight,
+    left: coordinate.x * squareWidth,
   });
   // store the minimized size of 1x1 square
   const minimizedSquareWidth = squareWidth - 2 * padding;
@@ -145,7 +145,6 @@ const Resizable = ({
           ),
         });
 
-        // TODO: is this right?
         previousValidSquaresMoved = Math.min(
           squaresMoved,
           Math.ceil(minimizedSquareWidth / squareWidth) *
@@ -249,7 +248,6 @@ const Resizable = ({
           left: startPosition.left,
         });
 
-        // TODO: is this right?
         previousValidSquaresMoved = Math.min(
           squaresMoved,
           Math.ceil(minimizedSquareHeight / squareHeight) *
@@ -456,10 +454,8 @@ const Resizable = ({
     <div
       style={{
         position: "absolute",
-        width: size.width + borderWidth * 2,
-        height: size.height + borderWidth * 2,
-        top: position.top,
-        left: position.left,
+        top: position.top + padding / 2 + 2, // add 2 to account for top+down border
+        left: position.left + padding / 2 + 2, // add 2 to account for left+right border
       }}
     >
       {/* left border */}
@@ -469,8 +465,6 @@ const Resizable = ({
           backgroundColor: borderColor,
           width: borderWidth,
           height: size.height + borderWidth * 2,
-          top: 0,
-          left: 0,
         }}
         onPointerDown={handleLeftBorderPointerDown}
       />
@@ -481,8 +475,6 @@ const Resizable = ({
           backgroundColor: borderColor,
           width: size.width + borderWidth * 2,
           height: borderWidth,
-          top: 0,
-          left: 0,
         }}
         onPointerDown={handleTopBorderPointerDown}
       />
@@ -493,7 +485,6 @@ const Resizable = ({
           backgroundColor: borderColor,
           width: borderWidth,
           height: size.height + borderWidth * 2,
-          top: 0,
           left: size.width + borderWidth,
         }}
         onPointerDown={handleRightBorderPointerDown}
@@ -506,7 +497,6 @@ const Resizable = ({
           width: size.width + borderWidth * 2,
           height: borderWidth,
           top: size.height + borderWidth,
-          left: 0,
         }}
         onPointerDown={handleBottomBorderPointerDown}
       />
@@ -530,6 +520,7 @@ const Resizable = ({
           position: "absolute",
           top: borderWidth,
           left: borderWidth,
+          color: "rgba(0, 0, 0, 0.5)",
         }}
       >
         <div>W{size.width}</div>
