@@ -4,6 +4,7 @@ import styles from "./Resizable.module.css";
 import {
   Coordinates,
   DirectionMultiplier,
+  ResizableProps,
   ResizeDirection,
   ResizeEndCallbackProps,
   ResizeStartCallbackProps,
@@ -35,22 +36,7 @@ const Resizable = ({
   onResizeStartCallback = () => {}, // The callback to call when resizing starts
   onResizeEndCallback = () => {}, // The callback to call when resizing ends
   shouldResizeCallback = () => true, // The callback to call when resizing starts and pointer moves
-}: {
-  children: React.ReactNode;
-  childWidth?: number;
-  childHeight?: number;
-  coordinate?: Coordinates;
-  childStyleToApply?: React.CSSProperties;
-  squareWidth?: number;
-  squareHeight?: number;
-  borderWidth?: number;
-  borderColor?: string;
-  startTop?: number;
-  startLeft?: number;
-  onResizeStartCallback?: (...arg: ResizeStartCallbackProps[]) => void;
-  onResizeEndCallback?: (...arg: ResizeEndCallbackProps[]) => void;
-  shouldResizeCallback?: (...arg: ShouldResizeCallbackProps[]) => boolean;
-}) => {
+}: ResizableProps) => {
   // keep track of the size of the resizable component
   const [size, setSize] = useState({
     width: childWidth,
