@@ -39,16 +39,14 @@ export type BentoIngredient2D = (BentoIngredientType | null)[][];
 // ============================================================================
 export interface ResizableProps {
   children: React.ReactNode;
-  childWidth?: number;
-  childHeight?: number;
-  coordinate?: Coordinates;
-  childStyleToApply?: React.CSSProperties;
-  squareWidth?: number;
-  squareHeight?: number;
+  childWidth: number;
+  childHeight: number;
+  coordinate: Coordinates;
+  squareWidth: number;
+  squareHeight: number;
+  padding?: number;
   borderWidth?: number;
   borderColor?: string;
-  startTop?: number;
-  startLeft?: number;
   onResizeStartCallback?: (...arg: ResizeStartCallbackProps[]) => void;
   onResizeEndCallback?: (...arg: ResizeEndCallbackProps[]) => void;
   shouldResizeCallback?: (...arg: ShouldResizeCallbackProps[]) => boolean;
@@ -87,9 +85,12 @@ export enum DirectionMultiplier {
 
 // Ingredient.tsx
 export interface IngredientProps {
-  dimension: Dimension;
+  bentoDimension: Dimension;
   ingredient: BentoIngredientType;
   variant: IngredientVariant;
+  bentoWidth: number;
+  bentoHeight: number;
+  padding?: number;
 }
 
 export interface ResizeStartCallbackProps {

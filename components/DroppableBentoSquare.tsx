@@ -3,6 +3,14 @@ import { useDroppable } from "@dnd-kit/core";
 import { Coordinates } from "@/utils/interfaces";
 import { useStore } from "@/store/store";
 
+const style = {
+  border: "1px solid black",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.1)",
+};
+
 const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
   const { addPreviewIngredient, clearAllPreviewIngredients } = useStore();
   const { x, y } = props.coordinate;
@@ -10,17 +18,6 @@ const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
   const { isOver, setNodeRef } = useDroppable({
     id: `${x},${y}`,
   });
-
-  const style = {
-    border: "1px solid black",
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
-    color: isOver ? "green" : undefined,
-  };
 
   useEffect(() => {
     const coordinate = { x, y } as Coordinates;

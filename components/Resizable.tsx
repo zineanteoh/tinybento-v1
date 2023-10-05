@@ -1,15 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import styles from "./Resizable.module.css";
+import styles, { border } from "./Resizable.module.css";
 import {
-  Coordinates,
   DirectionMultiplier,
   ResizableProps,
   ResizeDirection,
-  ResizeEndCallbackProps,
-  ResizeStartCallbackProps,
   ResizeType,
-  ShouldResizeCallbackProps,
 } from "@/utils/interfaces";
 import { computeResizeType } from "@/utils/helper";
 
@@ -20,19 +16,38 @@ import { computeResizeType } from "@/utils/helper";
  * via dragging the borders (implemented via event listeners).
  *
  * Optionally provide callback functions to be called
+ *
+ * e.g. a 1x1 ingredient in a single square of a 4x4 bento:
+ *      P = padding
+ *      B = border (resizable)
+ *      empty space = ingredient content
+ *
+ *       +-------------------+
+ *       |PPPPPPPPPPPPPPPPPPP|
+ *       |PBBBBBBBBBBBBBBBBBP|
+ *       |PB               BP|
+ *       |PB               BP|
+ *       |PB               BP|
+ *       |PB               BP|
+ *       |PB               BP|
+ *       |PBBBBBBBBBBBBBBBBBP|
+ *       |PPPPPPPPPPPPPPPPPPP|
+ *       +-------------------+
  */
 const Resizable = ({
-  children, // The children to render inside the resizable component
-  childWidth = 100, // The width of the children component
-  childHeight = 100, // The height of the children component
-  coordinate = { x: 0, y: 0 }, // The coordinate of the children component
-  childStyleToApply, // The style to apply to the children component
-  squareWidth = 50, // The width of a single square
-  squareHeight = 50, // The height of a single square
-  borderWidth = 8, // The width of the border
-  borderColor = "pink", // The color of the border
-  startTop = 0, // The starting top position of the resizable component
-  startLeft = 0, // The starting left position of the resizable component
+  children, // children to render inside the resizable component
+  childWidth, // width of the children component (in px)
+  childHeight, // height of the children component (in px)
+  coordinate, // coordinate of the children component e.g. {x: 0, y: 0}
+  squareWidth, // width of a single square (in px)
+  squareHeight, // height of a single square (in px)
+
+  // optional stylings
+  padding = 20, // padding of the resizable component
+  borderWidth = 8, // width of the border TODO: make resizable not depend on border width
+  borderColor = "pink", // color of the border
+
+  // callbacks
   onResizeStartCallback = () => {}, // The callback to call when resizing starts
   onResizeEndCallback = () => {}, // The callback to call when resizing ends
   shouldResizeCallback = () => true, // The callback to call when resizing starts and pointer moves
@@ -44,9 +59,12 @@ const Resizable = ({
   });
   // keep track of the position (in px) of the component relative to the parent
   const [position, setPosition] = useState({
-    top: startTop,
-    left: startLeft,
+    top: coordinate.y * squareHeight + padding / 2 + 2, // add 2 to account for top/down border
+    left: coordinate.x * squareWidth + padding / 2 + 2, // add 2 to account for left/right border
   });
+  // store the minimized size of 1x1 square
+  const minimizedSquareWidth = squareWidth - 2 * padding;
+  const minimizedSquareHeight = squareHeight - 2 * padding;
 
   // create function to prevent default (needed for better UX)
   const onContextMenu = (e: MouseEvent) => {
@@ -113,18 +131,25 @@ const Resizable = ({
       } else if (resizeType === ResizeType.SHRINK) {
         // 3. shrink to the smallest possible size
         setSize({
-          width: Math.max(newWidth, Math.ceil(135 / squareWidth) * 135),
+          width: Math.max(
+            newWidth,
+            Math.ceil(minimizedSquareWidth / squareWidth) * minimizedSquareWidth
+          ),
           height: startSize.height,
         });
         setPosition({
           top: startPosition.top,
-          left: Math.min(newLeft, startPosition.left + startSize.width - 135),
+          left: Math.min(
+            newLeft,
+            startPosition.left + startSize.width - minimizedSquareWidth
+          ),
         });
 
         // TODO: is this right?
         previousValidSquaresMoved = Math.min(
           squaresMoved,
-          Math.ceil(135 / squareWidth) * DirectionMultiplier.LEFT
+          Math.ceil(minimizedSquareWidth / squareWidth) *
+            DirectionMultiplier.LEFT
         );
       } else {
         // throw error
@@ -210,17 +235,25 @@ const Resizable = ({
         // 3. shrink to the smallest possible size
         setSize({
           width: startSize.width,
-          height: Math.max(newHeight, Math.ceil(135 / squareHeight) * 135),
+          height: Math.max(
+            newHeight,
+            Math.ceil(minimizedSquareHeight / squareHeight) *
+              minimizedSquareHeight
+          ),
         });
         setPosition({
-          top: Math.min(newTop, startPosition.top + startSize.height - 135),
+          top: Math.min(
+            newTop,
+            startPosition.top + startSize.height - minimizedSquareHeight
+          ),
           left: startPosition.left,
         });
 
         // TODO: is this right?
         previousValidSquaresMoved = Math.min(
           squaresMoved,
-          Math.ceil(135 / squareHeight) * DirectionMultiplier.TOP
+          Math.ceil(minimizedSquareHeight / squareHeight) *
+            DirectionMultiplier.TOP
         );
       } else {
         // throw error
@@ -297,14 +330,16 @@ const Resizable = ({
       } else if (resizeType === ResizeType.SHRINK) {
         // 3. shrink to the smallest possible size
         setSize({
-          // TODO: where is 135 coming from? should take from props somehow
-          // currently, 135 = width of a 1x1 ingredient
-          width: Math.max(newWidth, Math.ceil(135 / squareWidth) * 135),
+          width: Math.max(
+            newWidth,
+            Math.ceil(minimizedSquareWidth / squareWidth) * minimizedSquareWidth
+          ),
           height: startSize.height,
         });
         previousValidSquaresMoved = Math.min(
           squaresMoved,
-          Math.ceil(135 / squareWidth) * DirectionMultiplier.RIGHT
+          Math.ceil(minimizedSquareWidth / squareWidth) *
+            DirectionMultiplier.RIGHT
         );
       } else {
         // throw error
@@ -382,12 +417,17 @@ const Resizable = ({
         // 3. shrink to the smallest possible size
         setSize({
           width: startSize.width,
-          height: Math.max(newHeight, Math.ceil(135 / squareHeight) * 135),
+          height: Math.max(
+            newHeight,
+            Math.ceil(minimizedSquareHeight / squareHeight) *
+              minimizedSquareHeight
+          ),
         });
 
         previousValidSquaresMoved = Math.min(
           squaresMoved,
-          Math.ceil(135 / squareHeight) * DirectionMultiplier.BOTTOM
+          Math.ceil(minimizedSquareHeight / squareHeight) *
+            DirectionMultiplier.BOTTOM
         );
       } else {
         // throw error
@@ -474,7 +514,6 @@ const Resizable = ({
       {/* children */}
       <div
         style={{
-          ...childStyleToApply,
           position: "absolute",
           width: size.width,
           height: size.height,
@@ -483,12 +522,22 @@ const Resizable = ({
         }}
       >
         {children}
+      </div>
 
-        {/* TODO: remove. for debug only */}
+      {/* TODO: remove. for debug only */}
+      <div
+        style={{
+          position: "absolute",
+          top: borderWidth,
+          left: borderWidth,
+        }}
+      >
         <div>W{size.width}</div>
         <div>H{size.height}</div>
         <div>L{position.left}</div>
         <div>T{position.top}</div>
+        <div>SW{minimizedSquareWidth}</div>
+        <div>SH{minimizedSquareHeight}</div>
       </div>
     </div>
   );

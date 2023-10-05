@@ -1,5 +1,4 @@
 import React from "react";
-import { CONTAINER_HEIGHT, CONTAINER_WIDTH } from "./Bento";
 import {
   IngredientVariant,
   IngredientProps,
@@ -10,10 +9,22 @@ import styles from "./Ingredient.module.css";
 import Resizable from "./Resizable";
 import { useStore } from "@/store/store";
 
-// TODO: hardcode padding here for now
-const PADDING = 20;
+/**
+ * An ingredient is a draggable and resizable item that can be placed in a bento.
+ *
+ * It is styled absolutely, relative to the bento container.
+ *
+ */
+const Ingredient = ({
+  ingredient, // ingredient data
+  variant, // ingredient variant (dropped or preview)
+  bentoDimension, // dimension of the bento container e.g. { width: 4, height: 4}
+  bentoWidth, // width of the bento container (in px)
+  bentoHeight, // height of the bento container (in px)
 
-const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
+  // optional props
+  padding = 20, // padding of the ingredient (in px)
+}: IngredientProps) => {
   const {
     setIsResizing,
     setCoordinateOfObject,
@@ -22,15 +33,16 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
     resizeObject,
   } = useStore();
 
-  const widthPerSquare = CONTAINER_WIDTH / dimension.width;
-  const heightPerSquare = CONTAINER_HEIGHT / dimension.height;
+  // internally compute the size of each square in the bento
+  const widthPerSquare = bentoWidth / bentoDimension.width;
+  const heightPerSquare = bentoHeight / bentoDimension.height;
 
-  // compute the position and size of the ingredient
+  // compute the size and position of the ingredient
   const computedStyles = {
-    width: ingredient.width * widthPerSquare - 2 * PADDING,
-    height: ingredient.height * heightPerSquare - 2 * PADDING,
-    top: ingredient.coordinate.y * heightPerSquare + PADDING,
-    left: ingredient.coordinate.x * widthPerSquare + PADDING,
+    width: ingredient.width * widthPerSquare - 2 * padding, // width of ingredient (in px)
+    height: ingredient.height * heightPerSquare - 2 * padding, // height of ingredient (in px)
+    top: ingredient.coordinate.y * heightPerSquare + padding, // relative to the top border of bento container (in px)
+    left: ingredient.coordinate.x * widthPerSquare + padding, // relative to the left border of bento container (in px)
   };
 
   // modify stores when resizing starts
@@ -59,22 +71,27 @@ const Ingredient = ({ dimension, ingredient, variant }: IngredientProps) => {
       {/* Render Dropped */}
       {variant === IngredientVariant.DROPPED && (
         <Resizable
-          childStyleToApply={{
-            ...computedStyles,
-            backgroundColor: "lightgreen",
-          }}
-          childWidth={ingredient.width * widthPerSquare - 2 * PADDING}
-          childHeight={ingredient.height * heightPerSquare - 2 * PADDING}
+          childWidth={computedStyles.width}
+          childHeight={computedStyles.height}
           coordinate={ingredient.coordinate}
           squareWidth={widthPerSquare}
           squareHeight={heightPerSquare}
-          startTop={ingredient.coordinate.y * heightPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for top/down border
-          startLeft={ingredient.coordinate.x * widthPerSquare + 2 + PADDING / 2} // TODO: add 2 to account for left/right border
           onResizeStartCallback={handleResizeStart}
           onResizeEndCallback={handleResizeEnd}
           shouldResizeCallback={isResizePossible}
         >
-          {ingredient.height}x{ingredient.width}
+          {/* TODO: place ingredient component in here */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "lightgreen",
+              height: "100%",
+            }}
+          >
+            {ingredient.height}x{ingredient.width}
+          </div>
         </Resizable>
       )}
 

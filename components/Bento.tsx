@@ -4,10 +4,30 @@ import DroppableBentoSquare from "./DroppableBentoSquare";
 import Ingredient from "./Ingredient";
 import { BentoIngredientType } from "@/utils/interfaces";
 
-// TODO:
-export const CONTAINER_WIDTH = 700;
-export const CONTAINER_HEIGHT = 700;
+const BENTO_WIDTH = 700;
+const BENTO_HEIGHT = 700;
 
+/**
+ * A bento is a container that holds ingredients.
+ *
+ * It first renders a grid of DroppableBentoSquare(s).
+ * Then, it renders the ingredients (positioned absolutely) over it.
+ *
+ * e.g. a dimension 4x4 bento:
+ *
+ *        CONTAINER_WIDTH
+ *            (in px)
+ *       *---------------*
+ *       |   |   |   |   |
+ *       |---+---+---+---|
+ *       |   |   |   |   |
+ *       |---+---+---+---| CONTAINER_HEIGHT
+ *       |   |   |   |   |     (in px)
+ *       |---+---+---+---|
+ *       |   |   |   |   |
+ *       *---------------*
+ *
+ */
 const Bento = () => {
   const { dimension, bentoIngredients } = useStore();
 
@@ -29,8 +49,10 @@ const Bento = () => {
         <Ingredient
           key={index}
           ingredient={ingredient}
-          dimension={dimension}
           variant={ingredient.variant}
+          bentoDimension={dimension}
+          bentoWidth={BENTO_WIDTH}
+          bentoHeight={BENTO_HEIGHT}
         />
       );
     }
@@ -41,8 +63,8 @@ const Bento = () => {
       className="no-select"
       style={{
         position: "relative",
-        width: CONTAINER_WIDTH,
-        height: CONTAINER_HEIGHT,
+        width: BENTO_WIDTH,
+        height: BENTO_HEIGHT,
         display: "grid",
         gridTemplateColumns: `repeat(${dimension.width}, 1fr)`,
         gridTemplateRows: `repeat(${dimension.height}, 1fr)`,
