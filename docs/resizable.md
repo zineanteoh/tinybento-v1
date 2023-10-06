@@ -1,8 +1,5 @@
 # Resizing Algorithm
 
-<!-- add table of contents -->
-<!-- TOC -->
-
 ## Table of Contents
 
 - [Definitions](#definitions)
@@ -26,7 +23,7 @@ To wrap a `<ChildComponent />` in a resizable component, use the following synta
 </Resizable>
 ```
 
-The `<Resizable />` component accepts the following props:
+The `<Resizable />` component accepts the following props ([See Here](#resizable-1))
 
 **Why?**
 The `<Resizable />` component provides the following features:
