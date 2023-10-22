@@ -22,10 +22,15 @@ const EditAndPresent = () => {
     <div className={`no-select ${styles.container}`} onClick={switchMode}>
       {/* The icon in the middle */}
       <div
-        className={styles.circularContainer}
-        style={{ backgroundColor: computeEditPresentContainer(mode) }}
+        className={styles.iconContainer}
+        style={{ backgroundColor: computeEditPresentIconColor(mode) }}
       >
-        {mode === KitchenMode.Edit ? IconEdit : IconPresent}
+        <div className={computeEditPresentIconStyle(mode, KitchenMode.Edit)}>
+          {IconEdit}
+        </div>
+        <div className={computeEditPresentIconStyle(mode, KitchenMode.Present)}>
+          {IconPresent}
+        </div>
       </div>
 
       {/* The text */}
@@ -50,8 +55,15 @@ const EditAndPresent = () => {
 export default EditAndPresent;
 
 // helper function
-const computeEditPresentContainer = (mode: KitchenMode) => {
+const computeEditPresentIconColor = (mode: KitchenMode) => {
   return mode === KitchenMode.Edit ? "#FFDC62" : "#88DD61";
+};
+
+const computeEditPresentIconStyle = (
+  mode: KitchenMode,
+  isEqual: KitchenMode
+) => {
+  return `${styles.icon} ${mode === isEqual && styles.active}`;
 };
 
 const computeEditPresentOverlay = (mode: KitchenMode) => {
@@ -82,14 +94,14 @@ const IconEdit = (
           height="56.5685"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M28.0586 10.3003L32.4586 5.90025C28.4972 4.13088 23.6868 4.87157 20.4361 8.12233C17.1761 11.3824 16.4404 16.2108 18.2292 20.1787C18.0971 20.2789 17.9703 20.3892 17.8498 20.5097L5.4869 32.8726C4.0585 34.301 4.0585 36.6169 5.4869 38.0453C6.91531 39.4737 9.2312 39.4737 10.6596 38.0453L23.0225 25.6824C23.1109 25.594 23.1938 25.5022 23.2713 25.4075C27.3027 27.4057 32.3242 26.7259 35.6819 23.3682C38.9329 20.1173 39.6735 15.3066 37.9037 11.345L33.5035 15.7452C31.9999 17.2488 29.5622 17.2488 28.0586 15.7452C26.555 14.2417 26.555 11.8039 28.0586 10.3003Z"
         />
       </mask>
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M28.0586 10.3003L32.4586 5.90025C28.4972 4.13088 23.6868 4.87157 20.4361 8.12233C17.1761 11.3824 16.4404 16.2108 18.2292 20.1787C18.0971 20.2789 17.9703 20.3892 17.8498 20.5097L5.4869 32.8726C4.0585 34.301 4.0585 36.6169 5.4869 38.0453C6.91531 39.4737 9.2312 39.4737 10.6596 38.0453L23.0225 25.6824C23.1109 25.594 23.1938 25.5022 23.2713 25.4075C27.3027 27.4057 32.3242 26.7259 35.6819 23.3682C38.9329 20.1173 39.6735 15.3066 37.9037 11.345L33.5035 15.7452C31.9999 17.2488 29.5622 17.2488 28.0586 15.7452C26.555 14.2417 26.555 11.8039 28.0586 10.3003Z"
         fill="white"
       />
@@ -108,8 +120,8 @@ const IconPresent = (
       d="M36.25 24.357C36.8688 23.9998 37.25 23.3395 37.25 22.625C37.25 21.9105 36.8688 21.2502 36.25 20.893L5.3125 3.03117C4.6937 2.67391 3.9313 2.67391 3.3125 3.03117C2.6937 3.38844 2.3125 4.04869 2.3125 4.76322L2.3125 40.4868C2.3125 41.2013 2.6937 41.8616 3.3125 42.2188C3.9313 42.5761 4.69369 42.5761 5.3125 42.2188L36.25 24.357Z"
       fill="white"
       stroke="black"
-      stroke-width="4"
-      stroke-linejoin="round"
+      strokeWidth="4"
+      strokeLinejoin="round"
       transform="translate(5 0)"
     />
   </svg>
