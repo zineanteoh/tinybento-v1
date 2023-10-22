@@ -1,4 +1,4 @@
-.topContainer {
+.container {
   background: linear-gradient(
     72deg,
     #d8f8ff 7.01%,
@@ -7,35 +7,4 @@
   );
   width: 100vw;
   height: 100vh;
-}
-
-.topBar {
-  height: 10vh;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.profileContainer {
-  margin-left: 5%;
-  display: flex;
-}
-
-.profileImage {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-right: 10px;
-  background-color: pink;
-  border: 2.5px solid black;
-}
-
-.profileTextContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.profileBold {
-  font-weight: bold;
 }
