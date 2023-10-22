@@ -19,16 +19,22 @@ const EditAndPresent = () => {
   };
 
   return (
-    <div
-      className={`no-select ${styles.editAndPresentContainer}`}
-      onClick={switchMode}
-    >
-      <div>Edit</div>
-      <div>Present</div>
+    <div className={`no-select ${styles.container}`} onClick={switchMode}>
+      <div
+        className={styles.circularOverlay}
+        style={{ backgroundColor: computeEditPresentOverlay(mode) }}
+      />
+
       <div
         className={styles.circularContainer}
-        style={{ backgroundColor: computeEditPresentBg(mode) }}
+        style={{ backgroundColor: computeEditPresentContainer(mode) }}
       />
+
+      <div className={styles.textContainer}>
+        <div>Edit</div>
+        <br />
+        <div>Present</div>
+      </div>
     </div>
   );
 };
@@ -36,10 +42,18 @@ const EditAndPresent = () => {
 export default EditAndPresent;
 
 // helper function
-const computeEditPresentBg = (mode: KitchenMode) => {
+const computeEditPresentContainer = (mode: KitchenMode) => {
   if (mode === KitchenMode.Edit) {
     return "#FFDC62";
   } else {
     return "#88DD61";
+  }
+};
+
+const computeEditPresentOverlay = (mode: KitchenMode) => {
+  if (mode === KitchenMode.Edit) {
+    return "#FFE896";
+  } else {
+    return "#CDFFC5";
   }
 };

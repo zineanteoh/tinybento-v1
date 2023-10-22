@@ -1,31 +1,47 @@
-.editAndPresentContainer {
+.container {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
-
-  background-color: #d9d9d9;
   display: flex;
   justify-content: center;
-  padding: 0 auto;
-  border: 2.5px solid black;
-  width: 250px;
-  height: 40px;
+  background-color: #d9d9d9;
   border-radius: 100px;
 }
 
-.editAndPresentContainer:hover {
-  cursor: pointer;
+.textContainer {
+  border: 2.5px solid black;
+  border-radius: inherit;
+
+  width: 220px;
+  height: 40px;
+
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: center;
 }
 
-.dynamicSelector {
-  position: absolute;
+.textContainer > div {
+  margin: 0 auto;
 }
 
 .circularContainer {
-  width: 40px;
-  height: 40px;
+  position: absolute;
   border-radius: 50%;
   border: 2.5px solid black;
+  width: 40px;
+  height: 40px;
+}
+
+.circularOverlay {
   position: absolute;
-  top: -2px; /* subtract by the border width */
+  border: 2.5px solid black;
+  width: calc(50% + 20px);
+  height: 40px;
+  left: 0;
+  border-radius: 100px;
+  z-index: -1;
+}
+
+.container:hover {
+  cursor: pointer;
 }
