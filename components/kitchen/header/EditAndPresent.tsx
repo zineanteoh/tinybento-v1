@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import styles from "./EditAndPresent.module.css";
 
-enum KitchenMode {
+export enum KitchenMode {
   Edit = "edit",
   Present = "present",
 }
 
-const EditAndPresent = () => {
-  const [mode, setMode] = useState<KitchenMode>(KitchenMode.Edit);
+const EditAndPresent = ({ defaultMode = KitchenMode.Edit }) => {
+  const [mode, setMode] = useState<KitchenMode>(defaultMode);
 
   // switch between edit and present mode
   const switchMode = () => {
