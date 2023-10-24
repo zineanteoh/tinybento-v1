@@ -41,3 +41,24 @@ h6 {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
+
+.bold {
+  font-weight: 700;
+}
+
+/* responsive text */
+.text {
+  font-size: 1em;
+}
+
+@media (max-width: 768px) {
+  .text {
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 640px) {
+  .text {
+    font-size: 0.7em;
+  }
+}
