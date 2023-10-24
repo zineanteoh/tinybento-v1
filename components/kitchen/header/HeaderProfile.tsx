@@ -13,10 +13,10 @@ const HeaderProfile = ({
       {/* TODO: image goes here */}
       <div className={styles.image} />
 
-      <div className={styles.text}>
-        <div className={styles.bold}>{bentoName}</div>
-        <div>
-          by <span className={styles.bold}>{userName}</span>
+      <div className={styles.textContainer}>
+        <div className="text bold">{bentoName}</div>
+        <div className="text">
+          by <span className="bold">{userName}</span>
         </div>
       </div>
     </div>

@@ -12,18 +12,26 @@
   border: 2.5px solid black;
 }
 
-.text {
+.textContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.bold {
-  font-weight: bold;
-}
-
 @media (max-width: 768px) {
   .profile {
     margin: 0 auto;
+  }
+
+  .image {
+    width: calc(50px * 0.8);
+    height: calc(50px * 0.8);
+  }
+}
+
+@media (max-width: 640px) {
+  .image {
+    width: calc(50px * 0.6);
+    height: calc(50px * 0.6);
   }
 }
