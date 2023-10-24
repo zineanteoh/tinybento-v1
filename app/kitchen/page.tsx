@@ -3,7 +3,7 @@ import React from "react";
 
 import styles from "./page.module.css";
 import KitchenHeader from "@/components/kitchen/header/KitchenHeader";
-import ActionButton from "@/components/kitchen/ActionButton";
+import ActionButton from "@/components/kitchen/action/ActionButton";
 import {
   IconChangeTheme,
   IconEdit,

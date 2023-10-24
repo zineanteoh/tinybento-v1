@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import ActionButton from "@/components/kitchen/ActionButton";
+import ActionButton from "@/components/kitchen/action/ActionButton";
 import {
   IconChangeTheme,
   IconEdit,
@@ -10,7 +10,7 @@ import {
 } from "@/utils/iconLibrary";
 
 const meta = {
-  title: "TinyBento/Navigation/ActionButton",
+  title: "TinyBento/Action/ActionButton",
   component: ActionButton,
 } satisfies Meta<typeof ActionButton>;
 
