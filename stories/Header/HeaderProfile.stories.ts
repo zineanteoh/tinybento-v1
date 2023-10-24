@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import HeaderProfile from "../components/kitchen/header/HeaderProfile";
+import HeaderProfile from "@/components/kitchen/header/HeaderProfile";
 
-const meta: Meta<typeof HeaderProfile> = {
+const meta = {
   title: "TinyBento/Header/HeaderProfile",
   component: HeaderProfile,
-};
+} satisfies Meta<typeof HeaderProfile>;
+
 export default meta;
-type Story = StoryObj<typeof HeaderProfile>;
+type Story = StoryObj<typeof meta>;
 
 export const Jacob: Story = {
   args: {
