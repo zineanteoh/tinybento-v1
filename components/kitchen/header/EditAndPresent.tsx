@@ -40,17 +40,18 @@ const EditAndPresent = ({
 
       {/* The text */}
       <div className={styles.textContainer}>
-        <div>Edit</div>
+        <div className="text">Edit</div>
         <br />
-        <div>Present</div>
+        <div className="text">Present</div>
       </div>
 
       {/* The left-right color overlay */}
       <div
-        className={styles.circularOverlay}
+        className={`${
+          styles.circularOverlay
+        } ${computeEditPresentOverlayPosition(mode)}`}
         style={{
           backgroundColor: computeEditPresentOverlay(mode),
-          left: computeEditPresentOverlayPosition(mode),
         }}
       />
     </div>
@@ -76,5 +77,7 @@ const computeEditPresentOverlay = (mode: KitchenMode) => {
 };
 
 const computeEditPresentOverlayPosition = (mode: KitchenMode) => {
-  return mode === KitchenMode.Edit ? "0%" : "calc(50% - 20px)";
+  return mode === KitchenMode.Edit
+    ? styles.overlayOnLeft
+    : styles.overlayOnRight;
 };
