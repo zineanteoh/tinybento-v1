@@ -12,6 +12,7 @@ import {
   IconShare,
 } from "@/utils/iconLibrary";
 import ActionContainer from "@/components/kitchen/action/ActionContainer";
+import Bento from "@/components/kitchen/bento/Bento";
 
 const Kitchen = () => {
   return (
@@ -20,6 +21,7 @@ const Kitchen = () => {
 
       <div className={styles.content}>
         <div className={styles.side}>
+          {/* ActionButtons on the left */}
           <div className={styles.actionButtons}>
             <ActionButton
               actionName="Add Ingredient"
@@ -48,16 +50,18 @@ const Kitchen = () => {
             />
           </div>
 
-          {/* TODO: add ActionContainer here */}
+          {/* ActionContainer to the right of ActionButtons */}
           <div className={styles.actionContainer}>
             <ActionContainer>
               {/* TODO: TEMPORARY ONLY */}
-              <div style={{ height: "450px", textAlign: "center" }}>Hello</div>
+              {/* <div style={{ height: "500px", textAlign: "center" }}>Hello</div> */}
             </ActionContainer>
           </div>
         </div>
-        <div className={styles.main}>
-          {/* TODO: place Bento here, touching the very left side of main */}
+
+        {/* Bento on the right  */}
+        <div className={styles.bento}>
+          <Bento />
         </div>
       </div>
     </div>

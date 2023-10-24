@@ -1,12 +1,6 @@
 .container {
-  background: linear-gradient(
-    72deg,
-    #d8f8ff 7.01%,
-    #f3e6f8 45.47%,
-    #ffecdb 90.92%
-  );
-  width: 100vw;
-  height: 100vh;
+  width: inherit;
+  height: inherit;
   display: flex;
   flex-direction: column;
 }
@@ -17,18 +11,22 @@
 }
 
 .side {
-  flex-basis: 50%;
+  flex-basis: 40%;
   min-width: 0;
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   /* background-color: lightblue; */
 }
 
-.main {
-  flex-basis: 50%;
+.bento {
+  flex-basis: 60%;
   min-width: 0;
+  padding: 30px calc(10% - 3px);
   display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   /* background-color: lightgreen; */
 }
@@ -47,14 +45,19 @@
 .actionContainer {
   flex-basis: 70%;
   width: 100%;
-  height: fit-content;
+  height: calc(60vw - 180px);
+  /* height: fit-content; */
   padding: 30px 3% 30px 2%;
 
   /* background-color: lightyellow; */
 }
 
-/* TODO: figure out how mobile looks like later down the line */
 @media (max-width: 768px) {
+  /* TODO: MOBILE is OFF (for now) */
+  .container {
+    display: none;
+  }
+
   .content {
     flex-direction: column;
   }
@@ -64,7 +67,7 @@
     flex-basis: 20%;
   }
 
-  .main {
+  .bento {
     flex-basis: 80%;
   }
 
