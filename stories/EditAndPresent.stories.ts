@@ -5,6 +5,7 @@ import EditAndPresent, {
 } from "../components/kitchen/header/EditAndPresent";
 
 const meta: Meta<typeof EditAndPresent> = {
+  title: "TinyBento/Header/EditAndPresent",
   component: EditAndPresent,
 };
 export default meta;

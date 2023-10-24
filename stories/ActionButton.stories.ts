@@ -10,6 +10,7 @@ import {
 } from "@/utils/iconLibrary";
 
 const meta: Meta<typeof ActionButton> = {
+  title: "TinyBento/Navigation/ActionButton",
   component: ActionButton,
 };
 export default meta;

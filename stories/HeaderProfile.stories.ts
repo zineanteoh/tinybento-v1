@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import HeaderProfile from "../components/kitchen/header/HeaderProfile";
 
 const meta: Meta<typeof HeaderProfile> = {
+  title: "TinyBento/Header/HeaderProfile",
   component: HeaderProfile,
 };
 export default meta;
