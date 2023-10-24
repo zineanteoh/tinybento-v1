@@ -15,7 +15,7 @@ const ActionButton = ({
       <div className={styles.iconContainer} style={{ backgroundColor: color }}>
         {icon}
       </div>
-      <div className={styles.text}>{actionName}</div>
+      <div className={`text bold ${styles.text}`}>{actionName}</div>
     </div>
   );
 };
