@@ -1,0 +1,26 @@
+.layout {
+  background: linear-gradient(
+    72deg,
+    #d8f8ff 7.01%,
+    #f3e6f8 45.47%,
+    #ffecdb 90.92%
+  );
+  width: 100vw;
+  height: 100vh;
+}
+
+.mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    padding: 0 20px;
+  }
+}
