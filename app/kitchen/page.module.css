@@ -20,13 +20,9 @@
   flex-basis: 50%;
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: 20px;
-  justify-content: flex-start;
-  padding: 30px 0;
-  padding-left: 3%;
+  flex-direction: row;
 
-  background-color: lightblue;
+  /* background-color: lightblue; */
 }
 
 .main {
@@ -34,19 +30,51 @@
   min-width: 0;
   display: flex;
 
-  background-color: lightgreen;
+  /* background-color: lightgreen; */
 }
 
+.actionButtons {
+  flex-basis: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 30px 3%;
+
+  /* background-color: pink; */
+}
+
+.actionContainer {
+  flex-basis: 65%;
+  width: 100%;
+  padding: 30px 3%;
+}
+
+/* TODO: figure out how mobile looks like later down the line */
 @media (max-width: 768px) {
   .content {
     flex-direction: column;
   }
 
   .side {
-    flex-basis: 0%;
+    flex-direction: column;
+    flex-basis: 20%;
   }
 
   .main {
+    flex-basis: 80%;
+  }
+
+  .actionButtons {
     flex-basis: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+    gap: 5px;
+    padding-bottom: 30px;
+  }
+
+  .actionContainer {
+    flex-basis: 0;
   }
 }
