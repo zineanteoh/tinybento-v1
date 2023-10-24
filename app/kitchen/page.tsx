@@ -50,7 +50,10 @@ const Kitchen = () => {
 
           {/* TODO: add ActionContainer here */}
           <div className={styles.actionContainer}>
-            <ActionContainer />
+            <ActionContainer>
+              {/* TODO: TEMPORARY ONLY */}
+              <div style={{ height: "450px", textAlign: "center" }}>Hello</div>
+            </ActionContainer>
           </div>
         </div>
         <div className={styles.main}>

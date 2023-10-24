@@ -34,7 +34,7 @@
 }
 
 .actionButtons {
-  flex-basis: 35%;
+  flex-basis: 30%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -45,9 +45,12 @@
 }
 
 .actionContainer {
-  flex-basis: 65%;
+  flex-basis: 70%;
   width: 100%;
-  padding: 30px 3%;
+  height: fit-content;
+  padding: 30px 3% 30px 2%;
+
+  /* background-color: lightyellow; */
 }
 
 /* TODO: figure out how mobile looks like later down the line */
@@ -66,15 +69,19 @@
   }
 
   .actionButtons {
-    flex-basis: 100%;
+    flex-basis: 50%;
     display: flex;
     flex-direction: row;
     overflow-y: scroll;
     gap: 5px;
-    padding-bottom: 30px;
+    padding: 15px 5px;
   }
 
   .actionContainer {
-    flex-basis: 0;
+    flex-basis: 50%;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    padding: 15px 5px;
   }
 }
