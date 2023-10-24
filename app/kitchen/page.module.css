@@ -45,9 +45,8 @@
 .actionContainer {
   flex-basis: 70%;
   width: 100%;
-  height: calc(60vw - 180px);
-  /* height: fit-content; */
-  padding: 30px 3% 30px 2%;
+  /* computation to make the height match the bento width */
+  height: calc(60vw - 10vw - 10vw + 5px);
 
   /* background-color: lightyellow; */
 }
