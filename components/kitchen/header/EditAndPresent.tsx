@@ -7,7 +7,11 @@ export enum KitchenMode {
   Present = "present",
 }
 
-const EditAndPresent = ({ defaultMode = KitchenMode.Edit }) => {
+const EditAndPresent = ({
+  defaultMode = KitchenMode.Edit,
+}: {
+  defaultMode?: KitchenMode;
+}) => {
   const [mode, setMode] = useState<KitchenMode>(defaultMode);
 
   // switch between edit and present mode

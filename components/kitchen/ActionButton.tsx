@@ -2,13 +2,13 @@ import React from "react";
 import styles from "./ActionButton.module.css";
 
 const ActionButton = ({
-  actionName = "Action",
-  icon = null,
-  color = "#FFDC62",
+  actionName,
+  icon,
+  color,
 }: {
-  actionName?: string;
-  icon?: React.ReactNode;
-  color?: string;
+  actionName: string;
+  icon: React.ReactNode;
+  color: string;
 }) => {
   return (
     <div className={`no-select ${styles.container}`}>

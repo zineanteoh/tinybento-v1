@@ -2,11 +2,11 @@ import React from "react";
 import styles from "./HeaderProfile.module.css";
 
 const HeaderProfile = ({
-  userName = "Anonymous",
-  bentoName = "Untitled Bento",
+  userName,
+  bentoName,
 }: {
-  userName?: string;
-  bentoName?: string;
+  userName: string;
+  bentoName: string;
 }) => {
   return (
     <div className={styles.profile}>
