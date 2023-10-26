@@ -5,13 +5,15 @@ const ActionButton = ({
   actionName,
   icon,
   color,
+  onClick,
 }: {
   actionName: string;
   icon: React.ReactNode;
   color: string;
+  onClick?: () => void;
 }) => {
   return (
-    <div className={`no-select ${styles.container}`}>
+    <div className={`no-select ${styles.container}`} onClick={onClick}>
       <div className={styles.iconContainer} style={{ backgroundColor: color }}>
         {icon}
       </div>
