@@ -12,7 +12,7 @@
 }
 
 .textContainer {
-  border: 2.5px solid black;
+  border: 3px solid black;
   border-radius: inherit;
 
   width: 100%;
@@ -30,7 +30,7 @@
 .iconContainer {
   position: absolute;
   border-radius: 50%;
-  border: 2.5px solid black;
+  border: 3px solid black;
   width: 40px;
   height: 40px;
 }
@@ -51,7 +51,7 @@
 
 .circularOverlay {
   position: absolute;
-  border: 2.5px solid black;
+  border: 3px solid black;
   width: calc(50% + 20px);
   height: 40px;
   border-radius: 100px;
