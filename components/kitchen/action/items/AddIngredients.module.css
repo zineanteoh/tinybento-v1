@@ -1,0 +1,40 @@
+.container {
+  width: 100%;
+  height: fit-content;
+  max-height: 100%;
+
+  display: flex;
+  flex-flow: wrap;
+  gap: 6px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+
+  /* background-color: lightblue; */
+}
+
+.miniContainer {
+  width: calc(50% - 5px);
+  aspect-ratio: 1;
+
+  border: 3px solid black;
+  border-radius: 20px;
+
+  /* background-color: pink; */
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 5px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
