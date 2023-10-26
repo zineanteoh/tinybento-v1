@@ -11,8 +11,13 @@ import {
   IconPlus,
   IconShare,
 } from "@/utils/iconLibrary";
-import ActionContainer from "@/components/kitchen/action/ActionContainer";
 import Bento from "@/components/kitchen/bento/Bento";
+import AddIngredients from "@/components/kitchen/action/items/AddIngredients";
+import EditContent from "@/components/kitchen/action/items/EditContent";
+import Hierarchy from "@/components/kitchen/action/items/Hierarchy";
+import ShareBento from "@/components/kitchen/action/items/ShareBento";
+import ChangeTheme from "@/components/kitchen/action/items/ChangeTheme";
+import { AnimatePresence } from "framer-motion";
 
 enum Action {
   ADD_INGREDIENT = "Add Ingredient",
@@ -34,15 +39,15 @@ const Kitchen = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div // animate fade in from top gradual, very subtle and subtle. only a tiny bit of animation
+      className={styles.container}
+    >
       <KitchenHeader />
 
       <div className={styles.content}>
         <div className={styles.side}>
           {/* ActionButtons on the left */}
           <div className={styles.actionButtons}>
-            <div>{currentAction ? currentAction : "null"}</div>
-
             <ActionButton
               actionName="Add Ingredient"
               color="#FFCBA6"
@@ -78,10 +83,15 @@ const Kitchen = () => {
           {/* ActionContainer to the right of ActionButtons */}
 
           <div className={styles.actionContainer}>
-            {currentAction && <ActionContainer></ActionContainer>}
+            <AnimatePresence>
+              {currentAction === Action.ADD_INGREDIENT && <AddIngredients />}
+              {currentAction === Action.EDIT_CONTENT && <EditContent />}
+              {currentAction === Action.HIERARCHY && <Hierarchy />}
+              {currentAction === Action.SHARE_BENTO && <ShareBento />}
+              {currentAction === Action.CHANGE_THEME && <ChangeTheme />}
+            </AnimatePresence>
           </div>
         </div>
-
         {/* Bento on the right  */}
         <div className={styles.bento}>
           <Bento />
