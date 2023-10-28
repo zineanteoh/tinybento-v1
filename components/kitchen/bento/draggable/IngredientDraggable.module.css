@@ -1,0 +1,10 @@
+.draggable {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.draggable:hover {
+  cursor: move;
+}

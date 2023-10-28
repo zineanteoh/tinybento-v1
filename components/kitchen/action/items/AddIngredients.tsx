@@ -12,6 +12,8 @@ import {
   IconIngredient2x4,
   IconIngredient3x3,
 } from "@/utils/iconLibrary";
+import DraggableIngredient from "@/components/demo/DraggableIngredient";
+import IngredientDraggable from "../../bento/draggable/IngredientDraggable";
 
 const ingredients = [
   {
@@ -53,8 +55,15 @@ const AddIngredients = () => {
     <AnimateRightLeft>
       <ActionContainer>
         <div className={styles.container}>
-          {ingredients.map((ingredient) => (
-            <div className={styles.miniContainer}>{ingredient.icon}</div>
+          {ingredients.map((ingredient, index) => (
+            <div className={styles.miniContainer}>
+              <IngredientDraggable
+                key={ingredient.name}
+                uniqueId={ingredient.name}
+              >
+                <div>{ingredient.icon}</div>
+              </IngredientDraggable>
+            </div>
           ))}
         </div>
       </ActionContainer>

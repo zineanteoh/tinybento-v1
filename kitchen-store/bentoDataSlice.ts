@@ -12,8 +12,8 @@ export interface BentoDataSlice {
   setDimension: (dimension: Dimension) => void;
 
   // keep track of the ingredients (both dropped and preview)
-  bentoIngredients: BentoIngredientType[];
-  bentoIngredients2D: BentoIngredientGrid;
+  bentoIngredientList: BentoIngredientType[];
+  bentoIngredientGrid: BentoIngredientGrid;
 }
 
 // TODO: hardcode for now
@@ -27,12 +27,11 @@ export const createBentoDataSlice: StateCreator<
   [],
   [],
   BentoDataSlice
-> = (set, get) => ({
+> = (set) => ({
   dimension: DIMENSION,
   setDimension: (dimension) => set(() => ({ dimension })),
-
-  bentoIngredients: [],
-  bentoIngredients2D: genererate2DArrayOfNulls(DIMENSION),
+  bentoIngredientList: [],
+  bentoIngredientGrid: genererate2DArrayOfNulls(DIMENSION),
 });
 
 // ----------------------------------------------------------------------
