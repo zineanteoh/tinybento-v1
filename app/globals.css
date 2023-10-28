@@ -5,8 +5,33 @@
 }
 
 body {
-  background-color: rgb(226, 241, 255);
+  background-color: #e2f1ff;
 }
+
+/*
+  Remove built-in form typography styles
+*/
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/*
+  Avoid text overflows
+*/
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+/* ----------------- Globally Accessible Classes ----------------- */
 
 .no-select {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -15,4 +40,25 @@ body {
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+.bold {
+  font-weight: 700;
+}
+
+/* responsive text */
+.text {
+  font-size: 1em;
+}
+
+@media (max-width: 768px) {
+  .text {
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 640px) {
+  .text {
+    font-size: 0.7em;
+  }
 }

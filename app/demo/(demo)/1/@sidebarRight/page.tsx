@@ -1,5 +1,5 @@
 "use client";
-import DraggableIngredient from "@/components/DraggableIngredient";
+import DraggableIngredient from "@/components/demo/DraggableIngredient";
 import React from "react";
 
 const SidebarRight = () => {

@@ -1,0 +1,68 @@
+.container {
+  width: 100%;
+  height: fit-content;
+  max-height: 100%;
+
+  display: flex;
+  flex-flow: wrap;
+  gap: 6px;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+
+  /* background-color: lightblue; */
+}
+
+.miniContainer {
+  width: calc(50% - 5px);
+  aspect-ratio: 1;
+
+  border: 3px solid black;
+  border-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* background-color: pink; */
+}
+
+.miniContainer > svg {
+  filter: drop-shadow(10px 10px 4px rgba(0, 0, 0, 0.25));
+}
+
+.miniContainer > svg:hover {
+  cursor: pointer;
+
+  animation: wiggle 0.2s ease;
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 5px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
