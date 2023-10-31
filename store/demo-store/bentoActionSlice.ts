@@ -1,5 +1,5 @@
 import {
-  BentoIngredientGrid,
+  BentoIngredientsGrid,
   BentoIngredientType,
   Coordinates,
   Dimension,
@@ -39,7 +39,8 @@ export const createBentoActionSlice: StateCreator<
     addIngredient(droppedCoordinate, IngredientVariant.DROPPED);
   },
   addIngredient: (droppedCoordinate, droppedVariant) => {
-    const { dimension, dragging, bentoIngredients, bentoIngredients2D } = get();
+    const { dimension, dragging, bentoIngredients, bentoIngredientsGrid } =
+      get();
 
     // if no dragging, return
     if (!dragging) return;
@@ -47,7 +48,7 @@ export const createBentoActionSlice: StateCreator<
     if (
       !canDropIngredient(
         dimension,
-        bentoIngredients2D,
+        bentoIngredientsGrid,
         dragging,
         droppedCoordinate
       )
@@ -63,11 +64,11 @@ export const createBentoActionSlice: StateCreator<
     };
 
     set(() => {
-      // update bentoIngredients and bentoIngredients2D
-      const newBentoIngredients2D = bentoIngredients2D;
+      // update bentoIngredients and bentoIngredientsGrid
+      const newbentoIngredientsGrid = bentoIngredientsGrid;
       for (let i = 0; i < dragging.height; i++) {
         for (let j = 0; j < dragging.width; j++) {
-          newBentoIngredients2D[droppedCoordinate.y + i][
+          newbentoIngredientsGrid[droppedCoordinate.y + i][
             droppedCoordinate.x + j
           ] = bentoIngredientToAdd;
         }
@@ -75,15 +76,15 @@ export const createBentoActionSlice: StateCreator<
 
       return {
         bentoIngredients: [...bentoIngredients, bentoIngredientToAdd],
-        bentoIngredients2D: newBentoIngredients2D,
+        bentoIngredientsGrid: newbentoIngredientsGrid,
       };
     });
   },
   removeIngredient: (coordinateToRemove) => {
-    const { bentoIngredients, bentoIngredients2D } = get();
+    const { bentoIngredients, bentoIngredientsGrid } = get();
 
     // find the ingredient to remove
-    const newBentoIngredients2D = bentoIngredients2D;
+    const newbentoIngredientsGrid = bentoIngredientsGrid;
     const ingredientToRemove = bentoIngredients.find(
       (ingredient) =>
         ingredient.coordinate.x === coordinateToRemove.x &&
@@ -93,10 +94,10 @@ export const createBentoActionSlice: StateCreator<
     // if no ingredient to remove, return
     if (!ingredientToRemove) return;
 
-    // iterate through the ingredient's squares and remove them from bentoIngredients2D
+    // iterate through the ingredient's squares and remove them from bentoIngredientsGrid
     for (let i = 0; i < ingredientToRemove.height; i++) {
       for (let j = 0; j < ingredientToRemove.width; j++) {
-        newBentoIngredients2D[coordinateToRemove.y + i][
+        newbentoIngredientsGrid[coordinateToRemove.y + i][
           coordinateToRemove.x + j
         ] = null;
       }
@@ -107,7 +108,7 @@ export const createBentoActionSlice: StateCreator<
       bentoIngredients: bentoIngredients.filter(
         (ingredient) => ingredient !== ingredientToRemove
       ),
-      bentoIngredients2D: newBentoIngredients2D,
+      bentoIngredientsGrid: newbentoIngredientsGrid,
     }));
   },
   clearAllDroppedIngredients: () => {
@@ -115,7 +116,7 @@ export const createBentoActionSlice: StateCreator<
     clearVariantIngredients(IngredientVariant.DROPPED);
   },
   clearVariantIngredients(variantToClear) {
-    const { bentoIngredients, bentoIngredients2D } = get();
+    const { bentoIngredients, bentoIngredientsGrid } = get();
 
     // find all ingredients of variant to clear
     const toClear = bentoIngredients.filter(
@@ -126,10 +127,10 @@ export const createBentoActionSlice: StateCreator<
     if (toClear.length === 0) return;
 
     toClear.forEach((ingredient) => {
-      // iterate through the ingredient's squares and remove them from bentoIngredients2D
+      // iterate through the ingredient's squares and remove them from bentoIngredientsGrid
       for (let i = 0; i < ingredient.height; i++) {
         for (let j = 0; j < ingredient.width; j++) {
-          bentoIngredients2D[ingredient.coordinate.y + i][
+          bentoIngredientsGrid[ingredient.coordinate.y + i][
             ingredient.coordinate.x + j
           ] = null;
         }
@@ -141,7 +142,7 @@ export const createBentoActionSlice: StateCreator<
       bentoIngredients: bentoIngredients.filter(
         (ingredient) => ingredient.variant !== variantToClear
       ),
-      bentoIngredients2D: bentoIngredients2D,
+      bentoIngredientsGrid: bentoIngredientsGrid,
     }));
   },
 });
@@ -164,14 +165,14 @@ export const createBentoActionSlice: StateCreator<
  */
 const canDropIngredient = (
   dimension: Dimension,
-  bentoIngredients2D: BentoIngredientGrid,
+  bentoIngredientsGrid: BentoIngredientsGrid,
   dragging: Ingredient,
   droppedCoordinate: Coordinates
 ): boolean => {
   const { x, y } = droppedCoordinate;
 
   // 1. check if the coordinate is already occupied
-  if (bentoIngredients2D[y][x] !== null) return false;
+  if (bentoIngredientsGrid[y][x] !== null) return false;
 
   // 2. check if ingredient's squares are within the bento's coordinate
   if (y + dragging.height > dimension.height) return false;
@@ -180,7 +181,7 @@ const canDropIngredient = (
   // 3. check if ingredient's squares are not overlapping with other ingredients
   for (let i = 0; i < dragging.width; i++) {
     for (let j = 0; j < dragging.height; j++) {
-      if (bentoIngredients2D[y + j][x + i] !== null) return false;
+      if (bentoIngredientsGrid[y + j][x + i] !== null) return false;
     }
   }
 

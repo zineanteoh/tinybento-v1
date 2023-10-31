@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import { BentoDataSlice } from "./bentoDataSlice";
 import { BentoActionSlice } from "./bentoActionSlice";
 import {
-  BentoIngredientGrid,
+  BentoIngredientsGrid,
   BentoIngredientType,
   Coordinates,
   ResizeDirection,
@@ -60,7 +60,7 @@ export const createResizeSlice: StateCreator<
     const {
       coordinateOfObject,
       directionOfResize,
-      bentoIngredients2D: ingredients2d,
+      bentoIngredientsGrid: ingredients2d,
     } = get();
 
     // 1. check if coordinateOfObject, directionOfResize, or sizeOfResize are not null
@@ -202,14 +202,14 @@ export const createResizeSlice: StateCreator<
       directionOfResize,
       coordinateOfObject,
       bentoIngredients,
-      bentoIngredients2D,
+      bentoIngredientsGrid,
     } = get();
 
     // parse input and get the required information
     const result = parseResizeInput(
       directionOfResize,
       coordinateOfObject,
-      bentoIngredients2D,
+      bentoIngredientsGrid,
       squaresMoved
     );
 
@@ -285,18 +285,18 @@ export const createResizeSlice: StateCreator<
     console.log("====================RESIZING====================");
 
     // resize the object
-    const [newBentoIngredients, newBentoIngredients2D] = performResizing(
+    const [newBentoIngredients, newbentoIngredientsGrid] = performResizing(
       objectBeingResized,
       directionOfResize,
       squaresMovedClamped,
       bentoIngredients,
-      bentoIngredients2D
+      bentoIngredientsGrid
     );
 
-    // update bentoIngredients and bentoIngredients2D
+    // update bentoIngredients and bentoIngredientsGrid
     set({
       bentoIngredients: newBentoIngredients,
-      bentoIngredients2D: newBentoIngredients2D,
+      bentoIngredientsGrid: newbentoIngredientsGrid,
     });
   },
 });
@@ -310,8 +310,8 @@ const performResizing = (
   directionOfResize: ResizeDirection,
   squaresMoved: number,
   bentoIngredients: BentoIngredientType[],
-  bentoIngredients2D: BentoIngredientGrid
-): [BentoIngredientType[], BentoIngredientGrid] => {
+  bentoIngredientsGrid: BentoIngredientsGrid
+): [BentoIngredientType[], BentoIngredientsGrid] => {
   const { x, y } = objectBeingResized.coordinate;
   const { width, height } = objectBeingResized;
 
@@ -337,14 +337,14 @@ const performResizing = (
     else return ingredient;
   });
 
-  const newBentoIngredients2D = bentoIngredients2D;
+  const newbentoIngredientsGrid = bentoIngredientsGrid;
   const { x: newX, y: newY } = newObject.coordinate;
   const { width: newWidth, height: newHeight } = newObject;
 
   // set the occupied cells to newObject
   for (let i = 0; i < newObject.height; i++) {
     for (let j = 0; j < newObject.width; j++) {
-      newBentoIngredients2D[newY + i][newX + j] = newObject;
+      newbentoIngredientsGrid[newY + i][newX + j] = newObject;
     }
   }
 
@@ -355,7 +355,7 @@ const performResizing = (
         const topMost = newY;
         for (let i = 0; i < width; i++) {
           for (let j = 0; j < Math.abs(squaresMoved); j++) {
-            newBentoIngredients2D[topMost - j - 1][newX + i] = null;
+            newbentoIngredientsGrid[topMost - j - 1][newX + i] = null;
           }
         }
         break;
@@ -363,7 +363,7 @@ const performResizing = (
         const bottomMost = newY + newHeight;
         for (let i = 0; i < Math.abs(squaresMoved); i++) {
           for (let j = 0; j < width; j++) {
-            newBentoIngredients2D[bottomMost + i][newX + j] = null;
+            newbentoIngredientsGrid[bottomMost + i][newX + j] = null;
           }
         }
         break;
@@ -371,7 +371,7 @@ const performResizing = (
         const leftMost = newX;
         for (let i = 0; i < height; i++) {
           for (let j = 0; j < Math.abs(squaresMoved); j++) {
-            newBentoIngredients2D[newY + i][leftMost - j - 1] = null;
+            newbentoIngredientsGrid[newY + i][leftMost - j - 1] = null;
             console.log(
               `[PerformResizing] Removing (${leftMost - j - 1}, ${newY + i})`
             );
@@ -382,14 +382,14 @@ const performResizing = (
         const rightMost = newX + newWidth;
         for (let i = 0; i < height; i++) {
           for (let j = 0; j < Math.abs(squaresMoved); j++) {
-            newBentoIngredients2D[newY + i][rightMost + j] = null;
+            newbentoIngredientsGrid[newY + i][rightMost + j] = null;
           }
         }
         break;
     }
   }
 
-  return [newBentoIngredients, newBentoIngredients2D];
+  return [newBentoIngredients, newbentoIngredientsGrid];
 };
 
 const computeNewCoordinate = (
@@ -458,7 +458,7 @@ type ResizeObjectParsedInputType =
 const parseResizeInput = (
   directionOfResize: ResizeDirection | null,
   coordinateOfObject: Coordinates | null,
-  bentoIngredients2D: BentoIngredientGrid,
+  bentoIngredientsGrid: BentoIngredientsGrid,
   squaresMoved: number
 ): ResizeObjectParsedInputType => {
   // isValid is false if any of the required fields are null
@@ -466,7 +466,7 @@ const parseResizeInput = (
 
   // compute the necessary fields
   const { x, y } = coordinateOfObject;
-  const objectBeingResized = bentoIngredients2D[y][x];
+  const objectBeingResized = bentoIngredientsGrid[y][x];
 
   // isValid is false if the object being resized is null
   if (!objectBeingResized) return { isValid: false };

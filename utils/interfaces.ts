@@ -37,7 +37,7 @@ export interface PreviewIngredientType extends Ingredient {
 
 export type BentoIngredientType = DroppedIngredientType | PreviewIngredientType;
 
-export type BentoIngredientGrid = (BentoIngredientType | null)[][];
+export type BentoIngredientsGrid = (BentoIngredientType | null)[][];
 
 // ============================================================================
 // Resize Interfaces

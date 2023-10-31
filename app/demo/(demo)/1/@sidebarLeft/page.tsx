@@ -7,7 +7,7 @@ const SidebarLeft = () => {
   const {
     dimension,
     bentoIngredients,
-    bentoIngredients2D,
+    bentoIngredientsGrid,
     dragging,
     isResizing,
     coordinateOfObject,
@@ -37,10 +37,10 @@ const SidebarLeft = () => {
       </div>
 
       <div>
-        bentoIngredients2D:
+        bentoIngredientsGrid:
         <div>
-          {/* row and cols of bentoIngredients2d */}
-          {bentoIngredients2D.map((row, rowIndex) => (
+          {/* row and cols of bentoIngredientsGrid */}
+          {bentoIngredientsGrid.map((row, rowIndex) => (
             <div
               key={rowIndex}
               style={{
