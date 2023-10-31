@@ -67,7 +67,9 @@ const AddIngredients = () => {
               <IngredientDraggable
                 key={ingredient.name}
                 uniqueId={ingredient.name}
-              />
+              >
+                {ingredient.name}
+              </IngredientDraggable>
             </div>
           ))}
         </div>

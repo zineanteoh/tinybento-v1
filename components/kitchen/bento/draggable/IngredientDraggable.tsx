@@ -4,7 +4,14 @@ import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
 // Read: https://docs.dndkit.com/api-documentation/draggable
-const IngredientDraggable = ({ uniqueId }: { uniqueId: string }) => {
+const IngredientDraggable = ({
+  uniqueId,
+  children,
+}: {
+  uniqueId: string;
+  // TODO: remove children because we don't need it
+  children?: React.ReactNode;
+}) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: uniqueId,
   });
@@ -19,7 +26,9 @@ const IngredientDraggable = ({ uniqueId }: { uniqueId: string }) => {
       style={style}
       {...listeners}
       {...attributes}
-    />
+    >
+      {children}
+    </div>
   );
 };
 
