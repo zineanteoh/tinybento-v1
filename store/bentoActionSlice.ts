@@ -1,5 +1,5 @@
 import {
-  BentoIngredient2D,
+  BentoIngredientGrid,
   BentoIngredientType,
   Coordinates,
   Dimension,
@@ -164,7 +164,7 @@ export const createBentoActionSlice: StateCreator<
  */
 const canDropIngredient = (
   dimension: Dimension,
-  bentoIngredients2D: BentoIngredient2D,
+  bentoIngredients2D: BentoIngredientGrid,
   dragging: Ingredient,
   droppedCoordinate: Coordinates
 ): boolean => {

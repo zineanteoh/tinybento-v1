@@ -1,5 +1,5 @@
 import {
-  BentoIngredient2D,
+  BentoIngredientGrid,
   BentoIngredientType,
   Dimension,
 } from "@/utils/interfaces";
@@ -13,7 +13,7 @@ export interface BentoDataSlice {
 
   // keep track of the ingredients (both dropped and preview)
   bentoIngredients: BentoIngredientType[];
-  bentoIngredients2D: BentoIngredient2D;
+  bentoIngredients2D: BentoIngredientGrid;
 }
 
 // TODO: hardcode for now

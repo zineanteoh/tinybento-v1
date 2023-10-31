@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import { BentoDataSlice } from "./bentoDataSlice";
 import { BentoActionSlice } from "./bentoActionSlice";
 import {
-  BentoIngredient2D,
+  BentoIngredientGrid,
   BentoIngredientType,
   Coordinates,
   ResizeDirection,
@@ -310,8 +310,8 @@ const performResizing = (
   directionOfResize: ResizeDirection,
   squaresMoved: number,
   bentoIngredients: BentoIngredientType[],
-  bentoIngredients2D: BentoIngredient2D
-): [BentoIngredientType[], BentoIngredient2D] => {
+  bentoIngredients2D: BentoIngredientGrid
+): [BentoIngredientType[], BentoIngredientGrid] => {
   const { x, y } = objectBeingResized.coordinate;
   const { width, height } = objectBeingResized;
 
@@ -458,7 +458,7 @@ type ResizeObjectParsedInputType =
 const parseResizeInput = (
   directionOfResize: ResizeDirection | null,
   coordinateOfObject: Coordinates | null,
-  bentoIngredients2D: BentoIngredient2D,
+  bentoIngredients2D: BentoIngredientGrid,
   squaresMoved: number
 ): ResizeObjectParsedInputType => {
   // isValid is false if any of the required fields are null
