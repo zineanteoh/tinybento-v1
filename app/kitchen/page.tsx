@@ -31,6 +31,7 @@ import {
   convertStringToCoordinate,
   convertStringToIngredient,
 } from "@/utils/helper";
+import BentoInternalStates from "@/components/dev/BentoInternalStates";
 
 enum Action {
   ADD_INGREDIENT = "Add Ingredient",
@@ -39,6 +40,8 @@ enum Action {
   SHARE_BENTO = "Share Bento",
   CHANGE_THEME = "Change Theme",
 }
+
+const IS_DEV = process.env.NODE_ENV === "development";
 
 const Kitchen = () => {
   // unique id for dnd context
@@ -159,6 +162,8 @@ const Kitchen = () => {
           </DragOverlay>
         </div>
       </DndContext>
+
+      {IS_DEV && <BentoInternalStates />}
     </div>
   );
 };
