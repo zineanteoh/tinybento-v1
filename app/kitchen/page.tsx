@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 
 import styles from "./page.module.css";
+import draggableStyles from "@/components/kitchen/bento/draggable/IngredientDraggable.module.css";
 import KitchenHeader from "@/components/kitchen/header/KitchenHeader";
 import ActionButton from "@/components/kitchen/action/ActionButton";
 import {
@@ -18,7 +19,12 @@ import Hierarchy from "@/components/kitchen/action/items/Hierarchy";
 import ShareBento from "@/components/kitchen/action/items/ShareBento";
 import ChangeTheme from "@/components/kitchen/action/items/ChangeTheme";
 import { AnimatePresence } from "framer-motion";
-import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  pointerWithin,
+} from "@dnd-kit/core";
 import { useStore } from "@/store/kitchen-store/store";
 import { Coordinates, Ingredient } from "@/utils/interfaces";
 import {
@@ -40,8 +46,12 @@ const Kitchen = () => {
   // handle click action buttons
   const [currentAction, setCurrentAction] = useState<Action | null>(null);
   // handle drag and drop
-  const { addDroppedIngredient, clearAllPreviewIngredients, setDragging } =
-    useStore();
+  const {
+    dragging,
+    addDroppedIngredient,
+    clearAllPreviewIngredients,
+    setDragging,
+  } = useStore();
 
   const handleActionClick = (action: Action) => {
     if (currentAction === action) {
@@ -138,6 +148,15 @@ const Kitchen = () => {
           <div className={styles.bento}>
             <Bento />
           </div>
+
+          {/* Read: https://docs.dndkit.com/api-documentation/draggable/drag-overlay */}
+          <DragOverlay>
+            {dragging ? (
+              <div className={draggableStyles.draggable}>
+                {dragging.height}x{dragging.width}
+              </div>
+            ) : null}
+          </DragOverlay>
         </div>
       </DndContext>
     </div>

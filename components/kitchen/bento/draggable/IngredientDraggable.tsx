@@ -3,9 +3,10 @@ import styles from "./IngredientDraggable.module.css";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
-const IngredientDraggable = (props: { content: string }) => {
+// Read: https://docs.dndkit.com/api-documentation/draggable
+const IngredientDraggable = ({ uniqueId }: { uniqueId: string }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.content,
+    id: uniqueId,
   });
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -18,9 +19,7 @@ const IngredientDraggable = (props: { content: string }) => {
       style={style}
       {...listeners}
       {...attributes}
-    >
-      {props.content}
-    </div>
+    />
   );
 };
 
