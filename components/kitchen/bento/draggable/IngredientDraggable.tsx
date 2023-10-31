@@ -3,7 +3,7 @@ import styles from "./IngredientDraggable.module.css";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 
-const DraggableIngredient = (props: { content: string }) => {
+const IngredientDraggable = (props: { content: string }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: props.content,
   });
@@ -24,4 +24,4 @@ const DraggableIngredient = (props: { content: string }) => {
   );
 };
 
-export default DraggableIngredient;
+export default IngredientDraggable;
