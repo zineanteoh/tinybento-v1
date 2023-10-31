@@ -2,7 +2,7 @@
 import { useId } from "react";
 import { DndContext, DragEndEvent, pointerWithin } from "@dnd-kit/core";
 import { Coordinates, Ingredient } from "@/utils/interfaces";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/demo-store/store";
 import {
   convertStringToCoordinate,
   convertStringToIngredient,

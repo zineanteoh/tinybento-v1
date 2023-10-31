@@ -1,5 +1,5 @@
 "use client";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/demo-store/store";
 import React from "react";
 
 // Displays all internal states of the bento

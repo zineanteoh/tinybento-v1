@@ -7,7 +7,7 @@ import {
 } from "@/utils/interfaces";
 import styles from "./Ingredient.module.css";
 import Resizable from "./Resizable";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/demo-store/store";
 
 /**
  * An ingredient is a draggable and resizable item that can be placed in a bento.

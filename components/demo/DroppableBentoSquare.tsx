@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { Coordinates } from "@/utils/interfaces";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/demo-store/store";
 
 const style = {
   border: "1px solid black",

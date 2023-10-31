@@ -1,5 +1,5 @@
 import React from "react";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/demo-store/store";
 import DroppableBentoSquare from "./DroppableBentoSquare";
 import Ingredient from "./Ingredient";
 import { BentoIngredientType } from "@/utils/interfaces";
