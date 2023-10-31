@@ -1,0 +1,13 @@
+.ingredient {
+  position: absolute;
+}
+
+.dropped {
+  background-color: rgba(91, 255, 3);
+  border: 1px solid black;
+}
+
+.preview {
+  background-color: rgba(255, 25, 3, 0.3);
+  border: 1px dashed black;
+}
