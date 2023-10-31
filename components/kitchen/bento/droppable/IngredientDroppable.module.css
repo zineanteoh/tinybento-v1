@@ -1,0 +1,8 @@
+.square {
+  display: flex;
+  align-items: center;
+  margin: 0.42rem;
+  justify-content: center;
+  border-radius: 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+}
