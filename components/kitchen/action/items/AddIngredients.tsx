@@ -63,7 +63,7 @@ const AddIngredients = () => {
       <ActionContainer>
         <div className={styles.container}>
           {ingredients.map((ingredient) => (
-            <div className={styles.miniContainer}>
+            <div className={styles.miniContainer} key={ingredient.name}>
               <IngredientDraggable
                 key={ingredient.name}
                 uniqueId={ingredient.name}

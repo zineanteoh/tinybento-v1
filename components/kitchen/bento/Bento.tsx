@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./Bento.module.css";
 import { AnimateFadeDrop } from "@/utils/animations";
 import { useStore } from "@/store/kitchen-store/store";
 import IngredientDroppable from "./droppable/IngredientDroppable";
-import { BentoIngredientType } from "@/utils/interfaces";
+import { BentoIngredientType, Dimension } from "@/utils/interfaces";
 import Ingredient from "./ingredient/Ingredient";
 import { BENTO_INNER_PADDING } from "@/utils/constants";
 
@@ -11,6 +11,18 @@ const Bento = () => {
   // use ref to allow ingredients to get width + height of bento container
   const bentoRef = useRef<HTMLDivElement>(null);
   const { dimension, bentoIngredients } = useStore();
+  // use a dummy state to force rerender when window resizes
+  const [_, setRandom] = useState(false);
+
+  // update windowSize when window resizes to recompute ingredient dimensions
+  useEffect(() => {
+    // trigger rerender
+    const handleWindowResize = () => setRandom((prev) => !prev);
+    // add event listener
+    window.addEventListener("resize", handleWindowResize);
+    // remove event listener
+    return () => window.removeEventListener("resize", handleWindowResize);
+  }, []);
 
   const bentoSquares = Array.from({ length: dimension.height }).map((_, y) =>
     Array.from({ length: dimension.width }).map((_, x) => (
