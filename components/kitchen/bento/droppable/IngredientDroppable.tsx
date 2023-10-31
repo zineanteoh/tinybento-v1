@@ -3,6 +3,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { Coordinates } from "@/utils/interfaces";
 import { useStore } from "@/store/kitchen-store/store";
 import styles from "./IngredientDroppable.module.css";
+import { BENTO_SQUARE_INNER_PADDING } from "@/utils/constants";
 
 const IngredientDroppable = (props: { coordinate: Coordinates }) => {
   const { addPreviewIngredient, clearAllPreviewIngredients } = useStore();
@@ -21,7 +22,11 @@ const IngredientDroppable = (props: { coordinate: Coordinates }) => {
   }, [isOver, x, y, clearAllPreviewIngredients, addPreviewIngredient]);
 
   return (
-    <div ref={setNodeRef} className={styles.square}>
+    <div
+      ref={setNodeRef}
+      className={styles.square}
+      style={{ margin: BENTO_SQUARE_INNER_PADDING }}
+    >
       {isOver ? "Release to Add" : `${x},${y}`}
     </div>
   );

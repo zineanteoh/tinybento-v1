@@ -1,6 +1,7 @@
 import React from "react";
 import { IngredientVariant, IngredientProps } from "@/utils/interfaces";
 import styles from "./Ingredient.module.css";
+import { BENTO_SQUARE_INNER_PADDING } from "@/utils/constants";
 
 /**
  * An ingredient is a draggable and resizable item that can be placed in a bento.
@@ -20,11 +21,20 @@ const Ingredient = ({
 
   // compute the size and position of the ingredient
   const computedStyles = {
-    width: ingredient.width * widthPerSquare, // - 2 * padding, // width of ingredient (in px)
-    height: ingredient.height * heightPerSquare, // - 2 * padding, // height of ingredient (in px)
-    top: ingredient.coordinate.y * heightPerSquare, // + padding, // relative to the top border of bento container (in px)
-    left: ingredient.coordinate.x * widthPerSquare, // + padding, // relative to the left border of bento container (in px)
+    width: `calc(${
+      ingredient.width * widthPerSquare
+    }px - 2 * ${BENTO_SQUARE_INNER_PADDING})`, // width of ingredient (in px)
+    height: `calc(${
+      ingredient.height * heightPerSquare
+    }px - 2 * ${BENTO_SQUARE_INNER_PADDING})`, // height of ingredient (in px)
+    top: `calc(${
+      ingredient.coordinate.y * heightPerSquare
+    }px + ${BENTO_SQUARE_INNER_PADDING})`, // relative to the top border of bento container (in px)
+    left: `calc(${
+      ingredient.coordinate.x * widthPerSquare
+    }px + ${BENTO_SQUARE_INNER_PADDING})`, // relative to the left border of bento container (in px)
     backgroundColor: "lightblue",
+    borderRadius: "1rem",
   };
 
   return (
