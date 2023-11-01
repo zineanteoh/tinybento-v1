@@ -25,15 +25,15 @@ const BentoInternalStates = () => {
         paddingRight: "10px",
         paddingTop: "25px",
         gap: "10px",
+        wordWrap: "break-word",
+        pointerEvents: "none",
       }}
     >
       <div>
         dimension: {dimension.width}x{dimension.height}
       </div>
 
-      <div>
-        dragging: {dragging ? `${dragging.width}x${dragging.height}` : ""}
-      </div>
+      <div>dragging: {dragging ? JSON.stringify(dragging) : ""}</div>
 
       <div>
         bentoIngredientsGrid:
@@ -42,10 +42,7 @@ const BentoInternalStates = () => {
           {bentoIngredientsGrid.map((row, rowIndex) => (
             <div
               key={rowIndex}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
+              style={{ display: "flex", flexDirection: "row" }}
             >
               {row.map((col, colIndex) => (
                 <span key={colIndex}>
