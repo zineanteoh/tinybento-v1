@@ -3,12 +3,13 @@ import {
   Coordinates,
   Dimension,
   DirectionMultiplier,
-  Ingredient,
+  DraggableIngredient,
+  DraggableType,
   IngredientVariant,
   ResizeDirection,
   ResizeType,
 } from "@/utils/interfaces";
-import { start } from "repl";
+import { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
 // ============================================================================
 // General Helper Functions
@@ -25,13 +26,28 @@ export const convertStringToCoordinate = (str: string): Coordinates => {
 };
 
 /**
- * Converts "AxB" string to Ingredient object
- * @param str string in format "AxB"
- * @returns   Ingredient object
+ * Converts DndKit DragEvent to DraggableIngredient object
+ * @param dragEvent DragStartEvent or DragEndEvent
+ * @returns   DraggableIngredient object
  */
-export const convertStringToIngredient = (str: string): Ingredient => {
-  const [height, width] = str.split("x").map((item) => parseInt(item));
-  return { width, height, variant: IngredientVariant.DROPPED };
+export const convertDragEventToIngredient = (
+  dragEvent: DragStartEvent | DragEndEvent
+): DraggableIngredient => {
+  const id = dragEvent.active.id.toString();
+  console.log("id is this: ", id);
+  const [height, width] = id.split("x").map((item) => parseInt(item));
+  const draggableType = dragEvent.active.data.current?.type as DraggableType;
+
+  return {
+    id,
+    type: draggableType,
+    width,
+    height,
+    variant: IngredientVariant.DROPPED,
+    ...(draggableType === DraggableType.IN_BENTO && {
+      coordinate: dragEvent.active.data.current?.coordinate,
+    }),
+  };
 };
 
 /**
