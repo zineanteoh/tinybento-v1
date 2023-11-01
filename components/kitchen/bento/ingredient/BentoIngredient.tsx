@@ -1,7 +1,7 @@
 import React from "react";
 import { IngredientVariant, IngredientProps } from "@/utils/interfaces";
 import { BENTO_SQUARE_INNER_PADDING } from "@/utils/constants";
-import IngredientDropped from "../draggable/BentoIngredientDraggable";
+import IngredientDropped from "../draggable/IngredientDropped";
 import IngredientPreview from "./IngredientPreview";
 
 /**
