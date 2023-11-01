@@ -51,6 +51,10 @@ h6 {
   font-size: 1em;
 }
 
+.cursor-move:hover {
+  cursor: move;
+}
+
 @media (max-width: 768px) {
   .text {
     font-size: 0.8em;
