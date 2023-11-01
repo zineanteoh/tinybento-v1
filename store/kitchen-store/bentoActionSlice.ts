@@ -136,8 +136,6 @@ export const createBentoActionSlice: StateCreator<
     // if no ingredient to move, return
     if (!ingredientToMove) return;
 
-    let success = false;
-
     // remove the ingredient from bentoIngredients
     removeIngredient(dragging.coordinate!);
 
