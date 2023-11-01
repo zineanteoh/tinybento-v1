@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./Bento.module.css";
-import { AnimateFadeDrop } from "@/utils/animations";
 import { useStore } from "@/store/kitchen-store/store";
 import IngredientDroppable from "./droppable/IngredientDroppable";
-import { BentoIngredientType, Dimension } from "@/utils/interfaces";
-import Ingredient from "./ingredient/Ingredient";
+import BentoIngredient from "./ingredient/BentoIngredient";
+import { AnimateFadeDrop } from "@/utils/animations";
+import { BentoIngredientType } from "@/utils/interfaces";
 import { BENTO_INNER_PADDING } from "@/utils/constants";
 
 const Bento = () => {
@@ -43,7 +43,7 @@ const Bento = () => {
       {bentoIngredients.map(
         (ingredient: BentoIngredientType, index: number) => {
           return (
-            <Ingredient
+            <BentoIngredient
               key={index}
               ingredient={ingredient}
               variant={ingredient.variant}
