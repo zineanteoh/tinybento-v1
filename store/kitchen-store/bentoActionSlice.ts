@@ -3,7 +3,7 @@ import {
   BentoIngredientType,
   Coordinates,
   Dimension,
-  Ingredient,
+  DraggableIngredient,
   IngredientVariant,
 } from "@/utils/interfaces";
 import { StateCreator } from "zustand";
@@ -22,6 +22,9 @@ export interface BentoActionSlice {
 
   // removing ingredient from the bento
   removeIngredient: (coordinateToRemove: Coordinates) => void;
+
+  // moving ingredient to another coordinate
+  moveIngredient: (coordinateToMoveTo: Coordinates) => void;
 
   // clear dropped ingredients
   clearAllDroppedIngredients: () => void;
@@ -111,6 +114,50 @@ export const createBentoActionSlice: StateCreator<
       bentoIngredientsGrid: newbentoIngredientsGrid,
     }));
   },
+  moveIngredient(coordinateToMoveTo) {
+    const {
+      dragging,
+      bentoIngredients,
+      bentoIngredientsGrid,
+      removeIngredient,
+      addIngredient,
+    } = get();
+
+    // if no dragging, return
+    if (!dragging) return;
+
+    // find the ingredient to move
+    const ingredientToMove = bentoIngredients.find(
+      (ingredient) =>
+        ingredient.coordinate.x === dragging.coordinate?.x &&
+        ingredient.coordinate.y === dragging.coordinate?.y
+    );
+
+    // if no ingredient to move, return
+    if (!ingredientToMove) return;
+
+    let success = false;
+
+    // remove the ingredient from bentoIngredients
+    removeIngredient(dragging.coordinate!);
+
+    // if the ingredient cannot be dropped at the coordinateToMoveTo, return
+    if (
+      !canDropIngredient(
+        get().dimension,
+        bentoIngredientsGrid,
+        dragging,
+        coordinateToMoveTo
+      )
+    ) {
+      // add the ingredient back to original coordinate
+      addIngredient(dragging.coordinate!, ingredientToMove.variant);
+      return;
+    }
+
+    // add the ingredient to new coordinate
+    addIngredient(coordinateToMoveTo, ingredientToMove.variant);
+  },
   clearAllDroppedIngredients: () => {
     const { clearVariantIngredients } = get();
     clearVariantIngredients(IngredientVariant.DROPPED);
@@ -166,7 +213,7 @@ export const createBentoActionSlice: StateCreator<
 const canDropIngredient = (
   dimension: Dimension,
   bentoIngredientsGrid: BentoIngredientsGrid,
-  dragging: Ingredient,
+  dragging: DraggableIngredient,
   droppedCoordinate: Coordinates
 ): boolean => {
   const { x, y } = droppedCoordinate;
