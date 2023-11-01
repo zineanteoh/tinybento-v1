@@ -1,14 +1,15 @@
 import React from "react";
 import { IngredientVariant, IngredientProps } from "@/utils/interfaces";
-import styles from "./Ingredient.module.css";
 import { BENTO_SQUARE_INNER_PADDING } from "@/utils/constants";
+import IngredientDropped from "../draggable/BentoIngredientDraggable";
+import IngredientPreview from "./IngredientPreview";
 
 /**
- * An ingredient is a draggable and resizable item that can be placed in a bento.
+ * An ingredient is a draggable item that is placed in a bento, either as a preview or dropped.
  *
  * It is styled absolutely, relative to the bento container.
  */
-const Ingredient = ({
+const BentoIngredient = ({
   ingredient, // ingredient data
   variant, // ingredient variant (dropped or preview)
   bentoDimension, // dimension of the bento container e.g. { width: 4, height: 4}
@@ -41,31 +42,28 @@ const Ingredient = ({
     <>
       {/* Render Dropped */}
       {variant === IngredientVariant.DROPPED && (
-        <div
-          className={styles.ingredient}
-          style={{
-            ...computedStyles,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "lightgreen",
-          }}
+        <IngredientDropped
+          ingredient={ingredient}
+          computedStyles={computedStyles}
         >
           {ingredient.height}x{ingredient.width}
-        </div>
+        </IngredientDropped>
       )}
 
       {/* Render Preview */}
       {variant === IngredientVariant.PREVIEW && (
-        <div
-          className={`${styles.ingredient} ${styles.preview}`}
-          style={computedStyles}
-        >
-          Preview: {ingredient.height}x{ingredient.width}
-        </div>
+        <IngredientPreview computedStyles={computedStyles}>
+          {/* 
+          // <div
+          //   className={`${styles.ingredient} ${styles.preview}`}
+          // >
+          //   Preview: {ingredient.height}x{ingredient.width}
+          // </div>
+         */}
+        </IngredientPreview>
       )}
     </>
   );
 };
 
-export default Ingredient;
+export default BentoIngredient;
