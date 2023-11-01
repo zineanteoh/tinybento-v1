@@ -1,12 +1,16 @@
 import { StateCreator } from "zustand";
 import { BentoDataSlice } from "./bentoDataSlice";
-import { Coordinates, Ingredient, IngredientVariant } from "@/utils/interfaces";
+import {
+  Coordinates,
+  DraggableIngredient,
+  IngredientVariant,
+} from "@/utils/interfaces";
 import { BentoActionSlice } from "./bentoActionSlice";
 
 export interface DragSlice {
   // keep track of the dragging ingredient
-  dragging: Ingredient | null;
-  setDragging: (draggingIngredient: Ingredient | null) => void;
+  dragging: DraggableIngredient | null;
+  setDragging: (draggingIngredient: DraggableIngredient | null) => void;
 
   // adding preivew ingredient
   addPreviewIngredient: (droppedCoordinate: Coordinates) => void;
