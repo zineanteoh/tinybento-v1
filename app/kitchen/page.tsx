@@ -182,7 +182,12 @@ const Kitchen = () => {
           </div>
 
           {/* Read: https://docs.dndkit.com/api-documentation/draggable/drag-overlay */}
-          <DragOverlay>
+          <DragOverlay
+            dropAnimation={{
+              duration: 1,
+              easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+            }}
+          >
             {dragging && (
               <>
                 {dragging.type === DraggableType.IN_ADD_INGREDIENT && (
