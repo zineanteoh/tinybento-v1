@@ -1,19 +1,21 @@
 import React from "react";
-import styles from "./IngredientDraggable.module.css";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import styles from "./AddIngredientDraggable.module.css";
+import { DraggableType } from "@/utils/interfaces";
 
 // Read: https://docs.dndkit.com/api-documentation/draggable
-const IngredientDraggable = ({
-  uniqueId,
+const AddIngredientDraggable = ({
+  id,
   children,
 }: {
-  uniqueId: string;
+  id: string;
   // TODO: remove children because we don't need it
   children?: React.ReactNode;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: uniqueId,
+    id,
+    data: { type: DraggableType.IN_ADD_INGREDIENT },
   });
   const style = {
     transform: CSS.Translate.toString(transform),
@@ -23,7 +25,9 @@ const IngredientDraggable = ({
     <div
       className={`${styles.draggable} no-select`}
       ref={setNodeRef}
-      style={style}
+      style={{
+        ...style,
+      }}
       {...listeners}
       {...attributes}
     >
@@ -32,4 +36,4 @@ const IngredientDraggable = ({
   );
 };
 
-export default IngredientDraggable;
+export default AddIngredientDraggable;
