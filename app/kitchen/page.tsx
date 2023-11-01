@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 import styles from "./page.module.css";
-import draggableStyles from "@/components/kitchen/bento/draggable/IngredientDraggable.module.css";
+import addIngredientDraggableStyles from "@/components/kitchen/bento/draggable/AddIngredientDraggable.module.css";
 import KitchenHeader from "@/components/kitchen/header/KitchenHeader";
 import ActionButton from "@/components/kitchen/action/ActionButton";
 import {
@@ -23,13 +23,18 @@ import {
   DndContext,
   DragEndEvent,
   DragOverlay,
+  DragStartEvent,
   pointerWithin,
 } from "@dnd-kit/core";
 import { useStore } from "@/store/kitchen-store/store";
-import { Coordinates, Ingredient } from "@/utils/interfaces";
 import {
+  Coordinates,
+  DraggableIngredient,
+  DraggableType,
+} from "@/utils/interfaces";
+import {
+  convertDragEventToIngredient,
   convertStringToCoordinate,
-  convertStringToIngredient,
 } from "@/utils/helper";
 import BentoInternalStates from "@/components/dev/BentoInternalStates";
 
@@ -47,11 +52,14 @@ const Kitchen = () => {
   // unique id for dnd context
   const id = "kitchen";
   // handle click action buttons
-  const [currentAction, setCurrentAction] = useState<Action | null>(null);
+  const [currentAction, setCurrentAction] = useState<Action | null>(
+    Action.ADD_INGREDIENT
+  );
   // handle drag and drop
   const {
     dragging,
     addDroppedIngredient,
+    moveIngredient,
     clearAllPreviewIngredients,
     setDragging,
   } = useStore();
@@ -64,25 +72,46 @@ const Kitchen = () => {
     }
   };
 
-  const handleDragStart = (event: DragEndEvent) => {
-    const ingredient: Ingredient = convertStringToIngredient(
-      event.active.id.toString()
-    );
+  const handleDragStart = (event: DragStartEvent) => {
+    // get the ingredient that is being dragged
+    const ingredient: DraggableIngredient = convertDragEventToIngredient(event);
+    // set the dragging state
     setDragging(ingredient);
   };
 
   // where the magic happens
   const handleDragEnd = (event: DragEndEvent) => {
+    // clear all preview
     clearAllPreviewIngredients();
 
+    // ensure it is over a droppable
     if (event.over && event.over.id !== null) {
+      // compute the coordinate of the droppable
       const droppedCoordinate: Coordinates = convertStringToCoordinate(
         event.over.id as string
       );
-      // use the APIs provided by store to update bento state
-      addDroppedIngredient(droppedCoordinate);
+
+      // compute dragging type
+      const draggingType: DraggableType = event.active.data.current?.type;
+
+      // perform action based on dragging type
+      switch (draggingType) {
+        // adding a new ingredient to bento
+        case DraggableType.IN_ADD_INGREDIENT:
+          addDroppedIngredient(droppedCoordinate);
+          break;
+
+        // moving an existing ingredient in bento
+        case DraggableType.IN_BENTO:
+          moveIngredient(droppedCoordinate);
+          break;
+        default:
+          console.error("Unknown dragging type");
+          break;
+      }
     }
 
+    // drag ended, set dragging state to null
     setDragging(null);
   };
 
@@ -154,11 +183,21 @@ const Kitchen = () => {
 
           {/* Read: https://docs.dndkit.com/api-documentation/draggable/drag-overlay */}
           <DragOverlay>
-            {dragging ? (
-              <div className={draggableStyles.draggable}>
-                {dragging.height}x{dragging.width}
-              </div>
-            ) : null}
+            {dragging && (
+              <>
+                {dragging.type === DraggableType.IN_ADD_INGREDIENT && (
+                  // TODO: this will be icons, instead of div + stylings
+                  <div className={addIngredientDraggableStyles.draggable}>
+                    {dragging.height}x{dragging.width}
+                  </div>
+                )}
+
+                {dragging.type === DraggableType.IN_BENTO && (
+                  // TODO: this will be div + stylings
+                  <div>Hello In bento</div>
+                )}
+              </>
+            )}
           </DragOverlay>
         </div>
       </DndContext>
