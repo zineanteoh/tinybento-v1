@@ -18,6 +18,8 @@
   align-items: center;
   z-index: 1;
 
+  transition: flex-basis 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
   /* background-color: lightblue; */
 }
 
@@ -29,16 +31,26 @@
   flex-direction: column;
   justify-content: center;
 
+  transition: flex-basis 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
   /* background-color: lightgreen; */
 }
 
+.side60 {
+  flex-basis: 60%;
+}
+
+.bento40 {
+  flex-basis: 40%;
+}
+
 .actionButtons {
-  flex-basis: 30%;
+  flex-basis: 12vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   gap: 20px;
-  padding: 30px 3%;
+  padding: 30px 1.2vw;
   z-index: 1;
 
   /* background-color: pink; */
