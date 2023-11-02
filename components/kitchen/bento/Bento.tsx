@@ -43,8 +43,8 @@ const Bento = () => {
         position: "absolute",
         top: BENTO_INNER_PADDING,
         left: BENTO_INNER_PADDING,
-        width: `calc(100% - ${2 * BENTO_INNER_PADDING}px)`,
-        height: `calc(100% - ${2 * BENTO_INNER_PADDING}px)`,
+        width: bentoWidth - 2 * BENTO_INNER_PADDING,
+        height: bentoHeight - 2 * BENTO_INNER_PADDING,
       }}
     >
       {bentoIngredients.map(
