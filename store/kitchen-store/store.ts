@@ -7,12 +7,17 @@ import {
   KitchenStateSlice,
   createKitchenStateSlice,
 } from "./kitchenStateSlice";
+import {
+  BentoResponsiveSlice,
+  createBentoResponsiveSlice,
+} from "./bentoResponsiveSlice";
 
 // the implementation of our store
 // https://github.com/pmndrs/zustand/blob/main/docs/guides/slices-pattern.md#updating-multiple-stores
 export const useStore = create<
   BentoDataSlice &
     BentoActionSlice &
+    BentoResponsiveSlice &
     DragSlice &
     ResizeSlice &
     KitchenStateSlice
@@ -22,6 +27,9 @@ export const useStore = create<
 
   // slice for bento's actions (add/remove/clear ingredients)
   ...createBentoActionSlice(...a),
+
+  // slice for enabling bento to be responsive
+  ...createBentoResponsiveSlice(...a),
 
   // slice to enable dragging
   ...createDragSlice(...a),

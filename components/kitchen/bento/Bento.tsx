@@ -10,20 +10,25 @@ import { BENTO_INNER_PADDING } from "@/utils/constants";
 const Bento = () => {
   // use ref to allow ingredients to get width + height of bento container
   const bentoRef = useRef<HTMLDivElement>(null);
-  const { dimension, bentoIngredients } = useStore();
-  // use a dummy state to force rerender when window resizes
-  const [_, setRandom] = useState(false);
-  const bentoWidth = bentoRef.current?.clientWidth ?? 0;
-  const bentoHeight = bentoRef.current?.clientHeight ?? 0;
+  const { dimension, bentoIngredients, bentoDimension, setBentoDimension } =
+    useStore();
+  const { width: bentoWidth, height: bentoHeight } = bentoDimension;
 
   // update windowSize when window resizes to recompute ingredient dimensions
   useEffect(() => {
     // trigger rerender
-    const handleWindowResize = () => setRandom((prev) => !prev);
+    const updateBentoDimension = () => {
+      setBentoDimension({
+        width: bentoRef.current?.clientWidth ?? 0,
+        height: bentoRef.current?.clientHeight ?? 0,
+      });
+    };
+    // trigger initial rerender
+    updateBentoDimension();
     // add event listener
-    window.addEventListener("resize", handleWindowResize);
+    window.addEventListener("resize", updateBentoDimension);
     // remove event listener
-    return () => window.removeEventListener("resize", handleWindowResize);
+    return () => window.removeEventListener("resize", updateBentoDimension);
   }, []);
 
   const bentoSquares = Array.from({ length: dimension.height }).map((_, y) =>
