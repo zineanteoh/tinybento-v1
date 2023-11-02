@@ -13,6 +13,8 @@ const Bento = () => {
   const { dimension, bentoIngredients } = useStore();
   // use a dummy state to force rerender when window resizes
   const [_, setRandom] = useState(false);
+  const bentoWidth = bentoRef.current?.clientWidth ?? 0;
+  const bentoHeight = bentoRef.current?.clientHeight ?? 0;
 
   // update windowSize when window resizes to recompute ingredient dimensions
   useEffect(() => {
@@ -48,12 +50,8 @@ const Bento = () => {
               ingredient={ingredient}
               variant={ingredient.variant}
               bentoDimension={dimension}
-              bentoWidth={
-                (bentoRef.current?.clientWidth ?? 0) - 2 * BENTO_INNER_PADDING
-              }
-              bentoHeight={
-                (bentoRef.current?.clientHeight ?? 0) - 2 * BENTO_INNER_PADDING
-              }
+              bentoWidth={bentoWidth - 2 * BENTO_INNER_PADDING}
+              bentoHeight={bentoHeight - 2 * BENTO_INNER_PADDING}
             />
           );
         }
@@ -67,12 +65,10 @@ const Bento = () => {
         ref={bentoRef}
         className={styles.container + " no-select"}
         style={{
-          width: "100%",
-          height: "100%",
           display: "grid",
           gridTemplateColumns: `repeat(${dimension.width}, 1fr)`,
           gridTemplateRows: `repeat(${dimension.height}, 1fr)`,
-          padding: 15,
+          padding: BENTO_INNER_PADDING,
         }}
       >
         {/* The width x height bento squares */}

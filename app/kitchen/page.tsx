@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import styles from "./page.module.css";
 import addIngredientDraggableStyles from "@/components/kitchen/bento/draggable/AddIngredientDraggable.module.css";
@@ -31,32 +31,24 @@ import {
   Coordinates,
   DraggableIngredient,
   DraggableType,
+  KitchenActionState,
 } from "@/utils/interfaces";
 import {
   convertDragEventToIngredient,
   convertStringToCoordinate,
 } from "@/utils/helper";
 import BentoInternalStates from "@/components/dev/BentoInternalStates";
-
-enum Action {
-  ADD_INGREDIENT = "Add Ingredient",
-  EDIT_CONTENT = "Edit Content",
-  HIERARCHY = "Hierarchy",
-  SHARE_BENTO = "Share Bento",
-  CHANGE_THEME = "Change Theme",
-}
+import classNames from "classnames";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
 const Kitchen = () => {
   // unique id for dnd context
   const id = "kitchen";
-  // handle click action buttons
-  const [currentAction, setCurrentAction] = useState<Action | null>(
-    Action.ADD_INGREDIENT
-  );
-  // handle drag and drop
+
   const {
+    currentAction,
+    setCurrentAction,
     dragging,
     addDroppedIngredient,
     moveIngredient,
@@ -64,7 +56,7 @@ const Kitchen = () => {
     setDragging,
   } = useStore();
 
-  const handleActionClick = (action: Action) => {
+  const handleActionClick = (action: KitchenActionState) => {
     if (currentAction === action) {
       setCurrentAction(null);
     } else {
@@ -129,38 +121,51 @@ const Kitchen = () => {
         collisionDetection={pointerWithin}
       >
         <div className={styles.content}>
-          <div className={styles.side}>
+          <div
+            className={classNames(styles.side, {
+              [styles.side60]:
+                currentAction === KitchenActionState.EDIT_CONTENT,
+            })}
+          >
             {/* ActionButtons on the left */}
             <div className={styles.actionButtons}>
               <ActionButton
                 actionName="Add Ingredient"
                 color="#FFCBA6"
                 icon={IconPlus}
-                onClick={() => handleActionClick(Action.ADD_INGREDIENT)}
+                onClick={() =>
+                  handleActionClick(KitchenActionState.ADD_INGREDIENT)
+                }
               />
               <ActionButton
                 actionName="Edit Content"
                 color="#A8FFB1"
                 icon={IconEdit}
-                onClick={() => handleActionClick(Action.EDIT_CONTENT)}
+                onClick={() =>
+                  handleActionClick(KitchenActionState.EDIT_CONTENT)
+                }
               />
               <ActionButton
                 actionName="Hierarchy"
                 color="#AFB7FF"
                 icon={IconHierarchy}
-                onClick={() => handleActionClick(Action.HIERARCHY)}
+                onClick={() => handleActionClick(KitchenActionState.HIERARCHY)}
               />
               <ActionButton
                 actionName="Share Bento"
                 color="#FED6FF"
                 icon={IconShare}
-                onClick={() => handleActionClick(Action.SHARE_BENTO)}
+                onClick={() =>
+                  handleActionClick(KitchenActionState.SHARE_BENTO)
+                }
               />
               <ActionButton
                 actionName="Change Theme"
                 color="#C0FBFF"
                 icon={IconChangeTheme}
-                onClick={() => handleActionClick(Action.CHANGE_THEME)}
+                onClick={() =>
+                  handleActionClick(KitchenActionState.CHANGE_THEME)
+                }
               />
             </div>
 
@@ -168,16 +173,31 @@ const Kitchen = () => {
 
             <div className={styles.actionContainer}>
               <AnimatePresence>
-                {currentAction === Action.ADD_INGREDIENT && <AddIngredients />}
-                {currentAction === Action.EDIT_CONTENT && <EditContent />}
-                {currentAction === Action.HIERARCHY && <Hierarchy />}
-                {currentAction === Action.SHARE_BENTO && <ShareBento />}
-                {currentAction === Action.CHANGE_THEME && <ChangeTheme />}
+                {currentAction === KitchenActionState.ADD_INGREDIENT && (
+                  <AddIngredients />
+                )}
+                {currentAction === KitchenActionState.EDIT_CONTENT && (
+                  <EditContent />
+                )}
+                {currentAction === KitchenActionState.HIERARCHY && (
+                  <Hierarchy />
+                )}
+                {currentAction === KitchenActionState.SHARE_BENTO && (
+                  <ShareBento />
+                )}
+                {currentAction === KitchenActionState.CHANGE_THEME && (
+                  <ChangeTheme />
+                )}
               </AnimatePresence>
             </div>
           </div>
           {/* Bento on the right  */}
-          <div className={styles.bento}>
+          <div
+            className={classNames(styles.bento, {
+              [styles.bento40]:
+                currentAction === KitchenActionState.EDIT_CONTENT,
+            })}
+          >
             <Bento />
           </div>
 
@@ -185,7 +205,7 @@ const Kitchen = () => {
           <DragOverlay
             dropAnimation={{
               duration: 1,
-              easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+              easing: "cubic-bezier(.22,.75,.83,.21)",
             }}
           >
             {dragging && (

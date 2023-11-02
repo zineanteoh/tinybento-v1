@@ -96,6 +96,14 @@ export enum DraggableType {
   IN_BENTO = "IN_BENTO",
 }
 
+export enum KitchenActionState {
+  ADD_INGREDIENT = "Add Ingredient",
+  EDIT_CONTENT = "Edit Content",
+  HIERARCHY = "Hierarchy",
+  SHARE_BENTO = "Share Bento",
+  CHANGE_THEME = "Change Theme",
+}
+
 // ============================================================================
 // Props Interfaces
 // ============================================================================
