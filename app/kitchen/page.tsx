@@ -1,6 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect } from "react";
 import styles from "./page.module.css";
 import addIngredientDraggableStyles from "@/components/kitchen/bento/draggable/AddIngredientDraggable.module.css";
 import KitchenHeader from "@/components/kitchen/header/KitchenHeader";
@@ -18,7 +17,7 @@ import EditContent from "@/components/kitchen/action/items/EditContent";
 import Hierarchy from "@/components/kitchen/action/items/Hierarchy";
 import ShareBento from "@/components/kitchen/action/items/ShareBento";
 import ChangeTheme from "@/components/kitchen/action/items/ChangeTheme";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, useAnimate } from "framer-motion";
 import {
   DndContext,
   DragEndEvent,
@@ -38,7 +37,6 @@ import {
   convertStringToCoordinate,
 } from "@/utils/helper";
 import BentoInternalStates from "@/components/dev/BentoInternalStates";
-import classNames from "classnames";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -107,6 +105,20 @@ const Kitchen = () => {
     setDragging(null);
   };
 
+  // framer animations
+  const [scopeSide, animateSide] = useAnimate();
+  const [scopeBento, animateBento] = useAnimate();
+
+  useEffect(() => {
+    if (currentAction === KitchenActionState.EDIT_CONTENT) {
+      animateSide(scopeSide.current, { flexBasis: "60%" }, { duration: 0.2 });
+      animateBento(scopeBento.current, { flexBasis: "40%" }, { duration: 0.2 });
+    } else {
+      animateSide(scopeSide.current, { flexBasis: "40%" }, { duration: 0.2 });
+      animateBento(scopeBento.current, { flexBasis: "60%" }, { duration: 0.2 });
+    }
+  }, [currentAction]);
+
   return (
     <div // animate fade in from top gradual, very subtle and subtle. only a tiny bit of animation
       className={styles.container}
@@ -121,12 +133,8 @@ const Kitchen = () => {
         collisionDetection={pointerWithin}
       >
         <div className={styles.content}>
-          <div
-            className={classNames(styles.side, {
-              [styles.side60]:
-                currentAction === KitchenActionState.EDIT_CONTENT,
-            })}
-          >
+          {/* left side */}
+          <div ref={scopeSide} className={styles.side}>
             {/* ActionButtons on the left */}
             <div className={styles.actionButtons}>
               <ActionButton
@@ -192,12 +200,7 @@ const Kitchen = () => {
             </div>
           </div>
           {/* Bento on the right  */}
-          <div
-            className={classNames(styles.bento, {
-              [styles.bento40]:
-                currentAction === KitchenActionState.EDIT_CONTENT,
-            })}
-          >
+          <div ref={scopeBento} className={styles.bento}>
             <Bento />
           </div>
 

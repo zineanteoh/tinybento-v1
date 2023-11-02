@@ -11,6 +11,7 @@
 }
 
 .side {
+  flex-basis: 40%;
   min-width: 0;
   display: flex;
   flex-direction: row;
@@ -21,6 +22,7 @@
 }
 
 .bento {
+  flex-basis: 60%;
   min-width: 0;
   padding: 30px calc(10% - 3px);
   display: flex;
