@@ -11,37 +11,23 @@
 }
 
 .side {
-  flex-basis: 40%;
   min-width: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
   z-index: 1;
 
-  transition: flex-basis 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
   /* background-color: lightblue; */
 }
 
 .bento {
-  flex-basis: 60%;
   min-width: 0;
   padding: 30px calc(10% - 3px);
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  transition: flex-basis 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
   /* background-color: lightgreen; */
-}
-
-.side60 {
-  flex-basis: 60%;
-}
-
-.bento40 {
-  flex-basis: 40%;
 }
 
 .actionButtons {
