@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./page.module.css";
-import addIngredientDraggableStyles from "@/components/kitchen/bento/draggable/AddIngredientDraggable.module.css";
 import KitchenHeader from "@/components/kitchen/header/KitchenHeader";
 import ActionButton from "@/components/kitchen/action/ActionButton";
 import {
@@ -17,11 +16,10 @@ import EditContent from "@/components/kitchen/action/items/EditContent";
 import Hierarchy from "@/components/kitchen/action/items/Hierarchy";
 import ShareBento from "@/components/kitchen/action/items/ShareBento";
 import ChangeTheme from "@/components/kitchen/action/items/ChangeTheme";
-import { AnimatePresence, useAnimate } from "framer-motion";
+import { AnimatePresence, useAnimate, useMotionValue } from "framer-motion";
 import {
   DndContext,
   DragEndEvent,
-  DragOverlay,
   DragStartEvent,
   pointerWithin,
 } from "@dnd-kit/core";
@@ -37,6 +35,7 @@ import {
   convertStringToCoordinate,
 } from "@/utils/helper";
 import BentoInternalStates from "@/components/dev/BentoInternalStates";
+import BentoOverlay from "@/components/kitchen/bento/BentoOverlay";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -124,7 +123,6 @@ const Kitchen = () => {
       className={styles.container}
     >
       <KitchenHeader />
-
       <DndContext
         id={id}
         onDragStart={handleDragStart}
@@ -204,32 +202,9 @@ const Kitchen = () => {
             <Bento />
           </div>
 
-          {/* Read: https://docs.dndkit.com/api-documentation/draggable/drag-overlay */}
-          <DragOverlay
-            dropAnimation={{
-              duration: 1,
-              easing: "cubic-bezier(.22,.75,.83,.21)",
-            }}
-          >
-            {dragging && (
-              <>
-                {dragging.type === DraggableType.IN_ADD_INGREDIENT && (
-                  // TODO: this will be icons, instead of div + stylings
-                  <div className={addIngredientDraggableStyles.draggable}>
-                    {dragging.height}x{dragging.width}
-                  </div>
-                )}
-
-                {dragging.type === DraggableType.IN_BENTO && (
-                  // TODO: this will be div + stylings
-                  <div>Hello In bento</div>
-                )}
-              </>
-            )}
-          </DragOverlay>
+          <BentoOverlay />
         </div>
       </DndContext>
-
       {IS_DEV && <BentoInternalStates />}
     </div>
   );
