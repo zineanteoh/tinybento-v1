@@ -1,5 +1,5 @@
 import {
-  BentoIngredient2D,
+  BentoIngredientsGrid,
   BentoIngredientType,
   Dimension,
 } from "@/utils/interfaces";
@@ -13,7 +13,7 @@ export interface BentoDataSlice {
 
   // keep track of the ingredients (both dropped and preview)
   bentoIngredients: BentoIngredientType[];
-  bentoIngredients2D: BentoIngredient2D;
+  bentoIngredientsGrid: BentoIngredientsGrid;
 }
 
 // TODO: hardcode for now
@@ -32,7 +32,7 @@ export const createBentoDataSlice: StateCreator<
   setDimension: (dimension) => set(() => ({ dimension })),
 
   bentoIngredients: [],
-  bentoIngredients2D: genererate2DArrayOfNulls(DIMENSION),
+  bentoIngredientsGrid: genererate2DArrayOfNulls(DIMENSION),
 });
 
 // ----------------------------------------------------------------------

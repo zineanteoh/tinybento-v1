@@ -1,13 +1,16 @@
-.draggable {
+.overlay {
   position: relative;
   width: 70px;
   height: 70px;
-  background-color: rgb(245, 255, 203);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.draggable:hover {
+.overlay:hover {
   cursor: move;
+}
+
+.icon {
+  position: absolute;
 }

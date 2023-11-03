@@ -5,7 +5,7 @@ import ActionContainer from "../ActionContainer";
 const EditContent = () => {
   return (
     <AnimateRightLeft>
-      <ActionContainer>
+      <ActionContainer style={{ width: "100%" }}>
         <div>Edit Content here</div>
       </ActionContainer>
     </AnimateRightLeft>

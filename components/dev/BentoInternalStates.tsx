@@ -1,52 +1,41 @@
-"use client";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/kitchen-store/store";
 import React from "react";
 
-// Displays all internal states of the bento
-const SidebarLeft = () => {
-  const {
-    dimension,
-    bentoIngredients,
-    bentoIngredients2D,
-    dragging,
-    isResizing,
-    coordinateOfObject,
-    directionOfResize,
-  } = useStore();
+const BentoInternalStates = () => {
+  const { dimension, bentoIngredients, bentoIngredientsGrid, dragging } =
+    useStore();
 
   return (
     <div
       style={{
-        backgroundColor: "lightblue",
+        position: "absolute",
         width: "200px",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "left",
-        paddingLeft: "10px",
+        right: "0",
+        paddingRight: "10px",
         paddingTop: "25px",
         gap: "10px",
+        wordWrap: "break-word",
+        pointerEvents: "none",
       }}
     >
       <div>
         dimension: {dimension.width}x{dimension.height}
       </div>
 
-      <div>
-        dragging: {dragging ? `${dragging.width}x${dragging.height}` : ""}
-      </div>
+      <div>dragging: {dragging ? JSON.stringify(dragging) : ""}</div>
 
       <div>
-        bentoIngredients2D:
+        bentoIngredientsGrid:
         <div>
-          {/* row and cols of bentoIngredients2d */}
-          {bentoIngredients2D.map((row, rowIndex) => (
+          {/* row and cols of bentoIngredientsGrid */}
+          {bentoIngredientsGrid.map((row, rowIndex) => (
             <div
               key={rowIndex}
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
+              style={{ display: "flex", flexDirection: "row" }}
             >
               {row.map((col, colIndex) => (
                 <span key={colIndex}>
@@ -82,19 +71,8 @@ const SidebarLeft = () => {
             })}
         </div>
       </div>
-
-      <div>isResizing: {isResizing ? "true" : "false"}</div>
-
-      <div>
-        coordinateOfObject:{" "}
-        {coordinateOfObject
-          ? `(${coordinateOfObject.x},${coordinateOfObject.y})`
-          : ""}
-      </div>
-
-      <div>directionOfResize: {directionOfResize}</div>
     </div>
   );
 };
 
-export default SidebarLeft;
+export default BentoInternalStates;

@@ -19,10 +19,17 @@ export interface CSSPosition {
 // ============================================================================
 // Bento Ingredients Interfaces
 // ============================================================================
+// TODO: improve all the interfaces below
 export interface Ingredient {
+  id?: string;
   width: number;
   height: number;
   variant: IngredientVariant;
+}
+
+export interface DraggableIngredient extends Ingredient {
+  type: DraggableType;
+  coordinate?: Coordinates;
 }
 
 export interface DroppedIngredientType extends Ingredient {
@@ -37,7 +44,7 @@ export interface PreviewIngredientType extends Ingredient {
 
 export type BentoIngredientType = DroppedIngredientType | PreviewIngredientType;
 
-export type BentoIngredient2D = (BentoIngredientType | null)[][];
+export type BentoIngredientsGrid = (BentoIngredientType | null)[][];
 
 // ============================================================================
 // Resize Interfaces
@@ -82,6 +89,19 @@ export enum DirectionMultiplier {
   TOP = -1,
   RIGHT = 1,
   BOTTOM = 1,
+}
+
+export enum DraggableType {
+  IN_ADD_INGREDIENT = "IN_ADD_INGREDIENT",
+  IN_BENTO = "IN_BENTO",
+}
+
+export enum KitchenActionState {
+  ADD_INGREDIENT = "Add Ingredient",
+  EDIT_CONTENT = "Edit Content",
+  HIERARCHY = "Hierarchy",
+  SHARE_BENTO = "Share Bento",
+  CHANGE_THEME = "Change Theme",
 }
 
 // ============================================================================

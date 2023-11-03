@@ -12,49 +12,35 @@ import {
   IconIngredient2x4,
   IconIngredient3x3,
 } from "@/utils/iconLibrary";
+import AddIngredientDraggable from "@/components/kitchen/bento/draggable/AddIngredientDraggable";
 
-const ingredients = [
-  {
-    name: "1x1",
-    icon: IconIngredient1x1,
-  },
-  {
-    name: "2x2",
-    icon: IconIngredient2x2,
-  },
-  {
-    name: "1x2",
-    icon: IconIngredient1x2,
-  },
-  {
-    name: "2x3",
-    icon: IconIngredient2x3,
-  },
-  {
-    name: "1x3",
-    icon: IconIngredient1x3,
-  },
-  {
-    name: "2x4",
-    icon: IconIngredient2x4,
-  },
-  {
-    name: "1x4",
-    icon: IconIngredient1x4,
-  },
-  {
-    name: "3x3",
-    icon: IconIngredient3x3,
-  },
-];
+interface IngredientIdToIconType {
+  // TODO: map from an enum to React.ReactNode
+  [key: string]: React.ReactNode;
+}
+
+export const ingredientsIdIconMap: IngredientIdToIconType = {
+  "1x1": IconIngredient1x1,
+  "2x2": IconIngredient2x2,
+  "1x2": IconIngredient1x2,
+  "2x3": IconIngredient2x3,
+  "1x3": IconIngredient1x3,
+  "2x4": IconIngredient2x4,
+  "1x4": IconIngredient1x4,
+  "3x3": IconIngredient3x3,
+};
 
 const AddIngredients = () => {
   return (
     <AnimateRightLeft>
       <ActionContainer>
         <div className={styles.container}>
-          {ingredients.map((ingredient) => (
-            <div className={styles.miniContainer}>{ingredient.icon}</div>
+          {Object.entries(ingredientsIdIconMap).map(([id, icon]) => (
+            <div className={styles.miniContainer} key={id}>
+              <AddIngredientDraggable key={id} id={id}>
+                {icon}
+              </AddIngredientDraggable>
+            </div>
           ))}
         </div>
       </ActionContainer>

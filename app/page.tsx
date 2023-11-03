@@ -5,9 +5,7 @@ import styles from "@app/page.module.css";
 const Home = () => {
   return (
     <div className={styles.container}>
-      <Link href="/demo/1">Demo 1</Link>
-      <Link href="/kitchen">Kitchen</Link>
-      {/* TODO: add more demos here */}
+      <Link href="/kitchen">Enter the Kitchen</Link>
     </div>
   );
 };

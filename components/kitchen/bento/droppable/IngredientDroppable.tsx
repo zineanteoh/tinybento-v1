@@ -1,17 +1,11 @@
 import React, { useEffect } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { Coordinates } from "@/utils/interfaces";
-import { useStore } from "@/store/store";
+import { useStore } from "@/store/kitchen-store/store";
+import styles from "./IngredientDroppable.module.css";
+import { BENTO_SQUARE_INNER_PADDING } from "@/utils/constants";
 
-const style = {
-  border: "1px solid black",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "rgba(0, 0, 0, 0.1)",
-};
-
-const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
+const IngredientDroppable = (props: { coordinate: Coordinates }) => {
   const { addPreviewIngredient, clearAllPreviewIngredients } = useStore();
   const { x, y } = props.coordinate;
 
@@ -28,10 +22,14 @@ const DroppableBentoSquare = (props: { coordinate: Coordinates }) => {
   }, [isOver, x, y, clearAllPreviewIngredients, addPreviewIngredient]);
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div
+      ref={setNodeRef}
+      className={styles.square}
+      style={{ margin: BENTO_SQUARE_INNER_PADDING }}
+    >
       {isOver ? "Release to Add" : `${x},${y}`}
     </div>
   );
 };
 
-export default DroppableBentoSquare;
+export default IngredientDroppable;
