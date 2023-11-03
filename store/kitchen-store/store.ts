@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { BentoDataSlice, createBentoDataSlice } from "./bentoDataSlice";
-import { ResizeSlice, createResizeSlice } from "./resizeSlice";
 import { DragSlice, createDragSlice } from "./dragSlice";
 import { BentoActionSlice, createBentoActionSlice } from "./bentoActionSlice";
 import {
@@ -19,7 +18,6 @@ export const useStore = create<
     BentoActionSlice &
     BentoResponsiveSlice &
     DragSlice &
-    ResizeSlice &
     KitchenStateSlice
 >()((...a) => ({
   // slice for bento's internal state (dimension, ingredients, ingredients2D, etc.)
@@ -33,9 +31,6 @@ export const useStore = create<
 
   // slice to enable dragging
   ...createDragSlice(...a),
-
-  // slice to enable resizing
-  ...createResizeSlice(...a),
 
   // slice for the kitchen's state
   ...createKitchenStateSlice(...a),
