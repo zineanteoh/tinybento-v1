@@ -15,10 +15,11 @@ import {
 import AddIngredientDraggable from "@/components/kitchen/bento/draggable/AddIngredientDraggable";
 
 interface IngredientIdToIconType {
+  // TODO: map from an enum to React.ReactNode
   [key: string]: React.ReactNode;
 }
 
-const ingredients: IngredientIdToIconType = {
+export const ingredientsIdIconMap: IngredientIdToIconType = {
   "1x1": IconIngredient1x1,
   "2x2": IconIngredient2x2,
   "1x2": IconIngredient1x2,
@@ -34,7 +35,7 @@ const AddIngredients = () => {
     <AnimateRightLeft>
       <ActionContainer>
         <div className={styles.container}>
-          {Object.entries(ingredients).map(([id, icon]) => (
+          {Object.entries(ingredientsIdIconMap).map(([id, icon]) => (
             <div className={styles.miniContainer} key={id}>
               <AddIngredientDraggable key={id} id={id}>
                 {icon}

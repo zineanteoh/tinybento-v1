@@ -2,7 +2,8 @@ import React from "react";
 import { useStore } from "@/store/kitchen-store/store";
 import { DraggableType } from "@/utils/interfaces";
 import { DragOverlay } from "@dnd-kit/core";
-import addIngredientDraggableStyles from "@/components/kitchen/bento/draggable/AddIngredientDraggable.module.css";
+import { ingredientsIdIconMap } from "../action/items/AddIngredients";
+import styles from "./BentoOverlay.module.css";
 
 /**
  * BentoOverlay shows Bento-related draggables
@@ -23,8 +24,10 @@ const BentoOverlay = () => {
         <>
           {dragging.type === DraggableType.IN_ADD_INGREDIENT && (
             // TODO: this will be icons, instead of div + stylings
-            <div className={addIngredientDraggableStyles.draggable}>
-              {dragging.height}x{dragging.width}
+            <div className={styles.overlay}>
+              <div className={styles.icon}>
+                {ingredientsIdIconMap[dragging.id ?? ""]}
+              </div>
             </div>
           )}
 

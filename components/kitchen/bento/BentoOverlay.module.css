@@ -1,0 +1,16 @@
+.overlay {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay:hover {
+  cursor: move;
+}
+
+.icon {
+  position: absolute;
+}
