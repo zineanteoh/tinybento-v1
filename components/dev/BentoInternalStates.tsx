@@ -2,15 +2,8 @@ import { useStore } from "@/store/kitchen-store/store";
 import React from "react";
 
 const BentoInternalStates = () => {
-  const {
-    dimension,
-    bentoIngredients,
-    bentoIngredientsGrid,
-    dragging,
-    isResizing,
-    coordinateOfObject,
-    directionOfResize,
-  } = useStore();
+  const { dimension, bentoIngredients, bentoIngredientsGrid, dragging } =
+    useStore();
 
   return (
     <div
@@ -78,17 +71,6 @@ const BentoInternalStates = () => {
             })}
         </div>
       </div>
-
-      <div>isResizing: {isResizing ? "true" : "false"}</div>
-
-      <div>
-        coordinateOfObject:{" "}
-        {coordinateOfObject
-          ? `(${coordinateOfObject.x},${coordinateOfObject.y})`
-          : ""}
-      </div>
-
-      <div>directionOfResize: {directionOfResize}</div>
     </div>
   );
 };
