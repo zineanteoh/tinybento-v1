@@ -2,6 +2,8 @@
 
 ![Alt text](tinybento.png)
 
+![output](https://github.com/zineanteoh/tinybento-v1/assets/58854510/383c4e05-12fc-4f12-8ae9-e356d478f5c2)
+
 ### Terminology
 
 High-level:
